@@ -36,6 +36,7 @@ refuses to overwrite an existing golden folder)::
 from __future__ import annotations
 
 import io
+import math
 import os
 import pathlib
 import re
@@ -141,6 +142,33 @@ class _FakeViewsTracer:
         )
 
 
+#: A number in an output: an integer, a decimal or one in exponent form.
+_NUMBER = re.compile(rb"-?\d+(?:\.\d+)?(?:[eE][-+]?\d+)?")
+#: How far apart two printed floats may be and still count as the same
+#: result: a few units in the last place of a double (about 2.2e-16
+#: relative), never a change a reader of the results could see.
+FLOAT_REL_TOL = 1e-12
+
+
+def same_up_to_last_digits(rendered: bytes, golden: bytes) -> bool:
+    """Whether ``rendered`` is ``golden`` apart from the last digits of its
+    decimal numbers. Everything else -- every key, word, integer and hash
+    -- must be the same bytes; two decimals must agree to
+    ``FLOAT_REL_TOL``. The solar position and sky arithmetic goes through
+    the C library's ``sin``/``cos``/``atan2``, which macOS, glibc and the
+    Windows runtime round differently in the last place of a double."""
+    if _NUMBER.sub(b"#", rendered) != _NUMBER.sub(b"#", golden):
+        return False
+    for mine, theirs in zip(_NUMBER.findall(rendered), _NUMBER.findall(golden)):
+        if mine == theirs:
+            continue
+        if not any(mark in mine + theirs for mark in (b".", b"e", b"E")):
+            return False  # integers, counts and hash digits never differ
+        if not math.isclose(float(mine), float(theirs), rel_tol=FLOAT_REL_TOL, abs_tol=FLOAT_REL_TOL):
+            return False
+    return True
+
+
 def mask_folder(text: str, folder: pathlib.Path) -> str:
     """``text`` with the project folder's path, resolved and as given,
     replaced by ``<folder>`` (resolved first: on macOS the temporary folder
@@ -167,7 +195,7 @@ def render_outputs(tmp_path) -> dict[str, bytes]:
         pathlib.Path(tmp_path), write_example_project, write_wea_file, options=("option1", "option2"),
     )
     rules_path = folder / "credit_rules.yaml"
-    rules_path.write_text(rules_path.read_text() + _VIEWS_RULES_YAML)
+    rules_path.write_text(rules_path.read_text() + _VIEWS_RULES_YAML, newline="\n")
     run_views(folder, CASE, tracer=_FakeViewsTracer(), out=io.StringIO())
     texts = {
         name: (folder / "_run" / relative).read_text(encoding="utf-8")

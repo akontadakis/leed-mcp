@@ -133,7 +133,7 @@ def test_a_stale_option_is_listed_with_its_reason(tmp_path, write_example, write
     folder = build_deliver_project(tmp_path, write_example, write_wea, options=("option1",))
     raw = yaml.safe_load((folder / "project.yaml").read_text())
     raw["glazing"]["dirt_factor"] = 0.8
-    (folder / "project.yaml").write_text(yaml.safe_dump(raw, sort_keys=False))
+    (folder / "project.yaml").write_text(yaml.safe_dump(raw, sort_keys=False), newline="\n")
     case, _, bundle = atlas_inputs(folder, tmp_path / "work")
 
     header = _header(_write(tmp_path, case, bundle))

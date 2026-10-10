@@ -29,7 +29,7 @@ DEAD_PID = 2 ** 22 + 1
 def write_end_record(path: pathlib.Path, code: int) -> None:
     """The end record ``cli.main`` writes, as the child would."""
     path = pathlib.Path(path)
-    path.write_text(json.dumps({"exit_code": code, "ended": "2026-01-01T14:30:00"}))
+    path.write_text(json.dumps({"exit_code": code, "ended": "2026-01-01T14:30:00"}), newline="\n")
 
 
 class FakeProcess:
@@ -121,5 +121,5 @@ def fixed_now(text: str = "2026-01-01T14:02:05"):
 def hold_lock(folder: pathlib.Path, verb: str = "run") -> LockInfo:
     """A lock naming this very process, as a job or a terminal verb holds it."""
     info = LockInfo(os.getpid(), process_start_time(os.getpid()), verb, "2026-01-01T14:02:00")
-    (pathlib.Path(folder) / LOCK_FILE).write_text(json.dumps(dataclasses.asdict(info)))
+    (pathlib.Path(folder) / LOCK_FILE).write_text(json.dumps(dataclasses.asdict(info)), newline="\n")
     return info

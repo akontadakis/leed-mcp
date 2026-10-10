@@ -100,7 +100,7 @@ def test_filling_the_template_from_the_example_loads(tmp_path, write_example):
     for path, value in _leaves(raw).items():
         if value == FILL_ME:
             _set(raw, path, example[path])
-    project_path.write_text(yaml.safe_dump(raw, sort_keys=False))
+    project_path.write_text(yaml.safe_dump(raw, sort_keys=False), newline="\n")
     project = load_project(project_path)
     assert project.name == "Example Tower"
 
@@ -109,7 +109,7 @@ def test_filling_the_template_from_the_example_loads(tmp_path, write_example):
 def test_an_existing_config_file_is_refused_and_nothing_written(tmp_path, capsys, name):
     folder = tmp_path / "office_a"
     folder.mkdir()
-    (folder / name).write_text("mine\n")
+    (folder / name).write_text("mine\n", newline="\n")
     assert init_module.main([str(folder)]) == 1
     err = capsys.readouterr().err
     assert err.startswith("error: ")
@@ -125,7 +125,7 @@ def test_a_file_in_place_of_model_or_weather_is_refused_before_anything_is_writt
     project.yaml or credit_rules.yaml is written."""
     folder = tmp_path / "office_a"
     folder.mkdir()
-    (folder / name).write_text("not a folder\n")
+    (folder / name).write_text("not a folder\n", newline="\n")
     assert init_module.main([str(folder)]) == 1
     err = capsys.readouterr().err
     assert err.startswith("error: ")
@@ -137,7 +137,7 @@ def test_a_file_in_place_of_model_or_weather_is_refused_before_anything_is_writt
 def test_an_existing_empty_folder_is_accepted(tmp_path):
     folder = tmp_path / "office_a"
     folder.mkdir()
-    (folder / "notes.txt").write_text("keep\n")
+    (folder / "notes.txt").write_text("keep\n", newline="\n")
     assert init_module.main([str(folder)]) == 0
     assert (folder / "notes.txt").read_text() == "keep\n"
 
@@ -151,7 +151,7 @@ def test_a_missing_parent_is_refused(tmp_path, capsys):
 
 def test_a_file_in_place_of_the_folder_is_refused(tmp_path, capsys):
     target = tmp_path / "office_a"
-    target.write_text("not a folder\n")
+    target.write_text("not a folder\n", newline="\n")
     assert init_module.main([str(target)]) == 1
     assert "not a folder" in capsys.readouterr().err
 

@@ -25,7 +25,7 @@ def _write(tmp_path, text: str | bytes, name: str = "points.csv"):
     if isinstance(text, bytes):
         path.write_bytes(text)
     else:
-        path.write_text(text, encoding="utf-8")
+        path.write_text(text, encoding="utf-8", newline="\n")
     return path
 
 
@@ -36,7 +36,7 @@ def _with_points_file(tmp_path, write_example, value="points.csv", text=HEADER +
 
     path = write_example(tmp_path, mutate)
     if text is not None:
-        (path.parent / "points.csv").write_text(text, encoding="utf-8")
+        (path.parent / "points.csv").write_text(text, encoding="utf-8", newline="\n")
     return path
 
 
@@ -79,7 +79,7 @@ def test_the_draft_check_lists_a_fill_me_points_file_as_unfinished(tmp_path, wri
 
 def _other_inputs(folder):
     for name in ("materials.csv", "spaces.csv"):
-        (folder / name).write_text("", encoding="utf-8")
+        (folder / name).write_text("", encoding="utf-8", newline="\n")
 
 
 def test_the_points_file_is_an_input_of_the_results(tmp_path, write_example):
@@ -87,7 +87,7 @@ def test_the_points_file_is_an_input_of_the_results(tmp_path, write_example):
     _other_inputs(path.parent)
     before = input_fingerprints(load_project(path), path.parent)
 
-    (path.parent / "points.csv").write_text(HEADER + "office a,2.0,1.0,0.8\n", encoding="utf-8")
+    (path.parent / "points.csv").write_text(HEADER + "office a,2.0,1.0,0.8\n", encoding="utf-8", newline="\n")
     after = input_fingerprints(load_project(path), path.parent)
 
     assert "points.csv" in before
@@ -301,6 +301,6 @@ def test_render_keeps_the_key_on_a_round_trip(tmp_path, write_example):
 
     path = _with_points_file(tmp_path, write_example)
     raw = yaml.safe_load(path.read_text())
-    path.write_text(render(raw), encoding="utf-8")
+    path.write_text(render(raw), encoding="utf-8", newline="\n")
 
     assert load_project(path).grid.points_file == path.parent / "points.csv"

@@ -141,7 +141,8 @@ def find_binaries(
     if missing:
         searched = search_path if search_path is not None else os.environ.get("PATH", "")
         raise RadianceNotFound(
-            f"Radiance binaries not found on search path {searched!r}: "
+            # Quoted, not repr: a Windows path would show doubled backslashes.
+            f"Radiance binaries not found on search path '{searched}': "
             f"{', '.join(missing)}",
             argv=tuple(missing),
         )

@@ -196,7 +196,7 @@ def test_no_progress_line_gives_none(folder):
 def test_the_tail_of_the_verbs_radiance_log_is_given(folder):
     log = folder / "_run" / "option2" / "radiance.log"
     log.parent.mkdir(parents=True)
-    log.write_text("".join(f"rtrace line {i}\n" for i in range(30)))
+    log.write_text("".join(f"rtrace line {i}\n" for i in range(30)), newline="\n")
     jobs_ = _jobs(folder)
     jobs_.start("option2")
     tail = jobs_.read_log(0).radiance_tail
@@ -205,7 +205,7 @@ def test_the_tail_of_the_verbs_radiance_log_is_given(folder):
 
 def test_a_verb_without_a_radiance_log_has_an_empty_tail(folder):
     (folder / "_run").mkdir()
-    (folder / "_run" / "radiance.log").write_text("rtrace line\n")
+    (folder / "_run" / "radiance.log").write_text("rtrace line\n", newline="\n")
     jobs_ = _jobs(folder)
     jobs_.start("report")
     assert jobs_.read_log(0).radiance_tail == ""
@@ -258,7 +258,7 @@ def test_a_crashed_job_is_told_after_a_restart(folder):
 
 
 def test_a_malformed_end_record_counts_as_none(folder):
-    (folder / "x.end.json").write_text("{not json")
+    (folder / "x.end.json").write_text("{not json", newline="\n")
     assert read_end_record(folder / "x.end.json") is None
     assert read_end_record(folder / "missing.end.json") is None
 
@@ -318,14 +318,14 @@ def test_a_reused_process_id_is_not_trusted_as_a_running_job(folder):
     record = _jobs(folder).start("run")
     current = _jobs_dir(folder) / CURRENT
     shifted = {**json.loads(current.read_text()), "start_time": record.start_time - 10.0}
-    current.write_text(json.dumps(shifted))
+    current.write_text(json.dumps(shifted), newline="\n")
     assert _jobs(folder).status().state == "ended_without_record"
 
 
 def test_a_job_whose_start_time_could_not_be_read_counts_as_running_while_its_process_lives(folder):
     record = _jobs(folder).start("run")
     current = _jobs_dir(folder) / CURRENT
-    current.write_text(json.dumps({**json.loads(current.read_text()), "start_time": None}))
+    current.write_text(json.dumps({**json.loads(current.read_text()), "start_time": None}), newline="\n")
     status = _jobs(folder).status()
     assert status.state == "running" and status.record == dataclasses.replace(record, start_time=None)
 
@@ -367,7 +367,7 @@ def test_stop_ends_early_when_the_job_stops_on_sigint(folder):
 def test_stop_checks_the_process_id_and_start_time_first(folder):
     record = _jobs(folder).start("run")
     current = _jobs_dir(folder) / CURRENT
-    current.write_text(json.dumps({**json.loads(current.read_text()), "start_time": record.start_time - 10.0}))
+    current.write_text(json.dumps({**json.loads(current.read_text()), "start_time": record.start_time - 10.0}), newline="\n")
 
     clock = FakeClock()
     signaller = FakeSignaller(clock)
@@ -398,8 +398,8 @@ def test_only_fifty_logs_are_kept(folder):
     jobs_dir.mkdir(parents=True)
     for second in range(55):
         stamp = f"20251201-1000{second:02d}"
-        (jobs_dir / f"{stamp}_run.log").write_text("old\n")
-        (jobs_dir / f"{stamp}_run.end.json").write_text('{"exit_code": 0, "ended": "x"}')
+        (jobs_dir / f"{stamp}_run.log").write_text("old\n", newline="\n")
+        (jobs_dir / f"{stamp}_run.end.json").write_text('{"exit_code": 0, "ended": "x"}', newline="\n")
     names = sorted(p.name for p in jobs_dir.glob("*.log"))
     oldest = names[:6]
 
@@ -417,8 +417,8 @@ def test_logs_of_the_same_second_are_pruned_in_the_order_they_were_made(folder):
     jobs_dir = _jobs_dir(folder)
     jobs_dir.mkdir(parents=True)
     for i in range(KEEP_LOGS):
-        (jobs_dir / f"20260101-120000-{i + 2}_run.log").write_text("old\n")
-    (jobs_dir / "20260101-120000_run.log").write_text("first\n")
+        (jobs_dir / f"20260101-120000-{i + 2}_run.log").write_text("old\n", newline="\n")
+    (jobs_dir / "20260101-120000_run.log").write_text("first\n", newline="\n")
 
     _jobs(folder).start("run")
 
@@ -492,7 +492,7 @@ def test_one_real_child_runs_scan(tmp_path, write_example, write_wea, monkeypatc
     project folder (the child's working directory) would stop the child if
     it shadowed the real library; ``-P`` keeps the folder off ``sys.path``."""
     folder = build_option2_project(tmp_path, write_example, write_wea)
-    (folder / "yaml.py").write_text('raise SystemExit("a file in the project folder shadowed a library")\n')
+    (folder / "yaml.py").write_text('raise SystemExit("a file in the project folder shadowed a library")\n', newline="\n")
     # The child imports the same leed_daylight as this test.
     monkeypatch.setenv("PYTHONPATH", str(pathlib.Path(leed_daylight.__file__).parent.parent))
     end = tmp_path / "scan.end.json"

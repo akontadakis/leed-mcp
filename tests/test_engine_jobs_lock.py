@@ -12,6 +12,7 @@ import io
 import json
 import os
 import re
+import sys
 import time
 
 import pytest
@@ -41,7 +42,7 @@ ME = os.getpid()
 def _write_lock(folder, info: LockInfo) -> None:
     (folder / LOCK_FILE).write_text(json.dumps(
         {"pid": info.pid, "start_time": info.start_time, "verb": info.verb, "started": info.started}
-    ))
+    ), newline="\n")
 
 
 def _only_me_alive(pid: int) -> bool:
@@ -193,6 +194,10 @@ def test_two_clearers_racing_cannot_both_win(tmp_path):
     assert _leftovers(tmp_path) == []
 
 
+@pytest.mark.skipif(sys.platform == "win32", reason=(
+    "Windows: a file this process holds open cannot be deleted by another (Python opens it without "
+    "FILE_SHARE_DELETE), so no other command can clear the lock meanwhile; it can only take it over in place, "
+    "which test_two_clearers_racing_cannot_both_win covers"))
 def test_a_lock_cleared_by_another_meanwhile_is_taken(tmp_path):
     _write_lock(tmp_path, LockInfo(DEAD_PID, 1000.0, "run", "2026-01-01T09:30:00"))
     err = io.StringIO()
@@ -208,7 +213,7 @@ def test_a_lock_cleared_by_another_meanwhile_is_taken(tmp_path):
 
 
 def test_an_unreadable_young_lock_is_held_and_an_old_one_is_stale(tmp_path):
-    (tmp_path / LOCK_FILE).write_text("")
+    (tmp_path / LOCK_FILE).write_text("", newline="\n")
 
     with pytest.raises(LockHeld) as caught:
         acquire_lock(tmp_path, "run")
@@ -226,7 +231,7 @@ def test_an_unreadable_young_lock_is_held_and_an_old_one_is_stale(tmp_path):
 
 
 def test_lock_state_reads_the_age_from_the_clock_given(tmp_path):
-    (tmp_path / LOCK_FILE).write_text("{\"pid\": ")
+    (tmp_path / LOCK_FILE).write_text("{\"pid\": ", newline="\n")
     modified = (tmp_path / LOCK_FILE).stat().st_mtime
 
     assert lock_state(tmp_path, now=lambda: modified + 1.0) == ("starting", None)
@@ -351,7 +356,7 @@ def test_a_planted_fifo_is_cleared_without_a_rename(tmp_path, monkeypatch):
 @pytest.mark.parametrize("age", [0, YOUNG_LOCK_S + 60], ids=["young", "old"])
 def test_a_folder_at_the_lock_is_refused_with_one_plain_line(tmp_path, age):
     (tmp_path / LOCK_FILE).mkdir()
-    (tmp_path / LOCK_FILE / "kept.txt").write_text("kept\n")
+    (tmp_path / LOCK_FILE / "kept.txt").write_text("kept\n", newline="\n")
     old = time.time() - age
     os.utime(tmp_path / LOCK_FILE, (old, old))
 

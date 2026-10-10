@@ -34,7 +34,7 @@ def small_limit(monkeypatch):
 
 
 def _big(path, line: str = "# a comment line that only fills the file\n"):
-    path.write_text(line * (LIMIT // len(line) + 2))
+    path.write_text(line * (LIMIT // len(line) + 2), newline="\n")
     return path
 
 
@@ -78,7 +78,7 @@ def test_a_scene_file_over_the_limit_is_refused(tmp_path, small_limit):
 
 def test_an_included_scene_file_over_the_limit_is_refused(tmp_path, small_limit):
     _big(tmp_path / "part.rad")
-    (tmp_path / "scene.rad").write_text("!xform part.rad\n")
+    (tmp_path / "scene.rad").write_text("!xform part.rad\n", newline="\n")
     with pytest.raises(ValueError, match=TOO_LARGE):
         read_scene([tmp_path / "scene.rad"], "m")
 
@@ -90,7 +90,7 @@ def test_the_edit_digest_of_a_file_over_the_limit_is_refused(tmp_path, small_lim
 
 def test_a_file_at_the_limit_is_read(tmp_path, small_limit):
     path = tmp_path / "scene.rad"
-    path.write_text("#" * (LIMIT - 1) + "\n")
+    path.write_text("#" * (LIMIT - 1) + "\n", newline="\n")
     assert read_scene([path], "m") == []
 
 
@@ -106,7 +106,7 @@ def test_a_fifo_input_is_refused_at_once(tmp_path, name):
 
 
 def test_a_scene_file_that_includes_itself_is_one_plain_refusal(tmp_path):
-    (tmp_path / "scene.rad").write_text("!xform scene.rad\n")
+    (tmp_path / "scene.rad").write_text("!xform scene.rad\n", newline="\n")
     with pytest.raises(XformError) as caught:
         read_scene([tmp_path / "scene.rad"], "m")
     assert str(caught.value) == (
@@ -116,8 +116,8 @@ def test_a_scene_file_that_includes_itself_is_one_plain_refusal(tmp_path):
 
 
 def test_two_scene_files_that_include_each_other_are_refused(tmp_path):
-    (tmp_path / "a.rad").write_text("!xform b.rad\n")
-    (tmp_path / "b.rad").write_text("!xform -t 1 0 0 a.rad\n")
+    (tmp_path / "a.rad").write_text("!xform b.rad\n", newline="\n")
+    (tmp_path / "b.rad").write_text("!xform -t 1 0 0 a.rad\n", newline="\n")
     with pytest.raises(XformError, match="nest too deep"):
         read_scene([tmp_path / "a.rad"], "m")
 

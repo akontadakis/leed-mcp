@@ -47,7 +47,7 @@ def _hold(folder, verb: str = "run") -> LockInfo:
     info = LockInfo(os.getpid(), process_start_time(os.getpid()), verb, "2026-01-01T14:02:00")
     (folder / LOCK_FILE).write_text(json.dumps(
         {"pid": info.pid, "start_time": info.start_time, "verb": info.verb, "started": info.started}
-    ))
+    ), newline="\n")
     return info
 
 

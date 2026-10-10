@@ -20,7 +20,7 @@ def folder(tmp_path, write_example, write_wea):
     folder = build_option2_project(tmp_path, write_example, write_wea)
     path = result_path(folder, "option1", "base_case")
     path.parent.mkdir(parents=True)
-    path.write_text("{}")
+    path.write_text("{}", newline="\n")
     return folder
 
 

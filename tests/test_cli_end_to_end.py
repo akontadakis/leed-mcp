@@ -90,9 +90,9 @@ def test_empty_folder_to_prepared_model(tmp_path, capsys):
     _fill(raw, yaml.safe_load((FIXTURES / "project_example.yaml").read_text()))
     raw["scene"]["files"] = ["model/scene.rad"]
     raw["weather"]["file"] = "weather/site.wea"
-    (folder / "project.yaml").write_text(yaml.safe_dump(raw, sort_keys=False))
-    (folder / "model" / "scene.rad").write_text(SCENE_RAD)
-    (folder / "weather" / "site.wea").write_text(wea_text())
+    (folder / "project.yaml").write_text(yaml.safe_dump(raw, sort_keys=False), newline="\n")
+    (folder / "model" / "scene.rad").write_text(SCENE_RAD, newline="\n")
+    (folder / "weather" / "site.wea").write_text(wea_text(), newline="\n")
 
     assert cli.main(["scan", str(folder)]) == 0
     assert cli.main(["materials", str(folder)]) == 0
@@ -104,7 +104,7 @@ def test_empty_folder_to_prepared_model(tmp_path, capsys):
         writer = csv.DictWriter(handle, fieldnames=["modifier", "primitive_type", "role", "note"])
         writer.writeheader()
         writer.writerows(rows)
-    (folder / "spaces.csv").write_text(SPACES_CSV)
+    (folder / "spaces.csv").write_text(SPACES_CSV, newline="\n")
 
     assert cli.main(["scan", str(folder)]) == 0
     assert cli.main(["prepare", str(folder)]) == 0

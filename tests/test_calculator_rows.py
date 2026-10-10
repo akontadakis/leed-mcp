@@ -70,7 +70,7 @@ def test_a_name_with_markup_characters_is_kept_as_text(tmp_path, write_example, 
     _add_vlt(folder)
     for name in ("spaces.csv",):
         path = folder / name
-        path.write_text(path.read_text(encoding="utf-8").replace("Room North", "R&D <North>"), encoding="utf-8")
+        path.write_text(path.read_text(encoding="utf-8").replace("Room North", "R&D <North>"), encoding="utf-8", newline="\n")
     # The rename makes every result stale; rows then come from spaces.csv only.
     rows = calculator_rows(load_case(folder, CASE, require_results=False), "SI")
     assert rows.daylight[0].id == "R&D <North>"

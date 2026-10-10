@@ -122,7 +122,7 @@ async def test_read_the_glare_narrative_lists_measures_and_the_marks_outside_the
     table = ("| Storey | Space | Area m2 | ASE | sDA | Glare measures |\n|---|---|---:|---:|---:|---|\n"
              "| L0 | Room North | 24.0 | 20.0 % | 60.0 % | [ADD] |\n")
     text = TEMPLATE.replace("<!-- auto:spaces -->\n", "<!-- auto:spaces -->\n" + table)
-    (folder / "glare_narrative.md").write_text(text)
+    (folder / "glare_narrative.md").write_text(text, newline="\n")
     data = (await _read(tmp_path, folder, "glare_narrative")).structured_content
     assert data["content"]["spaces"] == [{"space": "Room North", "measures": "[ADD]"}]
     assert [m["index"] for m in data["content"]["marks"]] == [1, 2, 3]
@@ -141,7 +141,7 @@ async def test_a_yaml_date_nan_and_number_key_read_as_json(tmp_path, write_examp
 
 async def test_a_linked_input_file_is_not_read(tmp_path, write_example, write_wea):
     folder = build_option2_project(tmp_path, write_example, write_wea)
-    (tmp_path / "real.csv").write_text((folder / "materials.csv").read_text())
+    (tmp_path / "real.csv").write_text((folder / "materials.csv").read_text(), newline="\n")
     (folder / "materials.csv").unlink()
     symlink_or_skip(folder / "materials.csv", tmp_path / "real.csv")
     assert codes(await _read(tmp_path, folder, "materials")) == [("PATH_UNSAFE", None)]
@@ -188,7 +188,7 @@ def _laughs(levels: int = 9) -> str:
 async def test_an_expanding_or_recursive_yaml_reads_as_null_with_a_warning(tmp_path, write_example, write_wea,
                                                                             file, name, text, words):
     folder = build_option2_project(tmp_path, write_example, write_wea)
-    (folder / name).write_text(text)
+    (folder / name).write_text(text, newline="\n")
     result = await _read(tmp_path, folder, file)
     data = result.structured_content
     assert result.is_error is False and data["content"] is None and data["sha256"] == _sha(folder / name)
@@ -208,7 +208,7 @@ async def test_a_yaml_binary_and_set_read_as_json(tmp_path, write_example, write
 @pytest.mark.parametrize("text", ["", "# only a comment\n", "~\n", "null\n"])
 async def test_an_empty_project_yaml_reads_as_null_with_a_warning(tmp_path, write_example, write_wea, text):
     folder = build_option2_project(tmp_path, write_example, write_wea)
-    (folder / "project.yaml").write_text(text)
+    (folder / "project.yaml").write_text(text, newline="\n")
     result = await _read(tmp_path, folder, "project")
     data = result.structured_content
     assert result.is_error is False and data["content"] is None and data["sha256"] == _sha(folder / "project.yaml")

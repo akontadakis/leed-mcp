@@ -28,7 +28,7 @@ def test_unset_or_empty_gives_no_roots(tmp_path):
 
 def test_bad_entries_are_dropped_with_a_stderr_line(tmp_path, caplog):
     good = tmp_path / "good"; good.mkdir()
-    file_root = tmp_path / "a_file"; file_root.write_text("x")
+    file_root = tmp_path / "a_file"; file_root.write_text("x", newline="\n")
     repo = tmp_path / "repo"; repo.mkdir()
     with caplog.at_level(logging.WARNING, logger="leed_mcp.paths"):
         roots = roots_from_env(_env("relative/dir", "~/somewhere", tmp_path / "missing", file_root,
@@ -73,6 +73,15 @@ def test_contain_refuses_a_symlink_leading_out(tmp_path):
         contain(str(root / "link"), (root.resolve(),))
 
 
+def test_contain_refuses_a_link_loop_inside_a_root(tmp_path):
+    # macOS and Linux: Path.resolve raises; Windows: it gives the path back
+    # with the link left in, which contain must refuse the same way.
+    root = tmp_path / "root"; root.mkdir()
+    symlink_or_skip(root / "loop", root / "loop")
+    with pytest.raises(RuntimeError):
+        contain(str(root / "loop" / "p"), (root.resolve(),))
+
+
 def test_the_repository_is_found_from_a_no_editable_install(tmp_path, monkeypatch):
     """A --no-editable install puts the packages in site-packages; the
     repository is then the folder holding the running .venv."""
@@ -82,14 +91,14 @@ def test_the_repository_is_found_from_a_no_editable_install(tmp_path, monkeypatc
 
     repo = tmp_path / "repo"
     (repo / ".venv").mkdir(parents=True)
-    (repo / "pyproject.toml").write_text('[project]\nname = "leed-mcp"\n', encoding="utf-8")
+    (repo / "pyproject.toml").write_text('[project]\nname = "leed-mcp"\n', encoding="utf-8", newline="\n")
     site = tmp_path / "site-packages" / "leed_daylight" / "drivers"
     site.mkdir(parents=True)
     monkeypatch.setattr(folder, "__file__", str(site / "_folder.py"))
     monkeypatch.setattr(sys, "prefix", str(repo / ".venv"))
     assert folder.repository_root() == repo.resolve()
 
-    (repo / "pyproject.toml").write_text('[project]\nname = "other"\n', encoding="utf-8")
+    (repo / "pyproject.toml").write_text('[project]\nname = "other"\n', encoding="utf-8", newline="\n")
     assert folder.repository_root() == (tmp_path / "site-packages").resolve()
 
 

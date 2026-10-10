@@ -558,7 +558,7 @@ def _load_with_weather(write_example, tmp_path, text, name="example.wea"):
         d["weather"]["file"] = f"weather/{name}"
         return d
     path = write_example(tmp_path, mutate=mutate)
-    (path.parent / "weather" / name).write_text(text)
+    (path.parent / "weather" / name).write_text(text, newline="\n")
     return load_project(path)
 
 

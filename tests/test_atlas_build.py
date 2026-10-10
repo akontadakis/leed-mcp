@@ -39,9 +39,9 @@ class FakeRunner:
         argv = [str(a) for a in argv]
         self.calls.append(argv)
         if argv[1:] == ["--version"]:
-            pathlib.Path(log_path).write_text(self.version)
+            pathlib.Path(log_path).write_text(self.version, newline="\n")
             return 0
-        pathlib.Path(log_path).write_text("building\n")
+        pathlib.Path(log_path).write_text("building\n", newline="\n")
         pathlib.Path(argv[-1]).write_bytes(b"BLENDER-v501")
         return self.code
 
@@ -55,7 +55,7 @@ def folder(tmp_path, write_example, write_wea):
 def fake_blender(tmp_path, monkeypatch):
     exe = tmp_path / "bin" / "blender"
     exe.parent.mkdir()
-    exe.write_text("", encoding="utf-8")
+    exe.write_text("", encoding="utf-8", newline="\n")
     monkeypatch.setenv("BLENDER", str(exe))
     return exe
 
@@ -85,7 +85,7 @@ def test_the_atlas_entry_records_files_inputs_and_each_option(folder):
 
 def _manifest(tmp_path, atlas) -> pathlib.Path:
     path = tmp_path / "report_manifest.json"
-    path.write_text(json.dumps({"options": {}, "skipped": {}, "atlas": atlas}))
+    path.write_text(json.dumps({"options": {}, "skipped": {}, "atlas": atlas}), newline="\n")
     return path
 
 
@@ -116,7 +116,7 @@ def test_a_writer_of_the_atlas_entry_can_read_past_a_bad_one(tmp_path):
     # manifest without it; every other part is still checked.
     path = _manifest(tmp_path, {"files": ["../x"], "inputs": {}, "options": {}})
     assert read_report_manifest(path, check_atlas=False) == {"options": {}, "skipped": {}}
-    path.write_text(json.dumps({"options": [], "atlas": {}}))
+    path.write_text(json.dumps({"options": [], "atlas": {}}), newline="\n")
     with pytest.raises(DeliverError, match="'options' is a list"):
         read_report_manifest(path, check_atlas=False)
 
@@ -152,7 +152,7 @@ def test_the_folder_is_emptied_first(folder):
     target = folder / "_run" / "atlas" / CASE
     target.mkdir(parents=True)
     (target / "model.blend").write_bytes(b"old")
-    (target / "stray.txt").write_text("old")
+    (target / "stray.txt").write_text("old", newline="\n")
     result, _ = _build(folder, blender=False)
     assert sorted(p.name for p in target.iterdir()) == ["atlas.html", "bundle.npz"]
     assert result.blender == ""
@@ -251,7 +251,7 @@ def test_a_drawing_refusal_comes_before_anything_is_written(folder):
         "storey": "L0", "image": "drawings/level0.png",
         "points": [{"pixel": [0, 0], "model": [0.0, 0.0]}, {"pixel": [100, 0], "model": [10.0, 0.0]}],
     }]}
-    (folder / "project.yaml").write_text(yaml.safe_dump(raw, sort_keys=False))
+    (folder / "project.yaml").write_text(yaml.safe_dump(raw, sort_keys=False), newline="\n")
     with pytest.raises(DrawingError, match="image not found"):
         build_atlas(folder, out=io.StringIO())
     assert not (folder / "_run" / "atlas").exists()

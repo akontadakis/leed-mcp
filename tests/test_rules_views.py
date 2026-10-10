@@ -20,7 +20,7 @@ def _write(tmp_path, mutate):
     raw = yaml.safe_load(TEMPLATE.read_text())
     mutate(raw)
     path = tmp_path / "credit_rules.yaml"
-    path.write_text(yaml.safe_dump(raw, sort_keys=False))
+    path.write_text(yaml.safe_dump(raw, sort_keys=False), newline="\n")
     return path
 
 

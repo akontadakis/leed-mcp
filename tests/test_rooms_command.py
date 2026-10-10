@@ -106,8 +106,8 @@ def _build_project(tmp_path, write_example, scene_rad: str, materials_csv: str) 
     spaces.csv -- the rooms command must work without one."""
     project_path = write_example(tmp_path)
     project_dir = project_path.parent
-    (project_dir / "scene.rad").write_text(scene_rad)
-    (project_dir / "materials.csv").write_text(materials_csv)
+    (project_dir / "scene.rad").write_text(scene_rad, newline="\n")
+    (project_dir / "materials.csv").write_text(materials_csv, newline="\n")
     return project_dir
 
 
@@ -167,7 +167,7 @@ def test_an_existing_spaces_csv_is_never_touched(tmp_path, write_example):
         "level_z,view_preserving_shades,merge_into,include_base,reason\n"
         "L0,Kept As Is,office,yes,12.00,2.00,1.50,0.00,no,,1,\n"
     )
-    (project_dir / "spaces.csv").write_text(existing)
+    (project_dir / "spaces.csv").write_text(existing, newline="\n")
     before = (project_dir / "spaces.csv").read_bytes()
 
     rooms_module.rooms_folder(project_dir, out=io.StringIO())
@@ -240,7 +240,7 @@ def test_a_nonexistent_folder_is_refused(tmp_path, capsys):
 
 def test_a_file_given_as_the_folder_is_refused(tmp_path, capsys):
     not_a_dir = tmp_path / "im_a_file.txt"
-    not_a_dir.write_text("not a folder")
+    not_a_dir.write_text("not a folder", newline="\n")
 
     exit_code = rooms_module.main([str(not_a_dir)])
 
@@ -268,7 +268,7 @@ def test_a_chain_refusal_prints_error_and_exit_1_with_no_traceback(tmp_path, wri
     (project_dir / "materials.csv").write_text(
         "modifier,primitive_type,role,note\n"
         # floor_mat's role is missing entirely.
-    )
+    , newline="\n")
 
     exit_code = rooms_module.main([str(project_dir)])
 
@@ -309,7 +309,7 @@ def _assert_one_line_refusal(exit_code, captured, *words):
 
 def test_invalid_yaml_is_a_one_line_refusal(tmp_path, write_example, capsys):
     project_dir = _build_project(tmp_path, write_example, TWO_ROOM_SCENE, MATERIALS_CSV)
-    (project_dir / "project.yaml").write_text("project: [unclosed\n  name: x\n")
+    (project_dir / "project.yaml").write_text("project: [unclosed\n  name: x\n", newline="\n")
 
     exit_code = rooms_module.main([str(project_dir)])
 
@@ -352,7 +352,7 @@ SPLITS_CSV = 'level_z,points,note\n0.0,"2 -1; 2 4",invented\n'
 
 def test_rooms_writes_a_row_for_each_half(tmp_path, write_example):
     project_dir = _build_project(tmp_path, write_example, TWO_ROOM_SCENE, MATERIALS_CSV)
-    (project_dir / "splits.csv").write_text(SPLITS_CSV)
+    (project_dir / "splits.csv").write_text(SPLITS_CSV, newline="\n")
 
     template_path = rooms_module.rooms_folder(project_dir, out=io.StringIO())
 
@@ -369,7 +369,7 @@ def test_rooms_prints_the_split_count_only_with_splits_csv(tmp_path, write_examp
     project_dir = _build_project(tmp_path, write_example, TWO_ROOM_SCENE, MATERIALS_CSV)
     before = io.StringIO()
     rooms_module.rooms_folder(project_dir, out=before)
-    (project_dir / "splits.csv").write_text(SPLITS_CSV)
+    (project_dir / "splits.csv").write_text(SPLITS_CSV, newline="\n")
     after = io.StringIO()
 
     rooms_module.rooms_folder(project_dir, out=after)
@@ -383,7 +383,7 @@ def test_rooms_prints_the_split_count_only_with_splits_csv(tmp_path, write_examp
 
 def test_a_bad_split_line_is_a_one_line_refusal(tmp_path, write_example, capsys):
     project_dir = _build_project(tmp_path, write_example, TWO_ROOM_SCENE, MATERIALS_CSV)
-    (project_dir / "splits.csv").write_text('level_z,points,note\n0.0,"20 -1; 20 4",invented\n')
+    (project_dir / "splits.csv").write_text('level_z,points,note\n0.0,"20 -1; 20 4",invented\n', newline="\n")
 
     exit_code = rooms_module.main([str(project_dir)])
 

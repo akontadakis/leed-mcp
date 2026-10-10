@@ -51,7 +51,7 @@ def room_6_by_4(z=0.0, tag="a"):
 
 def rooms_with(tmp_path, prims, rows: str):
     """``scene_rooms`` on ``prims`` with a splits.csv holding ``rows``."""
-    (tmp_path / "splits.csv").write_text(HEADER + rows, encoding="utf-8")
+    (tmp_path / "splits.csv").write_text(HEADER + rows, encoding="utf-8", newline="\n")
     return scene_rooms(golden_project(tmp_path), prims, ROLES)
 
 

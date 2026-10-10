@@ -67,7 +67,7 @@ lamp_glow polygon lamp_panel
 
 def _folder(tmp_path, write_example) -> pathlib.Path:
     folder = write_example(tmp_path).parent
-    (folder / "scene.rad").write_text(SCENE_RAD)
+    (folder / "scene.rad").write_text(SCENE_RAD, newline="\n")
     return folder
 
 
@@ -119,7 +119,7 @@ def test_filled_template_loads(tmp_path, write_example):
 
 def test_an_existing_materials_csv_is_untouched(tmp_path, write_example):
     folder = _folder(tmp_path, write_example)
-    (folder / "materials.csv").write_text("mine\n")
+    (folder / "materials.csv").write_text("mine\n", newline="\n")
     assert materials_module.main([str(folder)]) == 0
     assert (folder / "materials.csv").read_text() == "mine\n"
 
@@ -128,7 +128,7 @@ def test_a_second_run_overwrites_the_template(tmp_path, write_example):
     folder = _folder(tmp_path, write_example)
     template = folder / "_run" / "materials_template.csv"
     template.parent.mkdir()
-    template.write_text("old\n")
+    template.write_text("old\n", newline="\n")
     assert materials_module.main([str(folder)]) == 0
     assert template.read_text().startswith("modifier,")
 
@@ -147,7 +147,7 @@ paint_missing polygon wall_room_north_east
 0
 0
 12  6 0 0   6 4 0   6 4 3   6 0 3
-""")
+""", newline="\n")
     assert materials_module.main([str(folder)]) == 0
     rows = {r["modifier"]: r for r in _rows(folder / "_run" / "materials_template.csv")}
     assert rows["paint_missing"]["primitive_type"] == ""

@@ -91,7 +91,7 @@ def test_a_missing_points_csv_is_skipped_like_a_missing_results_file(folder):
 
 def test_everything_stale_is_refused(folder):
     rules = folder / "credit_rules.yaml"
-    rules.write_text(rules.read_text() + "# edited\n")
+    rules.write_text(rules.read_text() + "# edited\n", newline="\n")
 
     with pytest.raises(DeliverError, match="credit_rules.yaml"):
         load_case(folder)
@@ -138,7 +138,7 @@ def test_points_csv_room_names_with_commas_and_quotes(tmp_path):
 
 def test_a_points_csv_without_coordinates_is_refused(tmp_path):
     path = tmp_path / "points.csv"
-    path.write_text("room,value\nRoom North,1\n")
+    path.write_text("room,value\nRoom North,1\n", newline="\n")
 
     with pytest.raises(DeliverError, match="'x'"):
         read_points(path)
@@ -193,7 +193,7 @@ def views_only_folder(tmp_path, write_example, write_wea):
     }
     (case_dir / "views_results.json").write_text(
         json.dumps(payload, sort_keys=True, indent=2, allow_nan=False) + "\n"
-    )
+    , newline="\n")
     with open(case_dir / "points.csv", "w", newline="", encoding="utf-8") as handle:
         writer = csv.writer(handle)
         writer.writerow(["room", "x", "y"])
@@ -236,7 +236,7 @@ def _edit_rules_mid_run(folder):
     """What a user editing an input during a long run does: the credit rules
     change on disk after they were read, while the engine is working."""
     path = folder / "credit_rules.yaml"
-    path.write_text(path.read_text() + "# edited during the run\n")
+    path.write_text(path.read_text() + "# edited during the run\n", newline="\n")
 
 
 @pytest.mark.parametrize("option", ["option1", "option2"])
@@ -292,7 +292,7 @@ def test_a_broken_results_file_is_refused_naming_the_file(folder, content, why):
 ])
 def test_a_bad_points_csv_row_is_refused_naming_file_and_line(tmp_path, row, why):
     path = tmp_path / "points.csv"
-    path.write_text("room,x,y,lux\nRoom North,1.0,2.0,300\n" + row)
+    path.write_text("room,x,y,lux\nRoom North,1.0,2.0,300\n" + row, newline="\n")
 
     with pytest.raises(DeliverError) as excinfo:
         read_points(path)

@@ -95,6 +95,17 @@ def inside_root(path: Path, root: Path) -> bool:
     return False
 
 
+def _refuse_unresolved_link(resolved: Path, text: str) -> None:
+    """Raise ``RuntimeError`` when a link is still left in ``resolved``.
+    On macOS and Linux ``Path.resolve`` itself raises ``RuntimeError`` for a
+    link loop; on Windows it gives the path back with the link left in it
+    (a loop or a link that cannot be followed), which would then pass as a
+    path inside its root. Resolved, no part of a path is a link."""
+    for part in (resolved, *resolved.parents):
+        if part.is_symlink() or getattr(part, "is_junction", lambda: False)():
+            raise RuntimeError(f"{text!r} cannot be resolved: {part} is a link that cannot be followed")
+
+
 def contain(candidate: str | Path, roots: Sequence[Path]) -> Path:
     """Resolve ``candidate`` and return it, or raise if it is outside every root.
 
@@ -113,6 +124,7 @@ def contain(candidate: str | Path, roots: Sequence[Path]) -> Path:
     if not path.is_absolute():
         raise PathOutsideRoots(f"Paths must be absolute; got {text!r}.")
     resolved = path.resolve()
+    _refuse_unresolved_link(resolved, text)
     for root in roots:
         if resolved == root or root in resolved.parents:
             return resolved

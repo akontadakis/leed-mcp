@@ -50,7 +50,7 @@ def _draft(d):
 @needs_smoke
 def test_a_split_and_a_merged_space_run_end_to_end(tmp_path, write_example, write_wea):
     folder = build_combined_project(tmp_path, write_example, write_wea, mutate=_draft)
-    (folder / "credit_rules.yaml").write_text(TWO_STOREY_CREDIT_RULES)
+    (folder / "credit_rules.yaml").write_text(TWO_STOREY_CREDIT_RULES, newline="\n")
     out = io.StringIO()
 
     option1 = json.loads(run_folder(folder, CASE, out=out).read_text())

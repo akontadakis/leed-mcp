@@ -65,7 +65,7 @@ def test_the_header_time_zone_is_read(tmp_path, write_wea):
 def test_a_file_without_a_time_zone_is_refused(tmp_path, write_wea):
     path = write_wea(tmp_path / "site.wea")
     text = path.read_text().replace("time_zone 75.0\n", "")
-    path.write_text(text)
+    path.write_text(text, newline="\n")
     with pytest.raises(WeatherError, match="time_zone"):
         read_wea(path)
 
@@ -73,7 +73,7 @@ def test_a_file_without_a_time_zone_is_refused(tmp_path, write_wea):
 def test_units_other_than_irradiance_are_refused_by_name(tmp_path, write_wea):
     path = write_wea(tmp_path / "site.wea")
     text = path.read_text().replace("weather_data_file_units 1\n", "weather_data_file_units 2\n")
-    path.write_text(text)
+    path.write_text(text, newline="\n")
     with pytest.raises(WeatherError, match="weather_data_file_units"):
         read_wea(path)
 
@@ -81,6 +81,6 @@ def test_units_other_than_irradiance_are_refused_by_name(tmp_path, write_wea):
 def test_a_file_without_a_units_line_is_refused(tmp_path, write_wea):
     path = write_wea(tmp_path / "site.wea")
     text = path.read_text().replace("weather_data_file_units 1\n", "")
-    path.write_text(text)
+    path.write_text(text, newline="\n")
     with pytest.raises(WeatherError, match="weather_data_file_units"):
         read_wea(path)

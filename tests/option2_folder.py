@@ -132,10 +132,10 @@ def build_option2_project(tmp_path, write_example, write_wea, *, spaces_csv=SPAC
         return d
 
     folder = write_example(tmp_path, mutate=_mutate).parent
-    (folder / "scene.rad").write_text(scene_rad)
-    (folder / "materials.csv").write_text(MATERIALS_CSV)
-    (folder / "spaces.csv").write_text(spaces_csv)
-    (folder / "credit_rules.yaml").write_text(CREDIT_RULES)
+    (folder / "scene.rad").write_text(scene_rad, newline="\n")
+    (folder / "materials.csv").write_text(MATERIALS_CSV, newline="\n")
+    (folder / "spaces.csv").write_text(spaces_csv, newline="\n")
+    (folder / "credit_rules.yaml").write_text(CREDIT_RULES, newline="\n")
     write_wea(
         folder / "weather" / "example.wea", latitude=42.0, longitude_W=80.0,
         hours=wea_lines if wea_lines is not None else sunny_wea_lines(),

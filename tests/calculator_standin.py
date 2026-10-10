@@ -86,13 +86,13 @@ def add_vlt(folder, value: str = "62") -> None:
     path = folder / "materials.csv"
     lines = path.read_text(encoding="utf-8").splitlines()
     rows = [lines[0] + ",vlt"] + [line + ("," + value if ",glazing," in line else ",") for line in lines[1:]]
-    path.write_text("\n".join(rows) + "\n", encoding="utf-8")
+    path.write_text("\n".join(rows) + "\n", encoding="utf-8", newline="\n")
 
 
 def set_units(folder, units: str = "SI") -> None:
     """Add ``calculator: units`` to a test project's project.yaml."""
     path = folder / "project.yaml"
-    path.write_text(path.read_text(encoding="utf-8") + f"calculator:\n  units: {units}\n", encoding="utf-8")
+    path.write_text(path.read_text(encoding="utf-8") + f"calculator:\n  units: {units}\n", encoding="utf-8", newline="\n")
 
 
 def write_standin(path, *, filled: bool = False):

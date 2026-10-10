@@ -103,7 +103,7 @@ def build_split_project(tmp_path, write_example, write_wea) -> pathlib.Path:
     """Room North cut along x = 4.5 m into Room West and Room Strip."""
     folder = build_option2_project(tmp_path, write_example, write_wea, spaces_csv=SPLIT_SPACES_CSV,
                                    mutate=_mutate)
-    (folder / "splits.csv").write_text(SPLITS_CSV)
+    (folder / "splits.csv").write_text(SPLITS_CSV, newline="\n")
     return folder
 
 
@@ -123,7 +123,7 @@ def build_combined_project(tmp_path, write_example, write_wea, *, mutate=None) -
 
     folder = build_option2_project(tmp_path, write_example, write_wea, spaces_csv=COMBINED_SPACES_CSV,
                                    mutate=both, scene_rad=MERGE_SCENE_RAD)
-    (folder / "splits.csv").write_text(SPLITS_CSV)
+    (folder / "splits.csv").write_text(SPLITS_CSV, newline="\n")
     return folder
 
 

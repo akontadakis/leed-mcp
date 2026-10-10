@@ -87,7 +87,7 @@ async def test_a_refused_update_writes_nothing(tmp_path, write_example, write_we
 
 async def test_a_stale_file_after_a_split_is_refused_and_create_is_named(tmp_path, write_example, write_wea):
     folder = build_option2_project(tmp_path, write_example, write_wea)
-    (folder / "splits.csv").write_text(SPLITS_CSV)
+    (folder / "splits.csv").write_text(SPLITS_CSV, newline="\n")
     result = await _update(tmp_path, folder, rows=[{"floor": "L0", "room": "Room North", "space_type": "lab"}])
     assert codes(result) == [("INPUT_INVALID", None)]
     assert "inputs(action='create', file='spaces') rebuilds the rows" in result.structured_content["reason"]

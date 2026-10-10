@@ -19,7 +19,7 @@ HEADER5 = "modifier,primitive_type,role,note,view\n"
 
 def _write(tmp_path, body, header=HEADER5):
     path = tmp_path / "materials.csv"
-    path.write_text(header + body, encoding="utf-8")
+    path.write_text(header + body, encoding="utf-8", newline="\n")
     return path
 
 

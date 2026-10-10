@@ -251,7 +251,7 @@ def _current(folder, **change):
     record = json.loads(path.read_text())
     for key, value in change.items():
         record[key] = value(record[key]) if callable(value) else value
-    path.write_text(json.dumps(record))
+    path.write_text(json.dumps(record), newline="\n")
 
 
 @pytest.mark.parametrize("change, code", [
@@ -371,7 +371,7 @@ def test_a_malformed_record_blocks_no_start_no_write_and_no_list(tmp_path, write
     record = rig.start(first)
     data = json.loads(record.to_json())
     data["created"] = "not a time"
-    (rig.index.state / "jobs" / f"{record.job_id}.json").write_text(json.dumps(data))
+    (rig.index.state / "jobs" / f"{record.job_id}.json").write_text(json.dumps(data), newline="\n")
     assert rig.runner.views(rig.roots) == []
     with rig.runner.guard_write(first):
         pass
@@ -382,7 +382,7 @@ def test_a_malformed_end_time_leaves_status_and_list_working(tmp_path, folder):
     rig = Rig(tmp_path)
     record = rig.start(folder)
     rig.launcher.processes[0].finish(0)
-    (folder / record.end_record).write_text(json.dumps({"exit_code": 0, "ended": "not a time"}))
+    (folder / record.end_record).write_text(json.dumps({"exit_code": 0, "ended": "not a time"}), newline="\n")
     view = rig.runner.view(record.job_id, rig.roots)
     assert (view.state.state, view.state.ended, view.record.finished["ended"]) == ("succeeded", None, None)
     assert [v.record.job_id for v in rig.runner.views(rig.roots)] == [record.job_id]

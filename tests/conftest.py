@@ -221,7 +221,7 @@ def write_wea_file(path, **kwargs):
     """Write ``wea_text(**kwargs)`` to ``path``; returns the path."""
     path = pathlib.Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(wea_text(**kwargs))
+    path.write_text(wea_text(**kwargs), newline="\n")
     return path
 
 
@@ -247,13 +247,13 @@ def write_example_project(tmp_path, mutate=lambda d: d):
     raw = mutate(raw)
 
     project_path = project_dir / "project.yaml"
-    project_path.write_text(yaml.safe_dump(raw, sort_keys=False))
+    project_path.write_text(yaml.safe_dump(raw, sort_keys=False), newline="\n")
 
-    (project_dir / "scene.rad").write_text("")
+    (project_dir / "scene.rad").write_text("", newline="\n")
     weather_dir = project_dir / "weather"
     weather_dir.mkdir()
-    (weather_dir / "example.wea").write_text(wea_text(**_wea_site(raw)))
-    (project_dir / "credit_rules.yaml").write_text(MINIMAL_CREDIT_RULES)
+    (weather_dir / "example.wea").write_text(wea_text(**_wea_site(raw)), newline="\n")
+    (project_dir / "credit_rules.yaml").write_text(MINIMAL_CREDIT_RULES, newline="\n")
 
     return project_path
 

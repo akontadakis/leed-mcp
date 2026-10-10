@@ -45,7 +45,7 @@ def split(tmp_path, write_example, write_wea):
 
 
 def _views_run(folder):
-    (folder / "credit_rules.yaml").write_text(RULES_YAML)
+    (folder / "credit_rules.yaml").write_text(RULES_YAML, newline="\n")
     path = views_module.run_views(folder, CASE, tracer=FakeTracer(), out=io.StringIO())
     return path, json.loads(path.read_text())
 

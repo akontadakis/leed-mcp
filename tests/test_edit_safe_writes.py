@@ -211,7 +211,7 @@ def test_the_end_record_never_follows_a_planted_part_link(tmp_path, outside, mon
 
 def test_a_leftover_end_record_part_file_is_replaced(tmp_path, monkeypatch):
     record = tmp_path / "job.end.json"
-    pathlib.Path(f"{record}.part").write_text("left from an earlier crash")
+    pathlib.Path(f"{record}.part").write_text("left from an earlier crash", newline="\n")
     monkeypatch.setenv(JOB_RECORD_ENV, str(record))
     monkeypatch.setattr(scan_module, "main", lambda rest, prog=None: 0)
     assert cli.main(["scan", "folder"]) == 0

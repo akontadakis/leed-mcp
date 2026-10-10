@@ -33,7 +33,7 @@ GRID = Grid(spacing_m=0.5, work_plane_m=0.75, min_clearance_m=0.1)
 
 def _write(tmp_path, *rows):
     path = tmp_path / "spaces.csv"
-    path.write_text(HEADER + "\n" + "".join(r + "\n" for r in rows), encoding="utf-8")
+    path.write_text(HEADER + "\n" + "".join(r + "\n" for r in rows), encoding="utf-8", newline="\n")
     return path
 
 

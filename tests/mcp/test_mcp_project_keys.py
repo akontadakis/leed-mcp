@@ -78,12 +78,12 @@ def test_every_template_key_is_in_the_table():
 @pytest.mark.parametrize("path", [key.path for key in KEYS])
 def test_the_loader_accepts_every_key_in_the_table(path, tmp_path, write_example):
     project = write_example(tmp_path)
-    (project.parent / "points.csv").write_text("x,y,z\n0,0,0.8\n")
+    (project.parent / "points.csv").write_text("x,y,z\n0,0,0.8\n", newline="\n")
     (project.parent / "plan.png").write_bytes(b"")
     raw = yaml.safe_load(project.read_text())
     for key, value in _setting(path).items():
         set_path(raw, key, value)
-    project.write_text(render(raw))
+    project.write_text(render(raw), newline="\n")
     errors, unfinished = check_project_draft(project)
     assert (errors, unfinished) == ((), ())
 
@@ -92,7 +92,7 @@ def test_the_loader_check_does_refuse_a_bad_value(tmp_path, write_example):
     project = write_example(tmp_path)
     raw = yaml.safe_load(project.read_text())
     set_path(raw, "glazing.frame_style", "bogus")
-    project.write_text(render(raw))
+    project.write_text(render(raw), newline="\n")
     assert "glazing.frame_style" in check_project_draft(project)[0][0]
 
 

@@ -21,7 +21,7 @@ def folder(tmp_path, write_example, write_wea):
     folder = build_option2_project(tmp_path, write_example, write_wea)
     path = result_path(folder, "option1", "base_case")
     path.parent.mkdir(parents=True)
-    path.write_text("{}")
+    path.write_text("{}", newline="\n")
     return folder
 
 
@@ -54,7 +54,7 @@ async def test_package_needs_the_cases_report(tmp_path, folder):
     assert codes(refused) == [("RESULTS_MISSING", "case")] and "no report yet" in refused.structured_content["reason"]
     manifest = folder / "_run" / "reports" / "base_case" / "report_manifest.json"
     manifest.parent.mkdir(parents=True)
-    manifest.write_text("{}")
+    manifest.write_text("{}", newline="\n")
     launcher = FakeLauncher()
     assert (await _deliver(tmp_path, folder, "package", launcher)).is_error is False
     assert launcher.calls[0]["argv"][-3:] == ["package", str(folder), "--case=base_case"]
@@ -94,8 +94,8 @@ async def test_an_argument_the_action_does_not_take_is_refused(tmp_path, folder,
 
 
 async def test_a_scene_include_outside_the_folder_is_refused_before_the_atlas(tmp_path, folder):
-    (tmp_path / "outside.rad").write_text((folder / "scene.rad").read_text())
-    (folder / "scene.rad").write_text("!xform ../outside.rad\n")
+    (tmp_path / "outside.rad").write_text((folder / "scene.rad").read_text(), newline="\n")
+    (folder / "scene.rad").write_text("!xform ../outside.rad\n", newline="\n")
     assert codes(await _deliver(tmp_path, folder, "atlas")) == [("SCENE_INCLUDE_OUTSIDE", None)]
 
 
@@ -116,7 +116,7 @@ async def test_a_views_only_case_is_accepted_as_the_pipeline_accepts_it(tmp_path
     folder = build_option2_project(tmp_path, write_example, write_wea, spaces_csv=spaces)
     path = result_path(folder, "views", "scheme")
     path.parent.mkdir(parents=True)
-    path.write_text("{}")
+    path.write_text("{}", newline="\n")
     launcher = FakeLauncher()
     result = await _deliver(tmp_path, folder, "report", launcher, case="scheme", option="views")
     assert result.is_error is False and result.structured_content["case"] == "scheme"

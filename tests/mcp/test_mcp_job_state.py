@@ -27,7 +27,7 @@ def _job(tmp_path, verb="prepare", *, pid=None, cancel=False, created=CREATED,
     folder = tmp_path / "p"
     (folder / "_run" / "jobs").mkdir(parents=True, exist_ok=True)
     base = f"_run/jobs/20260101-140000_{verb}"
-    (folder / f"{base}.log").write_text("".join(f"{line}\n" for line in lines))
+    (folder / f"{base}.log").write_text("".join(f"{line}\n" for line in lines), newline="\n")
     pid = os.getpid() if pid is None else pid
     return IndexRecord(job_id="a" * 32, folder=str(folder), action=verb, verb=verb, case="base_case",
                        args=("--case", "base_case"), log=f"{base}.log", end_record=f"{base}.end.json", pid=pid,
@@ -86,7 +86,7 @@ def test_the_log_tail_and_the_latest_progress_line_come_from_the_jobs_own_log(tm
 def test_the_radiance_tail_is_for_the_radiance_verbs_only(tmp_path):
     assert radiance_tail(_job(tmp_path)) == (None, None)
     record = _job(tmp_path, "run")
-    (tmp_path / "p" / "_run" / "radiance.log").write_text("".join(f"line {n}\n" for n in range(30)))
+    (tmp_path / "p" / "_run" / "radiance.log").write_text("".join(f"line {n}\n" for n in range(30)), newline="\n")
     path, lines = radiance_tail(record)
     assert path == str(tmp_path / "p" / "_run" / "radiance.log") and lines[0] == "line 10" and len(lines) == 20
 
@@ -100,7 +100,7 @@ def test_prepare_leaves_its_counts(tmp_path):
     record = _job(tmp_path)
     manifest = tmp_path / "p" / "_run" / "manifest.json"
     manifest.write_text(json.dumps({"rooms": {"Room North": {}}, "totals": {"grid_point_count": 40,
-                                                                              "group_count": 1}}))
+                                                                              "group_count": 1}}), newline="\n")
     _ended_at(manifest, offset=-60)
     out = finished(record, JobState("succeeded", 0, ENDED, None))
     assert out == {"verb": "prepare", "state": "succeeded", "exit_code": 0, "ended": ENDED, "superseded": False,
@@ -110,7 +110,7 @@ def test_prepare_leaves_its_counts(tmp_path):
 def test_a_file_changed_after_the_end_is_superseded(tmp_path):
     record = _job(tmp_path)
     manifest = tmp_path / "p" / "_run" / "manifest.json"
-    manifest.write_text("{}")
+    manifest.write_text("{}", newline="\n")
     _ended_at(manifest, offset=60)
     out = finished(record, JobState("succeeded", 0, ENDED, None))
     assert out["superseded"] is True and "rooms" not in out
@@ -120,7 +120,7 @@ def test_a_run_leaves_its_results_and_score(tmp_path):
     record = _job(tmp_path, "run")
     results = tmp_path / "p" / "_run" / "option1" / "base_case" / "results.json"
     results.parent.mkdir(parents=True)
-    results.write_text(json.dumps({"score": {"points": 2, "band": "two points", "reason": "x"}}))
+    results.write_text(json.dumps({"score": {"points": 2, "band": "two points", "reason": "x"}}), newline="\n")
     _ended_at(results, offset=-60)
     out = finished(record, JobState("succeeded", 0, ENDED, None))
     assert out["results"] == str(results) and out["score"] == {"points": 2, "band": "two points"}
@@ -131,11 +131,11 @@ def test_a_report_lists_the_files_it_wrote_and_the_marks_left(tmp_path):
     reports = tmp_path / "p" / "_run" / "reports" / "base_case"
     (reports / "option1").mkdir(parents=True)
     old, new = reports / "old.docx", reports / "option1" / "report.docx"
-    old.write_text("x")
-    new.write_text("x")
+    old.write_text("x", newline="\n")
+    new.write_text("x", newline="\n")
     _ended_at(old, offset=-3600)
     _ended_at(new, offset=-60)
-    (tmp_path / "p" / "glare_narrative.md").write_text("[ADD a] [CONFIRM b]\n")
+    (tmp_path / "p" / "glare_narrative.md").write_text("[ADD a] [CONFIRM b]\n", newline="\n")
     out = finished(record, JobState("succeeded", 0, ENDED, None))
     assert out["files"] == [str(new)] and out["marks_left"] == 2
 
@@ -151,11 +151,11 @@ def _old_file(tmp_path, verb, offset):
     if verb == "prepare":
         path = tmp_path / "p" / "_run" / "manifest.json"
         path.write_text(json.dumps({"rooms": {"Room North": {}}, "totals": {"grid_point_count": 40,
-                                                                           "group_count": 1}}))
+                                                                           "group_count": 1}}), newline="\n")
     else:
         path = tmp_path / "p" / "_run" / "option1" / "base_case" / "results.json"
         path.parent.mkdir(parents=True)
-        path.write_text(json.dumps({"score": {"points": 2, "band": "two points"}}))
+        path.write_text(json.dumps({"score": {"points": 2, "band": "two points"}}), newline="\n")
     _ended_at(path, offset=offset)
     return path
 
@@ -184,7 +184,7 @@ def test_a_deliver_file_list_is_cut_and_marked_and_its_total_is_exact(tmp_path, 
     atlas = tmp_path / "p" / "_run" / "atlas"
     atlas.mkdir()
     for n in range(5):
-        (atlas / f"page{n}.svg").write_text("x")
+        (atlas / f"page{n}.svg").write_text("x", newline="\n")
         _ended_at(atlas / f"page{n}.svg", offset=-60)
     out = finished(record, JobState("succeeded", 0, ENDED, None))
     assert out["files"] == [str(atlas / "page0.svg"), str(atlas / "page1.svg"), "[cut: 3 more files]"]

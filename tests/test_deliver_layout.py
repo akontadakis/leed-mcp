@@ -334,7 +334,7 @@ def test_a_count_above_nine_is_written_in_digits():
 def merged_case(tmp_path, write_example, write_wea):
     """The merge project with all three options run on fake engines."""
     folder = build_merge_project(tmp_path, write_example, write_wea)
-    (folder / "credit_rules.yaml").write_text(TWO_STOREY_CREDIT_RULES)  # with a views section
+    (folder / "credit_rules.yaml").write_text(TWO_STOREY_CREDIT_RULES, newline="\n")  # with a views section
     prepared = prepared_model(folder)
     run_module.run_folder(folder, CASE, engine=Option1Fake(prepared), out=io.StringIO())
     option2_module.option2_folder(folder, CASE, engine=Option2Fake(prepared), out=io.StringIO())
@@ -459,7 +459,7 @@ def merged_case_all_diffusing(tmp_path, write_example, write_wea):
         tmp_path, write_example, write_wea, spaces_csv=MERGE_SPACES_CSV, mutate=mutate,
         scene_rad=_DIFFUSING_SCENE_RAD,
     )
-    (folder / "materials.csv").write_text(_DIFFUSING_MATERIALS_CSV)
+    (folder / "materials.csv").write_text(_DIFFUSING_MATERIALS_CSV, newline="\n")
     prepared = prepared_model(folder)
     run_module.run_folder(folder, CASE, engine=Option1Fake(prepared), out=io.StringIO())
     return load_case(folder, CASE, options=("option1",))

@@ -325,7 +325,7 @@ def test_a_non_utf8_spaces_file_is_refused_by_name(tmp_path):
 
 def test_a_semicolon_delimited_spaces_file_is_refused_as_such(tmp_path):
     path = tmp_path / "spaces.csv"
-    path.write_text(FIXTURE.read_text().replace(",", ";"))
+    path.write_text(FIXTURE.read_text().replace(",", ";"), newline="\n")
     with pytest.raises(ProjectError) as excinfo:
         load_spaces(path)
     message = str(excinfo.value)

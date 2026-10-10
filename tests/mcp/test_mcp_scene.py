@@ -47,7 +47,7 @@ async def test_scan_without_materials_lists_materials_and_says_storeys_need_them
 async def test_scan_reports_a_role_missing_as_a_scene_problem(tmp_path, write_example, write_wea):
     folder = build_option2_project(tmp_path, write_example, write_wea)
     lines = (folder / "materials.csv").read_text().splitlines()
-    (folder / "materials.csv").write_text("\n".join(l for l in lines if not l.startswith("glass_clear")) + "\n")
+    (folder / "materials.csv").write_text("\n".join(l for l in lines if not l.startswith("glass_clear")) + "\n", newline="\n")
     result = await call(tool_server(tmp_path), "scene", {"action": "scan", "folder": str(folder)})
     assert ("SCENE_PROBLEM", "problems") in codes(result)
     assert result.structured_content["storeys"] is None
@@ -63,7 +63,7 @@ async def test_scan_refuses_fill_me_in_the_scene_section(tmp_path, write_example
 
 async def test_an_xform_target_outside_the_folder_is_refused_before_reading(tmp_path, write_example, write_wea):
     folder = build_option2_project(tmp_path, write_example, write_wea)
-    (tmp_path / "outside.rad").write_text("void plastic leak\n0\n0\n5 1 1 1 0 0\n")
+    (tmp_path / "outside.rad").write_text("void plastic leak\n0\n0\n5 1 1 1 0 0\n", newline="\n")
     with open(folder / "scene.rad", "a") as handle:
         handle.write("\n!xform ../outside.rad\n")
     result = await call(tool_server(tmp_path), "scene", {"action": "scan", "folder": str(folder)})
@@ -73,7 +73,7 @@ async def test_an_xform_target_outside_the_folder_is_refused_before_reading(tmp_
 
 async def test_a_scene_file_link_leading_out_is_refused(tmp_path, write_example, write_wea):
     folder = build_option2_project(tmp_path, write_example, write_wea)
-    (tmp_path / "real.rad").write_text((folder / "scene.rad").read_text())
+    (tmp_path / "real.rad").write_text((folder / "scene.rad").read_text(), newline="\n")
     (folder / "scene.rad").unlink()
     symlink_or_skip(folder / "scene.rad", tmp_path / "real.rad")
     result = await call(tool_server(tmp_path), "scene", {"action": "rooms", "folder": str(folder)})
@@ -82,8 +82,8 @@ async def test_a_scene_file_link_leading_out_is_refused(tmp_path, write_example,
 
 def test_an_xform_inside_the_folder_passes_the_check(tmp_path):
     folder = tmp_path.resolve()
-    (folder / "wing.rad").write_text("")
-    (folder / "main.rad").write_text("!xform -t 10 0 0 wing.rad\n!xform -rz 90 -t 0 0 3 wing.rad\n")
+    (folder / "wing.rad").write_text("", newline="\n")
+    (folder / "main.rad").write_text("!xform -t 10 0 0 wing.rad\n!xform -rz 90 -t 0 0 3 wing.rad\n", newline="\n")
     assert adapter.check_inside(folder, [folder / "main.rad"]) is None
 
 
@@ -170,9 +170,9 @@ def test_an_absolute_self_including_scene_file_passes_and_one_outside_is_refused
     folder = tmp_path / "p"
     folder.mkdir()
     folder = folder.resolve()
-    (folder / "loop.rad").write_text("!xform loop.rad\n")
+    (folder / "loop.rad").write_text("!xform loop.rad\n", newline="\n")
     assert adapter.check_inside(folder, [folder / "loop.rad"]) is None
-    (tmp_path / "out.rad").write_text("")
+    (tmp_path / "out.rad").write_text("", newline="\n")
     with pytest.raises(Refused):
         adapter.check_inside(folder, [tmp_path / "out.rad"])
 
@@ -192,7 +192,7 @@ async def test_a_linked_project_file_is_path_unsafe_and_never_read(tmp_path, wri
 async def test_a_modifier_a_spreadsheet_would_run_is_refused_with_a_rename_hint(tmp_path, write_example, write_wea):
     folder = build_option2_project(tmp_path, write_example, write_wea)
     for path in [folder / "scene.rad"]:
-        path.write_text(path.read_text().replace("wall_paint", "-wall_paint"))
+        path.write_text(path.read_text().replace("wall_paint", "-wall_paint"), newline="\n")
     result = await call(tool_server(tmp_path), "scene", {"action": "materials_template", "folder": str(folder)})
     assert codes(result) == [("INPUT_INVALID", "rows")]
     assert "-wall_paint" in result.structured_content["reason"] and "rename" in result.structured_content["reason"]

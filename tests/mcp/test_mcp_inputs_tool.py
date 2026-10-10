@@ -40,7 +40,7 @@ def _writes(folder):
 @pytest.fixture
 def folder(tmp_path, write_example, write_wea):
     folder = build_option2_project(tmp_path, write_example, write_wea)
-    (folder / "glare_narrative.md").write_text(TEMPLATE)
+    (folder / "glare_narrative.md").write_text(TEMPLATE, newline="\n")
     return folder
 
 
@@ -74,7 +74,7 @@ async def test_every_write_refuses_a_project_yaml_path_outside_the_folder(tmp_pa
     action, _ = which.split()
     arguments = {"action": action, "folder": str(folder), **_writes(folder)[which]}
     text = (folder / "project.yaml").read_text().replace("weather/example.wea", "../elsewhere.wea")
-    (folder / "project.yaml").write_text(text)
+    (folder / "project.yaml").write_text(text, newline="\n")
     result = await call(tool_server(tmp_path), "inputs", arguments)
     assert codes(result) == [("PATH_OUTSIDE_ROOTS", None)] and "weather.file" in result.structured_content["reason"]
 
@@ -87,7 +87,7 @@ async def test_an_argument_the_file_does_not_take_is_unknown(tmp_path, folder):
 
 async def test_text_from_a_file_is_cleaned_of_control_characters(tmp_path, folder):
     (folder / "materials.csv").write_text(MATERIALS_CSV.replace("wall_paint,plastic,wall,",
-                                                                "wall_paint,plastic,wall,\x1b[31mred\x07"))
+                                                                "wall_paint,plastic,wall,\x1b[31mred\x07"), newline="\n")
     result = await call(tool_server(tmp_path), "inputs", {"action": "read", "folder": str(folder),
                                                          "file": "materials"})
     assert result.structured_content["content"]["rows"][0]["note"] == "[31mred"
@@ -124,7 +124,7 @@ async def test_rows_at_the_cap_pass_the_input_schema(tmp_path, folder):
 
 async def test_a_csv_read_shows_at_most_5000_rows_and_says_so(tmp_path, folder):
     rows = "".join(f"m{n},plastic,wall,\n" for n in range(5001))
-    (folder / "materials.csv").write_text("modifier,primitive_type,role,note\n" + rows)
+    (folder / "materials.csv").write_text("modifier,primitive_type,role,note\n" + rows, newline="\n")
     result = await call(tool_server(tmp_path), "inputs", {"action": "read", "folder": str(folder),
                                                          "file": "materials"})
     data = result.structured_content

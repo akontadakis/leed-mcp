@@ -157,10 +157,10 @@ def folder(tmp_path, write_example):
         d["views"] = dict(VIEWS)
         return d
     project_dir = write_example(tmp_path, mutate).parent
-    (project_dir / "scene.rad").write_text(SCENE_RAD)
-    (project_dir / "materials.csv").write_text(MATERIALS_CSV)
-    (project_dir / "spaces.csv").write_text(SPACES_CSV)
-    (project_dir / "credit_rules.yaml").write_text(RULES_YAML)
+    (project_dir / "scene.rad").write_text(SCENE_RAD, newline="\n")
+    (project_dir / "materials.csv").write_text(MATERIALS_CSV, newline="\n")
+    (project_dir / "spaces.csv").write_text(SPACES_CSV, newline="\n")
+    (project_dir / "credit_rules.yaml").write_text(RULES_YAML, newline="\n")
     return project_dir
 
 
@@ -170,10 +170,10 @@ def two_room_folder(tmp_path, write_example):
         d["views"] = dict(VIEWS)
         return d
     project_dir = write_example(tmp_path, mutate).parent
-    (project_dir / "scene.rad").write_text(SCENE_RAD + SCENE_RAD_SECOND_ROOM)
-    (project_dir / "materials.csv").write_text(MATERIALS_CSV)
-    (project_dir / "spaces.csv").write_text(SPACES_CSV + SPACES_CSV_SECOND_ROOM)
-    (project_dir / "credit_rules.yaml").write_text(RULES_YAML)
+    (project_dir / "scene.rad").write_text(SCENE_RAD + SCENE_RAD_SECOND_ROOM, newline="\n")
+    (project_dir / "materials.csv").write_text(MATERIALS_CSV, newline="\n")
+    (project_dir / "spaces.csv").write_text(SPACES_CSV + SPACES_CSV_SECOND_ROOM, newline="\n")
+    (project_dir / "credit_rules.yaml").write_text(RULES_YAML, newline="\n")
     return project_dir
 
 
@@ -249,7 +249,7 @@ def test_changing_a_setting_recomputes_the_cached_rooms(folder):
     _run(folder)
     raw = yaml.safe_load((folder / "project.yaml").read_text())
     raw["views"]["max_interior_glass"] = 0
-    (folder / "project.yaml").write_text(yaml.safe_dump(raw, sort_keys=False))
+    (folder / "project.yaml").write_text(yaml.safe_dump(raw, sort_keys=False), newline="\n")
     tracer = FakeTracer()
 
     _run(folder, tracer)
@@ -270,14 +270,14 @@ def test_a_different_radiance_version_recomputes_the_cached_rooms(folder):
 def test_a_project_without_a_views_section_is_refused(folder):
     raw = yaml.safe_load((folder / "project.yaml").read_text())
     del raw["views"]
-    (folder / "project.yaml").write_text(yaml.safe_dump(raw, sort_keys=False))
+    (folder / "project.yaml").write_text(yaml.safe_dump(raw, sort_keys=False), newline="\n")
 
     with pytest.raises(views_module.ViewsError, match="no views: section"):
         _run(folder)
 
 
 def test_spaces_without_views_columns_are_refused(folder):
-    (folder / "spaces.csv").write_text(SPACES_CSV.replace(",views_base", "").replace(",1,1,\n", ",1,\n"))
+    (folder / "spaces.csv").write_text(SPACES_CSV.replace(",views_base", "").replace(",1,1,\n", ",1,\n"), newline="\n")
 
     with pytest.raises(ValueError, match=r"no views_<case> column"):
         _run(folder)
@@ -286,7 +286,7 @@ def test_spaces_without_views_columns_are_refused(folder):
 def test_main_prints_a_one_line_error_and_returns_1(folder, capsys, monkeypatch):
     raw = yaml.safe_load((folder / "project.yaml").read_text())
     del raw["views"]
-    (folder / "project.yaml").write_text(yaml.safe_dump(raw, sort_keys=False))
+    (folder / "project.yaml").write_text(yaml.safe_dump(raw, sort_keys=False), newline="\n")
 
     assert views_module.main([str(folder)]) == 1
     assert capsys.readouterr().err.startswith("error: ")
@@ -360,8 +360,8 @@ def test_a_datum_height_model_measures_downward_rays_to_its_lowest_floor(folder)
             values[2::3] = [z + 100.0 for z in values[2::3]]
             line = "12  " + "  ".join(" ".join(f"{v:g}" for v in values[i:i + 3]) for i in range(0, 12, 3))
         lifted.append(line)
-    (folder / "scene.rad").write_text("\n".join(lifted) + "\n")
-    (folder / "spaces.csv").write_text(SPACES_CSV.replace(",0.0,no,", ",100.0,no,"))
+    (folder / "scene.rad").write_text("\n".join(lifted) + "\n", newline="\n")
+    (folder / "spaces.csv").write_text(SPACES_CSV.replace(",0.0,no,", ",100.0,no,"), newline="\n")
 
     class LiftedTracer(FakeTracer):
         def trace(self, octree, origins, directions, **kw):
@@ -383,7 +383,7 @@ def test_regularly_occupied_spaces_left_out_of_the_views_case_are_warned(two_roo
     (two_room_folder / "spaces.csv").write_text(
         header + ",views_reason\n" + first + ",\n"
         + SPACES_CSV_SECOND_ROOM.replace(",1,1,\n", f",1,0,,{reason}\n")
-    )
+    , newline="\n")
 
     path, printed = _run(two_room_folder, tracer=TwoRoomTracer())
 
@@ -417,7 +417,7 @@ def test_views_run_without_any_daylight_case(folder, monkeypatch):
 
 
 def test_views_ignore_the_daylight_case_ticks(folder):
-    (folder / "spaces.csv").write_text(SPACES_CSV.replace(",no,,1,1,", ",no,,0,1,"))
+    (folder / "spaces.csv").write_text(SPACES_CSV.replace(",no,,1,1,", ",no,,0,1,"), newline="\n")
 
     path, _ = _run(folder)
 
@@ -427,7 +427,7 @@ def test_views_ignore_the_daylight_case_ticks(folder):
 def test_an_angular_step_that_truncates_the_band_is_refused(folder, capsys):
     raw = yaml.safe_load((folder / "project.yaml").read_text())
     raw["views"]["angular_step_deg"] = 4.0
-    (folder / "project.yaml").write_text(yaml.safe_dump(raw, sort_keys=False))
+    (folder / "project.yaml").write_text(yaml.safe_dump(raw, sort_keys=False), newline="\n")
 
     with pytest.raises(ValueError, match=r"must divide half the vertical span \(30 deg\)"):
         _run(folder)
@@ -436,7 +436,7 @@ def test_an_angular_step_that_truncates_the_band_is_refused(folder, capsys):
 def test_the_plans_carry_the_projects_north_rotation(folder):
     raw = yaml.safe_load((folder / "project.yaml").read_text())
     raw["site"]["north_rotation_deg"] = 30.0
-    (folder / "project.yaml").write_text(yaml.safe_dump(raw, sort_keys=False))
+    (folder / "project.yaml").write_text(yaml.safe_dump(raw, sort_keys=False), newline="\n")
 
     path, _ = _run(folder)
 
@@ -589,7 +589,7 @@ def test_an_input_edited_during_the_run_leaves_the_results_stale(folder):
     class EditingTracer(FakeTracer):
         def trace(self, *args, **kwargs):
             rules = folder / "credit_rules.yaml"
-            rules.write_text(rules.read_text() + "# edited during the run\n")
+            rules.write_text(rules.read_text() + "# edited during the run\n", newline="\n")
             return super().trace(*args, **kwargs)
 
     path, _ = _run(folder, tracer=EditingTracer())
@@ -631,10 +631,10 @@ def _skylight_folder(tmp_path, write_example, *, scene=SCENE_RAD + SKYLIGHT_RAD,
         d["glazing"]["skylight_well"] = "modelled"
         return d
     project_dir = write_example(tmp_path, mutate).parent
-    (project_dir / "scene.rad").write_text(scene)
-    (project_dir / "materials.csv").write_text(materials)
-    (project_dir / "spaces.csv").write_text(SPACES_CSV)
-    (project_dir / "credit_rules.yaml").write_text(RULES_YAML)
+    (project_dir / "scene.rad").write_text(scene, newline="\n")
+    (project_dir / "materials.csv").write_text(materials, newline="\n")
+    (project_dir / "spaces.csv").write_text(SPACES_CSV, newline="\n")
+    (project_dir / "credit_rules.yaml").write_text(RULES_YAML, newline="\n")
     return project_dir
 
 
@@ -740,7 +740,7 @@ def test_views_never_delete_through_a_linked_parent(folder, tmp_path, parts):
     outside = tmp_path / "outside"
     shutil.move(inside, outside)
     symlink_or_skip(inside, outside)
-    (outside / "keep.fingerprint.json").write_text("outside the project; never deleted\n")
+    (outside / "keep.fingerprint.json").write_text("outside the project; never deleted\n", newline="\n")
     before = {p.relative_to(outside).as_posix(): p.read_bytes() for p in outside.rglob("*") if p.is_file()}
 
     with pytest.raises(UnsafePath) as caught:
@@ -802,10 +802,10 @@ def test_a_failure_while_writing_points_leaves_the_old_results_whole(folder, mon
     path, _ = _run(folder)
     old = {name: (path.parent / name).read_bytes() for name in ("views_results.json", "points.csv")}
     project = folder / "project.yaml"
-    project.write_text(project.read_text().replace("eye_height_m: 1.1", "eye_height_m: 1.2"))
+    project.write_text(project.read_text().replace("eye_height_m: 1.1", "eye_height_m: 1.2"), newline="\n")
 
     def fail(part, grids, results):
-        part.write_text("room,\n")
+        part.write_text("room,\n", newline="\n")
         raise OSError("disk full")
 
     monkeypatch.setattr(views_module, "_write_points", fail)
@@ -820,7 +820,7 @@ def test_a_failure_replacing_points_never_leaves_new_results_beside_old_points(f
     path, _ = _run(folder)
     old_points = (path.parent / "points.csv").read_bytes()
     project = folder / "project.yaml"
-    project.write_text(project.read_text().replace("eye_height_m: 1.1", "eye_height_m: 1.2"))
+    project.write_text(project.read_text().replace("eye_height_m: 1.1", "eye_height_m: 1.2"), newline="\n")
     real = views_module.replace_from_part
 
     def fail_on_points(part, target):

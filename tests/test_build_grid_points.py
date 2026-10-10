@@ -222,7 +222,7 @@ def _prepare_with(tmp_path, text):
     prims, rooms = load_mixed_glazing()
     out_dir = tmp_path / "prepared"
     points_file = tmp_path / "points.csv"
-    points_file.write_text(text, encoding="utf-8")
+    points_file.write_text(text, encoding="utf-8", newline="\n")
     grid = Grid(spacing_m=0.5, work_plane_m=0.75, min_clearance_m=0.1, points_file=points_file)
     project = make_project(out_dir, grid=grid)
     return prepare(project, prims, ROLES, rooms, make_spaces(), "base_case", out_dir)

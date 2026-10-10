@@ -17,8 +17,8 @@ SPACES_CSV = "floor,room,space_type,regularly_occupied,area_m2,centroid_x,centro
 
 def _folder(tmp_path, write_example, mutate=lambda d: d):
     folder = write_example(tmp_path, mutate).parent
-    (folder / "materials.csv").write_text(MATERIALS_CSV)
-    (folder / "spaces.csv").write_text(SPACES_CSV)
+    (folder / "materials.csv").write_text(MATERIALS_CSV, newline="\n")
+    (folder / "spaces.csv").write_text(SPACES_CSV, newline="\n")
     return folder
 
 
@@ -49,7 +49,7 @@ def test_one_changed_byte_is_named(tmp_path, write_example):
     project = load_project(folder / "project.yaml")
     recorded = input_fingerprints(project, folder)
 
-    (folder / "spaces.csv").write_text(SPACES_CSV + " ")
+    (folder / "spaces.csv").write_text(SPACES_CSV + " ", newline="\n")
 
     assert stale_inputs(recorded, project, folder) == ["spaces.csv"]
 
@@ -66,7 +66,7 @@ def test_a_file_known_on_only_one_side_is_named(tmp_path, write_example):
 def test_a_scene_file_outside_the_folder_is_keyed_by_its_absolute_path(tmp_path, write_example):
     outside = tmp_path / "elsewhere" / "context.rad"
     outside.parent.mkdir()
-    outside.write_text("")
+    outside.write_text("", newline="\n")
 
     def mutate(d):
         d["scene"]["files"] = ["scene.rad", str(outside)]
@@ -115,7 +115,7 @@ def test_changing_any_other_project_key_makes_results_stale(tmp_path, write_exam
 
     raw = yaml.safe_load((folder / "project.yaml").read_text())
     raw["project"]["name"] = "Example Tower Two"
-    (folder / "project.yaml").write_text(yaml.safe_dump(raw, sort_keys=False))
+    (folder / "project.yaml").write_text(yaml.safe_dump(raw, sort_keys=False), newline="\n")
 
     assert stale_inputs(recorded, load_project(folder / "project.yaml"), folder) == ["project.yaml"]
 
@@ -130,7 +130,7 @@ def test_splits_csv_is_fingerprinted_only_when_it_exists(tmp_path, write_example
     project = load_project(folder / "project.yaml")
     assert "splits.csv" not in input_fingerprints(project, folder)
 
-    (folder / "splits.csv").write_text(SPLITS_CSV)
+    (folder / "splits.csv").write_text(SPLITS_CSV, newline="\n")
     prints = input_fingerprints(project, folder)
 
     assert list(prints) == sorted(prints)
@@ -142,25 +142,25 @@ def test_a_new_splits_csv_makes_results_recorded_without_it_stale(tmp_path, writ
     project = load_project(folder / "project.yaml")
     recorded = input_fingerprints(project, folder)
 
-    (folder / "splits.csv").write_text(SPLITS_CSV)
+    (folder / "splits.csv").write_text(SPLITS_CSV, newline="\n")
 
     assert stale_inputs(recorded, project, folder) == ["splits.csv"]
 
 
 def test_editing_splits_csv_makes_results_stale(tmp_path, write_example):
     folder = _folder(tmp_path, write_example)
-    (folder / "splits.csv").write_text(SPLITS_CSV)
+    (folder / "splits.csv").write_text(SPLITS_CSV, newline="\n")
     project = load_project(folder / "project.yaml")
     recorded = input_fingerprints(project, folder)
 
-    (folder / "splits.csv").write_text(SPLITS_CSV.replace("2.0 4.0", "2.0 3.0"))
+    (folder / "splits.csv").write_text(SPLITS_CSV.replace("2.0 4.0", "2.0 3.0"), newline="\n")
 
     assert stale_inputs(recorded, project, folder) == ["splits.csv"]
 
 
 def test_removing_splits_csv_makes_results_stale(tmp_path, write_example):
     folder = _folder(tmp_path, write_example)
-    (folder / "splits.csv").write_text(SPLITS_CSV)
+    (folder / "splits.csv").write_text(SPLITS_CSV, newline="\n")
     project = load_project(folder / "project.yaml")
     recorded = input_fingerprints(project, folder)
 
@@ -260,14 +260,14 @@ def test_a_fifo_input_is_refused_by_the_fingerprints(tmp_path, write_example):
      "modifier,primitive_type,role,note,view,vlt\nglass_a,glass,glazing,,clear,62\n"),
 ])
 def test_adding_vlt_keeps_the_materials_fingerprint(tmp_path, before, after):
-    (tmp_path / "a.csv").write_text(before, encoding="utf-8")
-    (tmp_path / "b.csv").write_text(after, encoding="utf-8")
+    (tmp_path / "a.csv").write_text(before, encoding="utf-8", newline="\n")
+    (tmp_path / "b.csv").write_text(after, encoding="utf-8", newline="\n")
     assert materials_digest(tmp_path / "a.csv") == materials_digest(tmp_path / "b.csv")
 
 
 def test_a_role_change_still_changes_the_fingerprint(tmp_path):
-    (tmp_path / "a.csv").write_text("modifier,primitive_type,role,note\nglass_a,glass,glazing,\n", encoding="utf-8")
-    (tmp_path / "b.csv").write_text("modifier,primitive_type,role,note,vlt\nglass_a,glass,wall,,\n", encoding="utf-8")
+    (tmp_path / "a.csv").write_text("modifier,primitive_type,role,note\nglass_a,glass,glazing,\n", encoding="utf-8", newline="\n")
+    (tmp_path / "b.csv").write_text("modifier,primitive_type,role,note,vlt\nglass_a,glass,wall,,\n", encoding="utf-8", newline="\n")
     assert materials_digest(tmp_path / "a.csv") != materials_digest(tmp_path / "b.csv")
 
 
@@ -304,7 +304,7 @@ def test_the_presentation_digest_follows_the_report_and_atlas_sections_and_the_d
     assert after_drawing != before
 
     path = folder / "project.yaml"
-    path.write_text(path.read_text() + "report:\n  prepared_by: Someone\n")
+    path.write_text(path.read_text() + "report:\n  prepared_by: Someone\n", newline="\n")
     assert presentation_digest(load_project(path), folder) != after_drawing
 
 
@@ -314,6 +314,6 @@ def test_the_presentation_digest_ignores_the_rest_of_project_yaml(tmp_path, writ
     folder = _folder(tmp_path, write_example)
     before = presentation_digest(load_project(folder / "project.yaml"), folder)
     path = folder / "project.yaml"
-    path.write_text(path.read_text().replace("spacing_m: 0.60", "spacing_m: 0.70"))
+    path.write_text(path.read_text().replace("spacing_m: 0.60", "spacing_m: 0.70"), newline="\n")
 
     assert presentation_digest(load_project(path), folder) == before

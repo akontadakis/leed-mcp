@@ -75,7 +75,11 @@ asyncio.run(main())
 def _run(*argv, **kwargs):
     env = {k: v for k, v in os.environ.items()
            if k not in ("PYTHONPATH", "PYTHONHOME", "PYTHONSTARTUP", "VIRTUAL_ENV")}
-    return subprocess.run(argv, check=True, capture_output=True, text=True, env=env, **kwargs)
+    try:
+        return subprocess.run(argv, check=True, capture_output=True, text=True, env=env, **kwargs)
+    except subprocess.CalledProcessError as exc:
+        exc.add_note(f"stderr:\n{exc.stderr}")  # pytest shows it with the failure
+        raise
 
 
 @pytest.fixture(scope="module")
@@ -89,7 +93,14 @@ def python(tmp_path_factory):
     _run(UV, "venv", str(venv), "--python", sys.executable)
     windows = sys.platform == "win32"
     python = venv / ("Scripts" if windows else "bin") / ("python.exe" if windows else "python")
-    _run(UV, "pip", "install", "--offline", "--python", str(python), str(wheel))
+    try:
+        # From uv's cache when it holds every dependency (a developer's machine).
+        _run(UV, "pip", "install", "--offline", "--python", str(python), str(wheel))
+    except subprocess.CalledProcessError:
+        # A fresh cache (a CI runner) holds the locked wheels ``uv sync``
+        # fetched but not the index pages ``uv pip install`` resolves
+        # against: resolve from the index.
+        _run(UV, "pip", "install", "--python", str(python), str(wheel))
     return python
 
 

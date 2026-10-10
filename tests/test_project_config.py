@@ -276,7 +276,7 @@ def _write_raw(write_example, tmp_path, old, new):
     path = write_example(tmp_path)
     text = path.read_text()
     assert old in text
-    path.write_text(text.replace(old, new, 1))
+    path.write_text(text.replace(old, new, 1), newline="\n")
     return path
 
 

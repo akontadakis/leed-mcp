@@ -131,7 +131,11 @@ def as_file(folder: pathlib.Path, name: str, data: bytes) -> Iterator[pathlib.Pa
         except (ValueError, OSError) as exc:
             exc.args = tuple(rewrite(arg) for arg in exc.args)
             if isinstance(exc, OSError):
-                exc.filename, exc.filename2 = rewrite(exc.filename), rewrite(exc.filename2)
+                # Only a name that is there: setting None makes str(exc) end "-> None".
+                if exc.filename is not None:
+                    exc.filename = rewrite(exc.filename)
+                if exc.filename2 is not None:
+                    exc.filename2 = rewrite(exc.filename2)
             raise
 
 

@@ -64,7 +64,7 @@ def test_option2_applies_splits_csv(folder):
 
 
 def test_views_applies_splits_csv(folder):
-    (folder / "credit_rules.yaml").write_text(RULES_YAML)
+    (folder / "credit_rules.yaml").write_text(RULES_YAML, newline="\n")
 
     path = views_module.run_views(folder, CASE, tracer=FakeTracer(), out=io.StringIO())
 
@@ -100,7 +100,7 @@ def test_prepare_case_model_applies_splits_csv(folder, tmp_path):
 def test_prepare_case_model_refuses_a_stale_row_with_the_rooms_hint(folder, tmp_path):
     """Review M1: the atlas (which runs before any result) gives the same
     advice as prepare for a row that still holds the whole room's centroid."""
-    (folder / "spaces.csv").write_text(HEADER + "L0,Room North,office,yes,24,3.0,2.0,0.0,no,,1,1,\n")
+    (folder / "spaces.csv").write_text(HEADER + "L0,Room North,office,yes,24,3.0,2.0,0.0,no,,1,1,\n", newline="\n")
     project = load_project(folder / "project.yaml")
 
     with pytest.raises(ProjectError) as excinfo:

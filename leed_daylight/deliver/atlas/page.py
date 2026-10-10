@@ -26,6 +26,7 @@ from __future__ import annotations
 import base64
 import html
 import json
+import os
 import pathlib
 import re
 from collections.abc import Mapping
@@ -328,8 +329,15 @@ def _in_project(text: str, folder: pathlib.Path) -> str:
     reasons keep their paths."""
     forms = {str(folder), str(folder.absolute()), str(folder.resolve())} - {"", "."}
     for form in sorted(forms, key=len, reverse=True):
-        text = re.sub(r"(?<![\w.~/\\-])" + re.escape(form) + r"[/\\]", "", text)
+        text = re.sub(r"(?<![\w.~/\\-])" + re.escape(form) + r"[/\\]([^\s'\"()]*)", _forward, text)
     return text
+
+
+def _forward(match: re.Match) -> str:
+    """The path after the project folder, written with ``/`` (a path built
+    on Windows names ``_run\\option2\\...``): the page reads the same
+    wherever it was built."""
+    return match.group(1).replace(os.sep, "/") if os.sep != "/" else match.group(1)
 
 
 def _header(case: CaseData) -> str:

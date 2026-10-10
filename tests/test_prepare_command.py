@@ -75,9 +75,9 @@ L0,Room North,office,yes,24,3.0,2.0,0.0,no,,1,1,
 
 def _folder(tmp_path, write_example) -> pathlib.Path:
     folder = write_example(tmp_path).parent
-    (folder / "scene.rad").write_text(SCENE_RAD)
-    (folder / "materials.csv").write_text(MATERIALS_CSV)
-    (folder / "spaces.csv").write_text(SPACES_CSV)
+    (folder / "scene.rad").write_text(SCENE_RAD, newline="\n")
+    (folder / "materials.csv").write_text(MATERIALS_CSV, newline="\n")
+    (folder / "spaces.csv").write_text(SPACES_CSV, newline="\n")
     return folder
 
 
@@ -133,7 +133,7 @@ def test_the_module_does_not_import_the_radiance_engine():
 def test_a_materials_csv_type_that_differs_from_the_scene_is_refused(tmp_path, write_example, capsys):
     folder = _folder(tmp_path, write_example)
     # The row says glass; the scene defines wall_paint as plastic.
-    (folder / "materials.csv").write_text(MATERIALS_CSV.replace("wall_paint,plastic,", "wall_paint,glass,"))
+    (folder / "materials.csv").write_text(MATERIALS_CSV.replace("wall_paint,plastic,", "wall_paint,glass,"), newline="\n")
     assert prepare_module.main([str(folder)]) == 1
     err = capsys.readouterr().err
     assert "wall_paint" in err and "materials.csv says primitive type 'glass'" in err
@@ -163,7 +163,7 @@ def test_a_spaces_csv_area_far_from_the_scene_room_area_warns(tmp_path, write_ex
     _no_radiance(monkeypatch)
     folder = _folder(tmp_path, write_example)
     # The scene room is 6 m x 4 m = 24 m2; the row says an invented 30 m2.
-    (folder / "spaces.csv").write_text(SPACES_CSV.replace(",office,yes,24,", ",office,yes,30,"))
+    (folder / "spaces.csv").write_text(SPACES_CSV.replace(",office,yes,24,", ",office,yes,30,"), newline="\n")
     assert prepare_module.main([str(folder)]) == 0
     warnings = json.loads((folder / "_run" / "manifest.json").read_text())["warnings"]
     matches = [w for w in warnings if "Room North" in w and "area_m2" in w]
@@ -175,7 +175,7 @@ def test_a_spaces_csv_area_within_five_percent_does_not_warn(tmp_path, write_exa
     _no_radiance(monkeypatch)
     folder = _folder(tmp_path, write_example)
     # An invented 25 m2 against the scene's 24 m2: about 4 %, inside the band.
-    (folder / "spaces.csv").write_text(SPACES_CSV.replace(",office,yes,24,", ",office,yes,25,"))
+    (folder / "spaces.csv").write_text(SPACES_CSV.replace(",office,yes,24,", ",office,yes,25,"), newline="\n")
     assert prepare_module.main([str(folder)]) == 0
     warnings = json.loads((folder / "_run" / "manifest.json").read_text())["warnings"]
     assert not any("area_m2" in w for w in warnings)
@@ -288,12 +288,12 @@ def test_the_summary_lists_the_pieces_of_a_merged_and_a_split_space():
 def test_prepare_prints_the_pieces_of_a_split_space(tmp_path, write_example, monkeypatch, capsys):
     _no_radiance(monkeypatch)
     folder = _folder(tmp_path, write_example)
-    (folder / "splits.csv").write_text('level_z,points,note\n0.0,"4.5 -1; 4.5 5",invented\n')
+    (folder / "splits.csv").write_text('level_z,points,note\n0.0,"4.5 -1; 4.5 5",invented\n', newline="\n")
     (folder / "spaces.csv").write_text(
         SPACES_CSV.splitlines()[0] + "\n"
         "L0,Room West,office,yes,18,2.25,2.0,0.0,no,,1,1,\n"
         "L0,Room Strip,office,yes,6,5.25,2.0,0.0,no,Room West,1,1,\n"
-    )
+    , newline="\n")
 
     assert prepare_module.main([str(folder)]) == 0
 

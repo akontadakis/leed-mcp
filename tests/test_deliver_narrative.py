@@ -48,7 +48,7 @@ def test_a_rerun_keeps_hand_text_and_filled_measures(case, tmp_path):
     row_end = text.index("\n", row_start)
     row = text[row_start:row_end]
     text = text.replace(row, row.rsplit("|", 2)[0] + "| External fins on the south facade |")
-    path.write_text(text)
+    path.write_text(text, newline="\n")
 
     narrative.update_narrative(path, case)
 
@@ -60,7 +60,7 @@ def test_a_rerun_keeps_hand_text_and_filled_measures(case, tmp_path):
 
 def test_missing_markers_append_the_block_and_warn(case, tmp_path):
     path = tmp_path / "glare_narrative.md"
-    path.write_text("# Glare narrative\n\nOnly my own text.\n")
+    path.write_text("# Glare narrative\n\nOnly my own text.\n", newline="\n")
 
     warnings = narrative.update_narrative(path, case)
 
@@ -79,7 +79,7 @@ def test_an_opener_without_its_closer_is_left_alone_and_warned(case, tmp_path):
     path = tmp_path / "glare_narrative.md"
     narrative.update_narrative(path, case)
     text = path.read_text().replace("<!-- /auto:spaces -->\n", "")
-    path.write_text(text)
+    path.write_text(text, newline="\n")
     corrupted = path.read_text()
 
     warnings1 = narrative.update_narrative(path, case)
@@ -99,7 +99,7 @@ def test_a_closer_without_its_opener_is_left_alone_and_warned(case, tmp_path):
     path = tmp_path / "glare_narrative.md"
     narrative.update_narrative(path, case)
     text = path.read_text().replace("<!-- auto:spaces -->\n", "")
-    path.write_text(text)
+    path.write_text(text, newline="\n")
     corrupted = path.read_text()
 
     warnings1 = narrative.update_narrative(path, case)
@@ -120,7 +120,7 @@ def test_duplicated_openers_are_left_alone_and_warned(case, tmp_path):
     text = path.read_text().replace(
         "<!-- auto:spaces -->\n", "<!-- auto:spaces -->\n<!-- auto:spaces -->\n", 1
     )
-    path.write_text(text)
+    path.write_text(text, newline="\n")
     corrupted = path.read_text()
 
     warnings = narrative.update_narrative(path, case)
@@ -142,7 +142,7 @@ def test_a_glare_measures_answer_with_a_literal_pipe_survives_a_rerun(case, tmp_
     row_end = text.index("\n", row_start)
     row = text[row_start:row_end]
     text = text.replace(row, row.rsplit("|", 2)[0] + "| Blinds | operated automatically |")
-    path.write_text(text)
+    path.write_text(text, newline="\n")
 
     narrative.update_narrative(path, case)
 
@@ -180,7 +180,7 @@ def _fill_measures(path, text_in):
     row_start = text.index(f"| L0 | {ROOM} |")
     row_end = text.index("\n", row_start)
     row = text[row_start:row_end]
-    path.write_text(text.replace(row, row.rsplit("|", 2)[0] + f"| {text_in} |"))
+    path.write_text(text.replace(row, row.rsplit("|", 2)[0] + f"| {text_in} |"), newline="\n")
 
 
 @pytest.mark.parametrize("opener_suffix", [" ", "  \t"])
@@ -193,7 +193,7 @@ def test_an_opener_with_trailing_whitespace_is_still_replaced(case, tmp_path, op
     text = path.read_text()
     for name in ("results", "spaces"):
         text = text.replace(f"<!-- auto:{name} -->\n", f"<!-- auto:{name} -->{opener_suffix}\n")
-    path.write_text(text)
+    path.write_text(text, newline="\n")
 
     warnings = narrative.update_narrative(path, case)
 
@@ -210,7 +210,7 @@ def test_a_block_on_one_line_does_not_crash(case, tmp_path):
     path.write_text(
         "# Glare narrative\n\nMy text.\n\n<!-- auto:results --><!-- /auto:results -->\n\n"
         "<!-- auto:spaces --> <!-- /auto:spaces -->\n"
-    )
+    , newline="\n")
 
     warnings = narrative.update_narrative(path, case)
 
@@ -282,7 +282,7 @@ def test_a_pipe_in_a_room_name_keeps_the_table_and_the_measures(case, tmp_path):
     assert "| L0 | Office \\| East |" in text
     row_start = text.index("| L0 | Office \\| East |")
     row = text[row_start:text.index("\n", row_start)]
-    path.write_text(text.replace(row, row.rsplit("|", 2)[0] + "| Blinds on the east facade |"))
+    path.write_text(text.replace(row, row.rsplit("|", 2)[0] + "| Blinds on the east facade |"), newline="\n")
 
     narrative.update_narrative(path, piped)
 

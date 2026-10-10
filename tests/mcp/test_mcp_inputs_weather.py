@@ -36,10 +36,10 @@ shutil.copy(os.environ["FAKE_WEA"], sys.argv[2])
 def folder(tmp_path, monkeypatch):
     folder = tmp_path / "p"
     (folder / "weather").mkdir(parents=True)
-    (folder / "weather" / "site.epw").write_text("invented epw\n")
+    (folder / "weather" / "site.epw").write_text("invented epw\n", newline="\n")
     bin_dir = tmp_path / "bin"
     make_program(bin_dir, "epw2wea", FAKE)
-    (tmp_path / "fake.wea").write_text(wea_text())
+    (tmp_path / "fake.wea").write_text(wea_text(), newline="\n")
     monkeypatch.setenv("PATH", f"{bin_dir}{os.pathsep}{os.environ['PATH']}")
     monkeypatch.setenv("FAKE_WEA", str(tmp_path / "fake.wea"))
     return folder
@@ -80,7 +80,7 @@ async def test_a_bad_argument_is_refused(tmp_path, folder, arguments, code, fiel
 @pytest.mark.parametrize("inside, code", [(False, ("PATH_OUTSIDE_ROOTS", "epw")), (True, ("PATH_UNSAFE", None))])
 async def test_a_linked_epw_is_not_read(tmp_path, folder, inside, code):
     real = (folder if inside else tmp_path) / "real.epw"
-    real.write_text("invented epw\n")
+    real.write_text("invented epw\n", newline="\n")
     symlink_or_skip(folder / "weather" / "linked.epw", real)
     assert codes(await _import(tmp_path, folder, epw="weather/linked.epw")) == [code]
 
@@ -116,7 +116,7 @@ async def test_epw2wea_runs_on_a_copy_in_run_that_is_removed(tmp_path, folder, m
 
 
 async def test_an_epw_swapped_for_a_link_after_the_check_is_not_read(tmp_path, folder, monkeypatch):
-    (folder / "real.epw").write_text("invented epw\n")
+    (folder / "real.epw").write_text("invented epw\n", newline="\n")
     symlink_or_skip(folder / "weather" / "linked.epw", folder / "real.epw")
     monkeypatch.setattr(weather_import, "_epw", lambda folder, epw: folder / "weather" / "linked.epw")
     result = await _import(tmp_path, folder, epw="weather/site.epw")
@@ -134,7 +134,7 @@ async def test_an_absolute_epw_through_a_linked_prefix_is_read(tmp_path, folder)
 
 async def test_an_absolute_epw_through_a_linked_prefix_still_refuses_a_link_inside(tmp_path, folder):
     symlink_or_skip(tmp_path / "alias", tmp_path)
-    (folder / "real.epw").write_text("invented epw\n")
+    (folder / "real.epw").write_text("invented epw\n", newline="\n")
     symlink_or_skip(folder / "weather" / "linked.epw", folder / "real.epw")
     result = await _import(tmp_path, folder, epw=str(tmp_path / "alias" / "p" / "weather" / "linked.epw"))
     assert codes(result) == [("PATH_UNSAFE", None)]
@@ -152,7 +152,7 @@ async def test_import_weather_is_refused_while_a_job_holds_the_lock(tmp_path, fo
 
 
 async def test_import_weather_is_refused_when_project_yaml_names_a_path_outside(tmp_path, folder):
-    (folder / "project.yaml").write_text('weather:\n  file: "../outside.wea"\n')
+    (folder / "project.yaml").write_text('weather:\n  file: "../outside.wea"\n', newline="\n")
     result = await _import(tmp_path, folder, epw="weather/site.epw")
     assert codes(result) == [("PATH_OUTSIDE_ROOTS", None)]
     assert "weather.file" in result.structured_content["reason"]

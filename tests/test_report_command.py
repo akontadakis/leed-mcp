@@ -74,7 +74,7 @@ def test_a_missing_option_is_skipped_and_printed(tmp_path, write_example, write_
 def test_a_rerun_removes_stale_report_files(folder):
     path, _ = _run(folder)
     leftover = path / "option2" / "old_storey_option2.docx"
-    leftover.write_text("stale")
+    leftover.write_text("stale", newline="\n")
 
     _run(folder)
 
@@ -256,7 +256,7 @@ def test_a_tool_version_mismatch_warning_is_printed(folder):
 @pytest.mark.parametrize("text", ["[]\n", '{"options": ', '{"options": {"views": []}}\n'])
 def test_main_refuses_a_malformed_report_manifest_in_one_line(folder, capsys, text):
     path, _ = _run(folder)
-    (path / "report_manifest.json").write_text(text)
+    (path / "report_manifest.json").write_text(text, newline="\n")
 
     code = report_module.main([str(folder), "--renderer", "pillow"])
 
@@ -268,7 +268,7 @@ def test_main_refuses_a_malformed_report_manifest_in_one_line(folder, capsys, te
 
 def test_main_names_a_truncated_results_file(folder, capsys):
     results = folder / "_run" / "option2" / CASE / "option2_results.json"
-    results.write_text(results.read_text()[:40])
+    results.write_text(results.read_text()[:40], newline="\n")
 
     code = report_module.main([str(folder), "--renderer", "pillow"])
 
@@ -331,7 +331,7 @@ def test_storey_labels_that_collide_as_file_names_are_refused(tmp_path, write_ex
     folder = build_two_storey_project(tmp_path, write_example, write_wea, options=())
     (folder / "spaces.csv").write_text(
         TWO_STOREY_SPACES_CSV.replace("\nL0,", "\nL 1,").replace("\nL1,", "\nL_1,")
-    )
+    , newline="\n")
     _, prepared, _, _, _ = load_chain(folder)
     run_module.run_folder(folder, CASE, engine=Option1Fake(prepared), out=io.StringIO())
 
@@ -350,7 +350,7 @@ def test_storey_labels_that_differ_only_in_case_are_refused(tmp_path, write_exam
     folder = build_two_storey_project(tmp_path, write_example, write_wea, options=())
     (folder / "spaces.csv").write_text(
         TWO_STOREY_SPACES_CSV.replace("\nL0,Room North,", "\nl1,Room North,")
-    )
+    , newline="\n")
     _, prepared, _, _, _ = load_chain(folder)
     run_module.run_folder(folder, CASE, engine=Option1Fake(prepared), out=io.StringIO())
 
@@ -397,7 +397,7 @@ def _add_missing_drawing(folder):
         "storey": "L0", "image": "drawings/level0.png",
         "points": [{"pixel": [0, 0], "model": [0.0, 0.0]}, {"pixel": [100, 0], "model": [10.0, 0.0]}],
     }]}
-    (folder / "project.yaml").write_text(yaml.safe_dump(raw, sort_keys=False))
+    (folder / "project.yaml").write_text(yaml.safe_dump(raw, sort_keys=False), newline="\n")
 
 
 def test_report_writes_the_atlas_and_its_manifest_entry(folder):
@@ -423,7 +423,7 @@ def test_an_existing_atlas_entry_is_replaced(folder):
     manifest_path = path / report_module.REPORT_MANIFEST
     manifest = json.loads(manifest_path.read_text())
     manifest["atlas"] = {"files": ["old.html"], "inputs": {}, "options": {}}
-    manifest_path.write_text(json.dumps(manifest))
+    manifest_path.write_text(json.dumps(manifest), newline="\n")
 
     _run(folder)
 
@@ -493,7 +493,7 @@ def test_a_bad_atlas_entry_is_replaced_by_the_report(folder, capsys):
     manifest_path = path / report_module.REPORT_MANIFEST
     manifest = json.loads(manifest_path.read_text())
     manifest["atlas"] = {"files": ["../x"], "inputs": {}, "options": {}}
-    manifest_path.write_text(json.dumps(manifest))
+    manifest_path.write_text(json.dumps(manifest), newline="\n")
 
     assert report_module.main([str(folder), "--renderer", "pillow", "--no-blender"]) == 0
 

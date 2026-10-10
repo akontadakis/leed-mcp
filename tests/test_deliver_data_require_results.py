@@ -51,7 +51,7 @@ def test_stale_results_are_listed_with_their_reason_not_refused(tmp_path, write_
     folder = build_deliver_project(tmp_path, write_example, write_wea, options=("option1",))
     raw = yaml.safe_load((folder / "project.yaml").read_text())
     raw["project"]["name"] = "Example Tower Two"
-    (folder / "project.yaml").write_text(yaml.safe_dump(raw, sort_keys=False))
+    (folder / "project.yaml").write_text(yaml.safe_dump(raw, sort_keys=False), newline="\n")
 
     case = load_case(folder, require_results=False)
 

@@ -31,7 +31,7 @@ def _write(tmp_path, text: str | bytes):
     if isinstance(text, bytes):
         path.write_bytes(text)
     else:
-        path.write_text(text, encoding="utf-8")
+        path.write_text(text, encoding="utf-8", newline="\n")
     return path
 
 

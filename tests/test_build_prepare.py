@@ -313,7 +313,7 @@ def test_stale_grid_file_is_removed_when_a_case_excludes_a_room(tmp_path):
 def test_out_dir_that_is_a_file_is_refused(tmp_path):
     prims, rooms = load_mixed_glazing()
     out_dir = tmp_path / "not_a_dir"
-    out_dir.write_text("i am a file")
+    out_dir.write_text("i am a file", newline="\n")
     project = make_project(out_dir)
     with pytest.raises(PrepareError, match="not_a_dir"):
         prepare(project, prims, ROLES, rooms, make_spaces(), "base_case", out_dir)
@@ -695,7 +695,7 @@ def test_load_project_output_feeds_prepare_end_to_end(tmp_path, write_wea):
     shutil.copy(MIXED_GLAZING, project_dir / "scene.rad")
     # A full-year .wea for the site below (40 N, 75 W): checks.py reads it.
     write_wea(project_dir / "weather" / "example.wea", latitude=40.0, longitude_W=75.0)
-    (project_dir / "credit_rules.yaml").write_text('version: "Example rules v0"\n')
+    (project_dir / "credit_rules.yaml").write_text('version: "Example rules v0"\n', newline="\n")
 
     yaml_text = """
 project:
@@ -759,7 +759,7 @@ option2:
   blinds: exclude
   time_basis: "UNVERIFIED"
 """
-    (project_dir / "project.yaml").write_text(yaml_text)
+    (project_dir / "project.yaml").write_text(yaml_text, newline="\n")
     project = load_project(project_dir / "project.yaml")
 
     prims, rooms = load_mixed_glazing()

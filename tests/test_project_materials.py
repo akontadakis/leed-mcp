@@ -151,7 +151,7 @@ def test_an_extra_column_is_refused(tmp_path):
 def test_a_missing_file_is_refused(tmp_path):
     path = tmp_path / "does_not_exist.csv"
 
-    with pytest.raises(ProjectError, match=str(path)):
+    with pytest.raises(ProjectError, match=re.escape(str(path))):
         load_materials(path)
 
 
@@ -196,7 +196,7 @@ def test_a_blank_line_does_not_shift_later_line_numbers(tmp_path):
         "\n"
         "wall_paint,plastic,,\n",
         encoding="utf-8",
-    )
+    newline="\n")
 
     with pytest.raises(ProjectError, match=r"line 4.*wall_paint.*no role"):
         load_materials(path)
@@ -211,7 +211,7 @@ def test_a_multiline_quoted_note_does_not_shift_later_line_numbers(tmp_path):
         'glass_clear,glass,glazing,"line one\nline two"\n'
         "wall_paint,plastic,,\n",
         encoding="utf-8",
-    )
+    newline="\n")
 
     with pytest.raises(ProjectError, match=r"line 4.*wall_paint.*no role"):
         load_materials(path)
@@ -242,7 +242,7 @@ def test_a_row_with_more_fields_than_the_header_is_refused(tmp_path):
         "modifier,primitive_type,role,note\n"
         "glass_clear,glass,glazing,,surplus_value\n",
         encoding="utf-8",
-    )
+    newline="\n")
 
     with pytest.raises(ProjectError, match=r"line 2.*5.*surplus_value"):
         load_materials(path)
@@ -254,7 +254,7 @@ def test_a_row_with_fewer_fields_than_the_header_is_a_named_refusal(tmp_path):
         "modifier,primitive_type,role,note\n"
         "glass_clear,glass,glazing\n",
         encoding="utf-8",
-    )
+    newline="\n")
 
     with pytest.raises(ProjectError, match="line 2"):
         load_materials(path)
@@ -279,7 +279,7 @@ def test_a_non_utf8_file_is_refused_by_name(tmp_path):
 
 def test_a_semicolon_delimited_file_is_refused_as_such(tmp_path):
     path = tmp_path / "materials.csv"
-    path.write_text("modifier;primitive_type;role;note\nwall_paint;plastic;wall;\n")
+    path.write_text("modifier;primitive_type;role;note\nwall_paint;plastic;wall;\n", newline="\n")
     with pytest.raises(ProjectError) as excinfo:
         load_materials(path)
     message = str(excinfo.value)
@@ -307,7 +307,7 @@ _VLT_BASE = "modifier,primitive_type,role,note"
 
 def _vlt_write(tmp_path, text):
     path = pathlib.Path(tmp_path) / "materials.csv"
-    path.write_text(text, encoding="utf-8")
+    path.write_text(text, encoding="utf-8", newline="\n")
     return path
 
 

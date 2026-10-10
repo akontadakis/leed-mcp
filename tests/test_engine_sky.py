@@ -85,10 +85,10 @@ class FakeRunner:
             return RunResult(0, self.version.encode("utf-8"), b"")
         if "-D" in argv:
             suns_path = pathlib.Path(argv[argv.index("-D") + 1])
-            suns_path.write_text(self.suns_text, encoding="utf-8")
+            suns_path.write_text(self.suns_text, encoding="utf-8", newline="\n")
         if "-M" in argv:
             mod_path = pathlib.Path(argv[argv.index("-M") + 1])
-            mod_path.write_text(self.modifiers_text, encoding="utf-8")
+            mod_path.write_text(self.modifiers_text, encoding="utf-8", newline="\n")
         if stdout_path is not None:
             pathlib.Path(stdout_path).write_bytes(self.stdout)
             return RunResult(self.exit_code, b"", self.stderr)
@@ -129,7 +129,7 @@ def _make_wea(tmp_path, name="fictional.wea") -> pathlib.Path:
     that same index under final-fix I3's own weather-file matching.
     """
     wea = tmp_path / name
-    wea.write_text(_WEA_HEADER + _wea_data_lines(range(24)), encoding="utf-8")
+    wea.write_text(_WEA_HEADER + _wea_data_lines(range(24)), encoding="utf-8", newline="\n")
     return wea
 
 
@@ -561,7 +561,7 @@ def test_read_suns_missing_sidecar_is_a_named_refusal(tmp_path):
 
 def test_read_suns_malformed_json_is_a_named_refusal(tmp_path):
     out = tmp_path / "sun.mtx"
-    (tmp_path / "sun.mtx.suns.json").write_text("{not valid json", encoding="utf-8")
+    (tmp_path / "sun.mtx.suns.json").write_text("{not valid json", encoding="utf-8", newline="\n")
 
     with pytest.raises(SkyError, match="suns.json"):
         read_suns(out)
@@ -605,7 +605,7 @@ def test_a_changed_wea_forces_a_sky_matrix_rebuild(tmp_path):
     rad = Radiance(runner, tmp_path / "run.log")
 
     sky_matrix(rad, wea, out, mf=1, north_rotation_deg=0.0)
-    wea.write_text("place fictional_site\nlatitude 50.0\nchanged\n", encoding="utf-8")
+    wea.write_text("place fictional_site\nlatitude 50.0\nchanged\n", encoding="utf-8", newline="\n")
     sky_matrix(rad, wea, out, mf=1, north_rotation_deg=0.0)
 
     assert len(_gendaymtx_calls(runner)) == 2
@@ -632,7 +632,7 @@ def test_a_changed_wea_forces_a_sun_matrix_rebuild(tmp_path):
     sun_matrix(rad, wea, out, mf=1, north_rotation_deg=0.0)
     # Changed bytes (an extra comment line, still with every hour-0..23
     # data line intact so sun600/sun1200 still match), forcing a rebuild.
-    wea.write_text(wea.read_text(encoding="utf-8") + "# changed\n", encoding="utf-8")
+    wea.write_text(wea.read_text(encoding="utf-8") + "# changed\n", encoding="utf-8", newline="\n")
     sun_matrix(rad, wea, out, mf=1, north_rotation_deg=0.0)
 
     assert len(_gendaymtx_calls(runner)) == 2
@@ -682,7 +682,7 @@ def _write_suns_json(tmp_path, out_name, payload) -> pathlib.Path:
     out = tmp_path / out_name
     (tmp_path / f"{out_name}.suns.json").write_text(
         json.dumps(payload), encoding="utf-8",
-    )
+    newline="\n")
     return out
 
 
@@ -808,7 +808,7 @@ def test_sun_matrix_maps_minute_to_the_half_hour_weather_line_index(tmp_path):
     wea = tmp_path / "half_hour.wea"
     wea.write_text(
         _WEA_HEADER + _wea_data_lines(h + 0.5 for h in range(24)), encoding="utf-8",
-    )
+    newline="\n")
     out = tmp_path / "sun.mtx"
     suns_text = _SUNS_TEXT.replace("sun600", "sun630").replace("sun1200", "sun1230")
     runner = FakeRunner(suns_text=suns_text, modifiers_text=_MODIFIERS_TEXT)
@@ -891,7 +891,7 @@ def test_the_old_sidecar_is_deleted_before_sun_matrix_rebuilds(tmp_path):
 @pytest.mark.parametrize("name", ["fictional.epw", "fictional.csv", "fictional"])
 def test_a_weather_file_that_is_not_wea_is_refused_before_gendaymtx(tmp_path, make, name):
     weather = tmp_path / name
-    weather.write_text("LOCATION,Fictional,,,,0,50.0,10.0,1.0,0.0\n")
+    weather.write_text("LOCATION,Fictional,,,,0,50.0,10.0,1.0,0.0\n", newline="\n")
     runner = FakeRunner()
     rad = Radiance(runner, tmp_path / "run.log")
 

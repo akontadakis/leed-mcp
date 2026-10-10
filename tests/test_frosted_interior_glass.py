@@ -92,7 +92,7 @@ def test_a_frosted_interior_pane_always_blocks_views():
 def _materials(tmp_path, view):
     path = tmp_path / "materials.csv"
     path.write_text(f"modifier,primitive_type,role,note,view\nfrosted_a,trans,glazing_interior,,{view}\n",
-                    encoding="utf-8")
+                    encoding="utf-8", newline="\n")
     return path
 
 

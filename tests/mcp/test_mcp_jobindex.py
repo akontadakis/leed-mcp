@@ -28,6 +28,7 @@ def _record(job_id=JOB, created="2026-01-01T12:00:00+00:00", **change):
 
 def test_the_state_folder_defaults_to_leed_mcp_in_the_home_folder(tmp_path, monkeypatch):
     monkeypatch.setenv("HOME", str(tmp_path))
+    monkeypatch.setenv("USERPROFILE", str(tmp_path))  # Windows reads the home folder from here
     assert state_from_env((), {}) == (tmp_path / ".leed-mcp").resolve()
     assert state_from_env((), {"LEED_MCP_STATE": str(tmp_path / "s")}) == (tmp_path / "s").resolve()
 
@@ -67,7 +68,7 @@ def test_records_come_newest_first_and_a_broken_one_is_left_out(tmp_path, caplog
     with index.locked():
         index.write(_record("b" * 32, created="2026-01-02T12:00:00+00:00"))
         index.write(_record("c" * 32, created="2026-01-03T12:00:00+00:00"))
-    (tmp_path / "state" / "jobs" / ("d" * 32 + ".json")).write_text('{"job_id": "not whole"}')
+    (tmp_path / "state" / "jobs" / ("d" * 32 + ".json")).write_text('{"job_id": "not whole"}', newline="\n")
     assert [r.job_id for r in index.records()] == ["c" * 32, "b" * 32]
     assert "left out" in caplog.text
     with pytest.raises(ValueError, match="not a job record"):
@@ -139,7 +140,7 @@ def test_a_record_with_a_time_or_pid_that_cannot_be_used_is_not_whole(tmp_path, 
     index = JobIndex(tmp_path / "state")
     with index.locked():
         index.write(_record("b" * 32))
-    (tmp_path / "state" / "jobs" / f"{JOB}.json").write_text(json.dumps(data))
+    (tmp_path / "state" / "jobs" / f"{JOB}.json").write_text(json.dumps(data), newline="\n")
     assert [r.job_id for r in index.records()] == ["b" * 32] and "left out" in caplog.text
 
 

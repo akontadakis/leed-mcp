@@ -266,7 +266,7 @@ def test_the_log_appends_across_radiance_instances_and_never_truncates(tmp_path)
     every matrix the resume reuses (rather than re-traces) would lose
     their audit-trail line."""
     log_path = tmp_path / "run.log"
-    log_path.write_text("stale content from a previous session\n")
+    log_path.write_text("stale content from a previous session\n", newline="\n")
     radiance = Radiance(FakeRunner(), log_path)
 
     radiance.run(["oconv", "scene.rad"])
@@ -532,7 +532,7 @@ def _fake_install(tmp_path, monkeypatch, *, with_lib=True, standard_lib=False):
     (root / "bin").mkdir(parents=True)
     if with_lib:
         (root / "lib").mkdir()
-        (root / "lib" / "rayinit.cal").write_text("{ invented }\n")
+        (root / "lib" / "rayinit.cal").write_text("{ invented }\n", newline="\n")
     standard = tmp_path / "usr_local_lib_ray"
     if standard_lib:
         standard.mkdir()
@@ -575,7 +575,7 @@ def test_with_no_raypath_a_symlinked_binary_leads_to_its_real_library(tmp_path, 
     # the generic <prefix>/lib beside the symlink is not a Radiance library.
     seen = _capture_env(monkeypatch)
     root, _ = _fake_install(tmp_path, monkeypatch)
-    (root / "bin" / "rtrace").write_text("")
+    (root / "bin" / "rtrace").write_text("", newline="\n")
     prefix = tmp_path / "prefix"
     (prefix / "bin").mkdir(parents=True)
     (prefix / "lib").mkdir()

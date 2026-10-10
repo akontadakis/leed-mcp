@@ -200,15 +200,15 @@ def _write_suns_fixture(tmp_path, *, modifiers, hours, rgb, name="suns.mtx"):
     suns_path = tmp_path / name
     # sun_matrix's own content is unread by coefficients.py; only the .mod
     # and .suns.json sidecars are (R-P34 step 5, sky.read_suns).
-    suns_path.write_text("void light dummy\n0\n0\n3 1 1 1\n", encoding="utf-8")
+    suns_path.write_text("void light dummy\n0\n0\n3 1 1 1\n", encoding="utf-8", newline="\n")
     (tmp_path / f"{name}.mod").write_text(
         "".join(f"{m}\n" for m in modifiers), encoding="utf-8",
-    )
+    newline="\n")
     records = [
         {"modifier": m, "hour": h, "rgb": list(r)}
         for m, h, r in zip(modifiers, hours, rgb)
     ]
-    (tmp_path / f"{name}.suns.json").write_text(json.dumps(records), encoding="utf-8")
+    (tmp_path / f"{name}.suns.json").write_text(json.dumps(records), encoding="utf-8", newline="\n")
     return suns_path
 
 
@@ -333,7 +333,7 @@ def _with_aux_primitive(prepared, cal_name):
     text = prepared.materials_file.read_text()
     prepared.materials_file.write_text(
         text + f"\nvoid brightfunc aux_fn\n2 f {cal_name}\n0\n0\n"
-    )
+    , newline="\n")
 
 
 def _coefficients_runner_calls(tmp_path, prepared, project, version="fake_radiance 1.2.3"):
@@ -357,12 +357,12 @@ def test_a_radiance_upgrade_rebuilds_the_matrices(tmp_path, write_example):
 def test_a_changed_auxiliary_file_rebuilds_the_matrices(tmp_path, write_example):
     prepared, project = _prepared_model(tmp_path, write_example)
     cal = pathlib.Path(project.scene.files[0]).parent / "aux.cal"
-    cal.write_text("f(x) = 1;\n")
+    cal.write_text("f(x) = 1;\n", newline="\n")
     _with_aux_primitive(prepared, "aux.cal")
 
     assert _coefficients_runner_calls(tmp_path, prepared, project) == 2
     assert _coefficients_runner_calls(tmp_path, prepared, project) == 0
-    cal.write_text("f(x) = 2;\n")
+    cal.write_text("f(x) = 2;\n", newline="\n")
     assert _coefficients_runner_calls(tmp_path, prepared, project) == 2
 
 
@@ -1314,10 +1314,10 @@ class _RealisticRunner:
             if "-D" in argv:
                 pathlib.Path(argv[argv.index("-D") + 1]).write_text(
                     _REALISTIC_SUN_TEXT, encoding="utf-8",
-                )
+                newline="\n")
                 pathlib.Path(argv[argv.index("-M") + 1]).write_text(
                     "solar_realistic\n", encoding="utf-8",
-                )
+                newline="\n")
                 return RunResult(0, b"", b"")
             pathlib.Path(stdout_path).write_bytes(
                 _realistic_matrix_bytes(
@@ -1381,7 +1381,7 @@ def test_run_option1_engine_none_end_to_end_over_realistic_radiance_output(
         "time_zone -15\nsite_elevation 0.0\nweather_data_file_units 1\n"
         "1 1 0.0 0 0\n",
         encoding="utf-8",
-    )
+    newline="\n")
     runner = _RealisticRunner()
     rad = Radiance(runner, tmp_path / "run.log")
     rules = load_rules(project.credit_rules_path)
@@ -1712,6 +1712,6 @@ def test_the_isolated_scene_writer_quotes_awkward_words(tmp_path):
     from leed_daylight.scene.reader import read_scene as _read
 
     path = tmp_path / "isolated.rad"
-    path.write_text(_primitive_text("void", "brightfunc", "dim", ("a b.cal", "x#y", "it's"), (), ()))
+    path.write_text(_primitive_text("void", "brightfunc", "dim", ("a b.cal", "x#y", "it's"), (), ()), newline="\n")
     [prim] = _read([path], "m")
     assert prim.sargs == ("a b.cal", "x#y", "it's")

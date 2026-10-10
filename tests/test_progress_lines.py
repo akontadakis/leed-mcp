@@ -48,10 +48,10 @@ def views_folder(tmp_path, write_example):
     base = tmp_path / "views"
     base.mkdir()
     folder = write_example(base, mutate).parent
-    (folder / "scene.rad").write_text(SCENE_RAD)
-    (folder / "materials.csv").write_text(MATERIALS_CSV)
-    (folder / "spaces.csv").write_text(SPACES_CSV)
-    (folder / "credit_rules.yaml").write_text(RULES_YAML)
+    (folder / "scene.rad").write_text(SCENE_RAD, newline="\n")
+    (folder / "materials.csv").write_text(MATERIALS_CSV, newline="\n")
+    (folder / "spaces.csv").write_text(SPACES_CSV, newline="\n")
+    (folder / "credit_rules.yaml").write_text(RULES_YAML, newline="\n")
     return folder
 
 

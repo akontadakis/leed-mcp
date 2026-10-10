@@ -23,7 +23,7 @@ def _sha(path) -> str:
 def folder(tmp_path):
     folder = tmp_path / "p"
     folder.mkdir()
-    (folder / "glare_narrative.md").write_text(TEXT)
+    (folder / "glare_narrative.md").write_text(TEXT, newline="\n")
     return folder
 
 
@@ -78,7 +78,7 @@ async def test_a_refused_edit_writes_nothing(tmp_path, folder, change, field, wo
 
 
 async def test_measures_need_a_well_formed_spaces_block(tmp_path, folder):
-    (folder / "glare_narrative.md").write_text(TEXT.replace("<!-- /auto:spaces -->\n", ""))
+    (folder / "glare_narrative.md").write_text(TEXT.replace("<!-- /auto:spaces -->\n", ""), newline="\n")
     result = await _update(tmp_path, folder, measures={"Room North": "blinds"})
     assert codes(result) == [("INPUT_INVALID", "measures")]
 

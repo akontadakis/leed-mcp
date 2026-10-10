@@ -107,9 +107,9 @@ L0,Room North,office,yes,24,3.0,2.0,0.0,no,,1,1,
 @pytest.fixture
 def chain(tmp_path, write_example):
     project_dir = write_example(tmp_path).parent
-    (project_dir / "scene.rad").write_text(SCENE_RAD)
-    (project_dir / "materials.csv").write_text(MATERIALS_CSV)
-    (project_dir / "spaces.csv").write_text(SPACES_CSV)
+    (project_dir / "scene.rad").write_text(SCENE_RAD, newline="\n")
+    (project_dir / "materials.csv").write_text(MATERIALS_CSV, newline="\n")
+    (project_dir / "spaces.csv").write_text(SPACES_CSV, newline="\n")
     project = load_project(project_dir / "project.yaml")
     prims = read_scene(project.scene.files, project.scene.units)
     roles = load_materials(project_dir / "materials.csv")
@@ -419,7 +419,7 @@ def test_a_scene_that_already_uses_the_blocking_name_is_refused(chain):
     clashing.write_text(
         prepared.materials_file.read_text()
         + f"\nvoid plastic {BLOCKED_VIEW_MODIFIER}\n0\n0\n5  0.5 0.5 0.5  0 0\n"
-    )
+    , newline="\n")
     model = dataclasses.replace(prepared, materials_file=clashing)
 
     with pytest.raises(ViewModelError, match=BLOCKED_VIEW_MODIFIER):

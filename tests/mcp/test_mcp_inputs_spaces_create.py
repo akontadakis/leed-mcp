@@ -79,7 +79,7 @@ async def test_a_room_name_like_101_is_written_as_text(tmp_path, folder):
 
 
 async def test_replacing_carries_each_matched_rows_values(tmp_path, folder):
-    (folder / "spaces.csv").write_text(SPACES_CSV)
+    (folder / "spaces.csv").write_text(SPACES_CSV, newline="\n")
     result = await _create(tmp_path, folder, [{"label": "R1", "space_type": "classroom"}],
                            expected_sha256=_sha(folder / "spaces.csv"))
     assert result.is_error is False and result.structured_content["unmatched_rows"] == []
@@ -89,8 +89,8 @@ async def test_replacing_carries_each_matched_rows_values(tmp_path, folder):
 
 
 async def test_after_a_split_the_old_row_is_listed_and_the_halves_need_rows(tmp_path, folder):
-    (folder / "spaces.csv").write_text(SPACES_CSV)
-    (folder / "splits.csv").write_text(SPLITS_CSV)
+    (folder / "spaces.csv").write_text(SPACES_CSV, newline="\n")
+    (folder / "splits.csv").write_text(SPLITS_CSV, newline="\n")
     sha = _sha(folder / "spaces.csv")
     refused = await _create(tmp_path, folder, [], expected_sha256=sha)
     assert codes(refused) == [("ARGUMENT_MISSING", "rows")] and "R1 (" in refused.structured_content["reason"]
@@ -103,7 +103,7 @@ async def test_after_a_split_the_old_row_is_listed_and_the_halves_need_rows(tmp_
 
 
 async def test_two_rooms_with_one_name_are_refused_by_the_loader(tmp_path, folder):
-    (folder / "splits.csv").write_text(SPLITS_CSV)
+    (folder / "splits.csv").write_text(SPLITS_CSV, newline="\n")
     result = await _create(tmp_path, folder, [ROW, {**ROW, "label": "R2"}])
     assert codes(result) == [("INPUT_INVALID", None)] and "appears twice" in result.structured_content["reason"]
     assert not (folder / "spaces.csv").exists()
@@ -115,7 +115,7 @@ async def test_create_spaces_needs_materials(tmp_path, folder):
 
 
 async def test_an_old_file_without_centroids_lists_every_room_as_unmatched(tmp_path, folder):
-    (folder / "spaces.csv").write_text("floor,room,space_type\nL0,Room North,office\nL0, ,lab\nL1,Room West,lab\n")
+    (folder / "spaces.csv").write_text("floor,room,space_type\nL0,Room North,office\nL0, ,lab\nL1,Room West,lab\n", newline="\n")
     result = await _create(tmp_path, folder, [ROW], expected_sha256=_sha(folder / "spaces.csv"))
     assert result.is_error is False and codes(result) == []
     assert result.structured_content["unmatched_rows"] == ["Room North", "Room West"]

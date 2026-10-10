@@ -73,7 +73,7 @@ async def test_create_refuses_a_bad_row(tmp_path, folder, row, field, words):
 
 
 async def test_create_over_an_existing_file_needs_its_sha256(tmp_path, folder):
-    (folder / "materials.csv").write_text(MATERIALS_CSV)
+    (folder / "materials.csv").write_text(MATERIALS_CSV, newline="\n")
     refused = await _inputs(tmp_path, folder, "create", rows=ROLES)
     assert codes(refused) == [("INPUT_CHANGED_ON_DISK", "expected_sha256")]
     result = await _inputs(tmp_path, folder, "create", rows=ROLES, expected_sha256=_sha(folder / "materials.csv"))
@@ -88,7 +88,7 @@ async def test_the_view_column_is_written_only_when_a_row_has_a_view(tmp_path, f
 
 
 async def test_update_changes_the_rows_it_names(tmp_path, folder):
-    (folder / "materials.csv").write_text(MATERIALS_CSV)
+    (folder / "materials.csv").write_text(MATERIALS_CSV, newline="\n")
     result = await _inputs(tmp_path, folder, "update", expected_sha256=_sha(folder / "materials.csv"),
                            rows=[{"modifier": "wall_paint", "note": "painted plaster, invented"}])
     assert result.is_error is False
@@ -96,7 +96,7 @@ async def test_update_changes_the_rows_it_names(tmp_path, folder):
 
 
 async def test_update_adds_a_scene_modifier_the_file_lacks(tmp_path, folder):
-    (folder / "materials.csv").write_text(MATERIALS_CSV.replace("glass_clear,glass,glazing,\n", ""))
+    (folder / "materials.csv").write_text(MATERIALS_CSV.replace("glass_clear,glass,glazing,\n", ""), newline="\n")
     result = await _inputs(tmp_path, folder, "update", expected_sha256=_sha(folder / "materials.csv"),
                            rows=[{"modifier": "glass_clear", "role": "glazing"}])
     assert result.is_error is False
@@ -109,7 +109,7 @@ async def test_update_without_the_file_is_file_missing(tmp_path, folder):
 
 
 async def test_a_linked_materials_csv_is_never_written_through(tmp_path, folder):
-    (tmp_path / "real.csv").write_text(MATERIALS_CSV)
+    (tmp_path / "real.csv").write_text(MATERIALS_CSV, newline="\n")
     symlink_or_skip(folder / "materials.csv", tmp_path / "real.csv")
     result = await _inputs(tmp_path, folder, "update", expected_sha256=_sha(tmp_path / "real.csv"),
                            rows=[{"modifier": "wall_paint", "role": "ceiling"}])
@@ -147,7 +147,7 @@ async def test_adding_a_vlt_by_update_keeps_the_materials_digest(tmp_path, folde
         path.write_bytes(b"\xef\xbb\xbf" + MATERIALS_CSV.replace("\n", "\r\n").encode("utf-8"))
     else:
         lines = MATERIALS_CSV.splitlines()
-        path.write_text("\n".join([lines[0] + ",view"] + [line + "," for line in lines[1:]]) + "\n")
+        path.write_text("\n".join([lines[0] + ",view"] + [line + "," for line in lines[1:]]) + "\n", newline="\n")
     before_digest, before = materials_digest(path), path.read_bytes()
     result = await _inputs(tmp_path, folder, "update", expected_sha256=_sha(path),
                            rows=[{"modifier": "glass_clear", "vlt": 62}])
@@ -167,7 +167,7 @@ async def test_update_keeps_the_other_rows_view_note_and_vlt(tmp_path, folder):
                     "floor_carpet,plastic,floor,carpet note,,\n"
                     "ceiling_tile,plastic,ceiling,,,\n"
                     "wall_paint,plastic,wall,,blocks,\n"
-                    "glass_clear,glass,glazing,clear glass,clear,60\n")
+                    "glass_clear,glass,glazing,clear glass,clear,60\n", newline="\n")
     result = await _inputs(tmp_path, folder, "update", expected_sha256=_sha(path),
                            rows=[{"modifier": "ceiling_tile", "note": "invented"}])
     assert result.is_error is False
@@ -180,7 +180,7 @@ async def test_update_keeps_the_other_rows_view_note_and_vlt(tmp_path, folder):
 
 async def test_create_refuses_a_scene_modifier_a_spreadsheet_would_run(tmp_path, folder):
     for path in [folder / "scene.rad"]:
-        path.write_text(path.read_text().replace("wall_paint", "=wall_paint"))
+        path.write_text(path.read_text().replace("wall_paint", "=wall_paint"), newline="\n")
     roles = [{**row, "modifier": "=wall_paint"} if row["modifier"] == "wall_paint" else row for row in ROLES]
     result = await _inputs(tmp_path, folder, "create", rows=roles, expected_sha256=None)
     assert codes(result) == [("INPUT_INVALID", "rows")] and "rename" in result.structured_content["reason"]

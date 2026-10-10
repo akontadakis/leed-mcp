@@ -62,7 +62,7 @@ def keep(outside: pathlib.Path, *rel: str) -> None:
     """A file at ``outside/<rel>`` that no verb may delete."""
     path = outside.joinpath(*rel)
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text("outside the project; never deleted\n")
+    path.write_text("outside the project; never deleted\n", newline="\n")
 
 
 def snapshot(outside: pathlib.Path) -> dict[str, bytes]:

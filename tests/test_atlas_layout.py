@@ -150,7 +150,7 @@ def test_a_merged_space_fills_both_pieces_and_is_labelled_once(tmp_path, write_e
 
 def test_the_bundle_has_no_piece_row_and_labels_a_space_on_its_largest_piece(tmp_path, write_example, write_wea):
     folder = build_merge_project(tmp_path, write_example, write_wea)
-    (folder / "spaces.csv").write_text(EAST_FIRST_SPACES_CSV)
+    (folder / "spaces.csv").write_text(EAST_FIRST_SPACES_CSV, newline="\n")
     case, _, bundle = atlas_inputs(folder, tmp_path / "work")
 
     assert [(r.name, r.storey, r.x, r.y, r.z, r.included) for r in bundle.rooms] == [
@@ -230,7 +230,7 @@ def test_a_merged_space_excluded_from_the_case_gets_no_grid_or_blind_clause(tmp_
     sentence, with neither the grid nor the blind clause, whether or not
     Option 1 is shown."""
     folder = build_merge_project(tmp_path, write_example, write_wea)
-    (folder / "spaces.csv").write_text(EXCLUDED_MERGE_SPACES_CSV)
+    (folder / "spaces.csv").write_text(EXCLUDED_MERGE_SPACES_CSV, newline="\n")
     case, _, bundle = atlas_inputs(folder, tmp_path / "work")
 
     assert [r.included for r in bundle.rooms if r.name == "Room North"] == [False]
@@ -250,7 +250,7 @@ def test_a_merged_space_included_but_not_occupied_gets_no_grid_or_blind_clause(
     sentence states neither the grid nor the blind clause, whether or not
     Option 1 is shown. The gridded split space keeps its sentence."""
     folder = build_combined_project(tmp_path, write_example, write_wea)
-    (folder / "spaces.csv").write_text(UNOCCUPIED_MERGE_SPACES_CSV)
+    (folder / "spaces.csv").write_text(UNOCCUPIED_MERGE_SPACES_CSV, newline="\n")
     if with_option1:
         engine = _GridlessRoomFake(prepared_model(folder))
         run_module.run_folder(folder, CASE, engine=engine, out=io.StringIO())

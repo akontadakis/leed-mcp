@@ -262,7 +262,7 @@ def test_an_empty_path_is_refused(tmp_path, rel):
 def test_a_symlink_leading_out_is_refused(tmp_path):
     folder = _folder(tmp_path)
     (tmp_path / "elsewhere").mkdir()
-    (tmp_path / "elsewhere" / "secret.txt").write_text("invented")
+    (tmp_path / "elsewhere" / "secret.txt").write_text("invented", newline="\n")
     symlink_or_skip(folder / "model", tmp_path / "elsewhere")
     symlink_or_skip(folder / "link.txt", tmp_path / "elsewhere" / "secret.txt")
 
@@ -275,7 +275,7 @@ def test_a_symlink_leading_out_is_refused(tmp_path):
 def test_a_symlink_inside_the_folder_is_allowed(tmp_path):
     folder = _folder(tmp_path)
     (folder / "model").mkdir()
-    (folder / "model" / "scene.rad").write_text("")
+    (folder / "model" / "scene.rad").write_text("", newline="\n")
     symlink_or_skip(folder / "scene_link.rad", folder / "model" / "scene.rad")
 
     assert resolve_inside(folder, "scene_link.rad") == (folder / "model" / "scene.rad").resolve()
@@ -328,7 +328,7 @@ def test_a_relative_folder_is_stored_absolute(tmp_path, monkeypatch):
 @pytest.mark.parametrize("text", ["not json", "{\"folders\": []}", "[1, \"relative/path\"]", ""])
 def test_a_malformed_recent_file_reads_as_empty(tmp_path, text):
     recent = tmp_path / "recent.json"
-    recent.write_text(text)
+    recent.write_text(text, newline="\n")
 
     assert read_recent(recent) == []
 
@@ -337,10 +337,13 @@ def test_a_missing_recent_file_reads_as_empty(tmp_path):
     assert read_recent(tmp_path / "none" / "recent.json") == []
 
 
-def test_no_test_touches_the_real_recent_file():
+def test_no_test_touches_the_real_recent_file(tmp_path_factory):
     path = files.default_recent_file()
 
     assert path.name == "recent.json"
-    assert pathlib.Path.home() not in path.parents
+    # In the test run's own temporary folder, which on Windows lies inside
+    # the home folder (AppData\Local\Temp), so "not under home" is no test.
+    assert tmp_path_factory.getbasetemp().resolve() in path.resolve().parents
+    assert path.resolve() != (pathlib.Path.home() / ".leed-daylight" / "recent.json").resolve()
     assert path == files.default_recent_file()
     assert os.path.isabs(path)

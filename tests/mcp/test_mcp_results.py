@@ -57,7 +57,7 @@ async def test_an_unsafe_case_is_input_invalid(tmp_path, project):
 
 
 async def test_a_results_file_that_is_not_json_is_input_invalid(tmp_path, project):
-    (project / "_run" / "option1" / CASE / "results.json").write_text("{not json")
+    (project / "_run" / "option1" / CASE / "results.json").write_text("{not json", newline="\n")
     result = await call(tool_server(tmp_path), "results", {"action": "summary", **_args(project)})
     assert codes(result) == [("INPUT_INVALID", None)]
 
@@ -137,7 +137,7 @@ def _weather_outside(tmp_path, project):
     outside = tmp_path / "outside.wea"
     shutil.copy(project / "weather" / "example.wea", outside)
     text = (project / "project.yaml").read_text()
-    (project / "project.yaml").write_text(text.replace("weather/example.wea", str(outside)))
+    (project / "project.yaml").write_text(text.replace("weather/example.wea", str(outside)), newline="\n")
     return outside
 
 
@@ -154,14 +154,14 @@ def test_a_recorded_input_outside_the_folder_is_not_read(tmp_path):
     from leed_mcp.adapters.results_files import _digest
     folder = (tmp_path / "p")
     folder.mkdir()
-    (tmp_path / "secret.txt").write_text("x")
+    (tmp_path / "secret.txt").write_text("x", newline="\n")
     assert _digest(folder.resolve(), str((tmp_path / "secret.txt").resolve())) is None
     assert _digest(folder.resolve(), "../secret.txt") is None
 
 
 async def test_a_room_named_by_a_number_stays_text_and_filters(tmp_path, project):
     path = project / "_run" / "option1" / CASE / "points.csv"
-    path.write_text(path.read_text().replace("Room North", "101"))
+    path.write_text(path.read_text().replace("Room North", "101"), newline="\n")
     data = (await call(tool_server(tmp_path), "results",
                        {"action": "points", **_args(project, space="101")})).structured_content
     assert data["total"] == 54 and data["rows"][0]["room"] == "101"

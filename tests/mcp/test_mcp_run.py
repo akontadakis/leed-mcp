@@ -109,7 +109,7 @@ async def test_a_missing_input_file_is_file_missing(tmp_path, folder):
 async def test_a_project_yaml_path_outside_the_folder_is_refused_before_the_job(tmp_path, folder):
     shutil.copy(folder / "weather" / "example.wea", tmp_path / "elsewhere.wea")
     text = (folder / "project.yaml").read_text().replace("weather/example.wea", "../elsewhere.wea")
-    (folder / "project.yaml").write_text(text)
+    (folder / "project.yaml").write_text(text, newline="\n")
     launcher = FakeLauncher()
     result = await _run(tmp_path, folder, "prepare", launcher)
     assert codes(result) == [("PATH_OUTSIDE_ROOTS", None)] and launcher.calls == []
@@ -117,13 +117,13 @@ async def test_a_project_yaml_path_outside_the_folder_is_refused_before_the_job(
 
 
 async def test_a_scene_include_outside_the_folder_is_refused(tmp_path, folder):
-    (tmp_path / "outside.rad").write_text((folder / "scene.rad").read_text())
-    (folder / "scene.rad").write_text("!xform ../outside.rad\n")
+    (tmp_path / "outside.rad").write_text((folder / "scene.rad").read_text(), newline="\n")
+    (folder / "scene.rad").write_text("!xform ../outside.rad\n", newline="\n")
     assert codes(await _run(tmp_path, folder, "prepare")) == [("SCENE_INCLUDE_OUTSIDE", None)]
 
 
 async def test_a_linked_input_file_is_never_read(tmp_path, folder):
-    (tmp_path / "real.csv").write_text((folder / "spaces.csv").read_text())
+    (tmp_path / "real.csv").write_text((folder / "spaces.csv").read_text(), newline="\n")
     (folder / "spaces.csv").unlink()
     symlink_or_skip(folder / "spaces.csv", tmp_path / "real.csv")
     assert codes(await _run(tmp_path, folder, "prepare")) == [("PATH_UNSAFE", None)]

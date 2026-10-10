@@ -58,8 +58,8 @@ def millimetre_copy(folder, target) -> pathlib.Path:
             words = line.split()
             line = " ".join([words[0], *(f"{float(w) * 1000:g}" for w in words[1:])])
         lines.append(line)
-    (target / "scene.rad").write_text("\n".join(lines) + "\n")
+    (target / "scene.rad").write_text("\n".join(lines) + "\n", newline="\n")
     raw = yaml.safe_load((target / "project.yaml").read_text())
     raw["scene"]["units"] = "mm"
-    (target / "project.yaml").write_text(yaml.safe_dump(raw, sort_keys=False))
+    (target / "project.yaml").write_text(yaml.safe_dump(raw, sort_keys=False), newline="\n")
     return target

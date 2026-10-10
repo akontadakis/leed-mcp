@@ -78,7 +78,7 @@ def _write_views_only_results(folder, prepared, case: str) -> None:
     }
     (case_dir / "views_results.json").write_text(
         json.dumps(payload, sort_keys=True, indent=2, allow_nan=False) + "\n", encoding="utf-8"
-    )
+    , newline="\n")
     with open(case_dir / "points.csv", "w", newline="", encoding="utf-8") as handle:
         writer = _csv.writer(handle)
         writer.writerow(["room", "storey", "x", "y", "z", "type2", "type3", "quality",
@@ -179,13 +179,13 @@ def test_checksums_verify(folder):
 def test_checksums_verify_including_a_name_with_a_space(folder):
     path = _package(folder)
     odd = path / "reports" / "a name with spaces.txt"
-    odd.write_text("invented")
+    odd.write_text("invented", newline="\n")
     lines = (path / "checksums.sha256").read_text().splitlines()
     lines.append(f"{hashlib.sha256(b'invented').hexdigest()}  reports/a name with spaces.txt")
-    (path / "checksums.sha256").write_text("\n".join(sorted(lines, key=lambda l: l.split('  ', 1)[1])) + "\n")
+    (path / "checksums.sha256").write_text("\n".join(sorted(lines, key=lambda l: l.split('  ', 1)[1])) + "\n", newline="\n")
 
     assert package.verify_checksums(path) == []
-    odd.write_text("changed")
+    odd.write_text("changed", newline="\n")
     assert package.verify_checksums(path) == ["reports/a name with spaces.txt"]
 
 
@@ -194,12 +194,12 @@ def test_verify_checksums_guards_malformed_lines_and_escaping_paths(folder):
     checksums = path / "checksums.sha256"
     original = checksums.read_text()
 
-    checksums.write_text(original + "not-a-valid-checksum-line\n")
+    checksums.write_text(original + "not-a-valid-checksum-line\n", newline="\n")
     with pytest.raises(package.PackageError, match="malformed"):
         package.verify_checksums(path)
 
     digest = "0" * 64
-    checksums.write_text(original.rstrip("\n") + f"\n{digest}  ../outside.txt\n")
+    checksums.write_text(original.rstrip("\n") + f"\n{digest}  ../outside.txt\n", newline="\n")
     with pytest.raises(package.PackageError, match="outside"):
         package.verify_checksums(path)
 
@@ -219,7 +219,7 @@ def test_a_symlinked_report_file_is_refused(folder):
 def test_packaging_twice_replaces_the_first(folder):
     first = _package(folder)
     marker = first / "old_marker.txt"
-    marker.write_text("from the first package")
+    marker.write_text("from the first package", newline="\n")
 
     second = _package(folder)
 
@@ -331,7 +331,7 @@ def test_a_manifest_entry_without_files_is_refused(folder):
     manifest_path = folder / "_run" / "reports" / CASE / package.REPORT_MANIFEST
     manifest = json.loads(manifest_path.read_text())
     del manifest["options"]["option2"]["files"]
-    manifest_path.write_text(json.dumps(manifest, sort_keys=True, indent=2) + "\n")
+    manifest_path.write_text(json.dumps(manifest, sort_keys=True, indent=2) + "\n", newline="\n")
 
     with pytest.raises(package.PackageError, match="option2"):
         _package(folder)
@@ -339,7 +339,7 @@ def test_a_manifest_entry_without_files_is_refused(folder):
 
 def test_a_stale_report_is_refused(folder):
     results = folder / "_run" / "option2" / CASE / "option2_results.json"
-    results.write_text(results.read_text().replace('"case"', '"case" ', 1))
+    results.write_text(results.read_text().replace('"case"', '"case" ', 1), newline="\n")
 
     with pytest.raises(package.PackageError) as excinfo:
         _package(folder)
@@ -353,7 +353,7 @@ def test_a_stale_points_csv_is_refused(folder):
     own sha256, so an option's points.csv changing after the report was
     made (results.json untouched) is refused too."""
     points = folder / "_run" / "option2" / CASE / "points.csv"
-    points.write_text(points.read_text() + "\n")
+    points.write_text(points.read_text() + "\n", newline="\n")
 
     with pytest.raises(package.PackageError) as excinfo:
         _package(folder)
@@ -367,7 +367,7 @@ def test_an_edited_narrative_is_refused(folder):
     report time; editing it afterwards must be refused by name, not
     shipped silently out of date."""
     narrative_path = folder / "glare_narrative.md"
-    narrative_path.write_text(narrative_path.read_text() + "\nEdited after the report was made.\n")
+    narrative_path.write_text(narrative_path.read_text() + "\nEdited after the report was made.\n", newline="\n")
 
     with pytest.raises(package.PackageError) as excinfo:
         _package(folder)
@@ -383,7 +383,7 @@ def test_a_narrative_reported_for_another_case_is_refused(folder):
     manifest_path = folder / "_run" / "reports" / CASE / package.REPORT_MANIFEST
     manifest = json.loads(manifest_path.read_text())
     manifest["options"]["option1"]["narrative_case"] = "another_case"
-    manifest_path.write_text(json.dumps(manifest, sort_keys=True, indent=2) + "\n")
+    manifest_path.write_text(json.dumps(manifest, sort_keys=True, indent=2) + "\n", newline="\n")
 
     with pytest.raises(package.PackageError) as excinfo:
         _package(folder)
@@ -399,7 +399,7 @@ def test_write_index_skips_a_case_with_malformed_provenance(folder):
     _package(folder)
     other = folder / "submission" / "other_case"
     other.mkdir()
-    (other / "provenance.json").write_text(json.dumps({"case": "other_case"}))
+    (other / "provenance.json").write_text(json.dumps({"case": "other_case"}), newline="\n")
 
     out = io.StringIO()
     package_module.package_folder(folder, out=out, now=NOW)
@@ -438,13 +438,13 @@ def _edit_manifest(folder, change):
     path = _manifest_path(folder)
     manifest = json.loads(path.read_text())
     change(manifest)
-    path.write_text(json.dumps(manifest, sort_keys=True, indent=2) + "\n")
+    path.write_text(json.dumps(manifest, sort_keys=True, indent=2) + "\n", newline="\n")
 
 
 @pytest.mark.parametrize("text", ["[]\n", '{"options": [], "skipped": {}}\n', '{"options": {"option2": 3}}\n',
                                   '{"options": {', ""])
 def test_main_refuses_a_malformed_report_manifest_in_one_line(folder, capsys, text):
-    _manifest_path(folder).write_text(text)
+    _manifest_path(folder).write_text(text, newline="\n")
 
     code = package_module.main([str(folder)])
 
@@ -567,7 +567,7 @@ def _atlas_dir(folder):
 
 
 def test_the_package_holds_the_atlas_but_never_the_blender_log(folder):
-    (_atlas_dir(folder) / "blender.log").write_text("an invented Blender log naming /a/machine/path\n")
+    (_atlas_dir(folder) / "blender.log").write_text("an invented Blender log naming /a/machine/path\n", newline="\n")
 
     path = _package(folder)
 
@@ -733,7 +733,7 @@ def test_a_symlinked_splits_csv_is_refused(tmp_path, write_example, write_wea):
 
 def test_an_edit_to_the_report_section_after_the_reports_is_refused(folder):
     path = folder / "project.yaml"
-    path.write_text(path.read_text() + "report:\n  prepared_by: Someone Else\n")
+    path.write_text(path.read_text() + "report:\n  prepared_by: Someone Else\n", newline="\n")
 
     with pytest.raises(package.PackageError) as excinfo:
         _package(folder)
@@ -745,10 +745,10 @@ def test_an_edit_to_the_report_section_after_the_reports_is_refused(folder):
 def test_an_edit_to_the_atlas_section_after_the_reports_is_refused(folder):
     # Only the atlas entry carries a stale digest: the option entries are made current.
     path = folder / "project.yaml"
-    path.write_text(path.read_text() + "atlas:\n  drawings: []\nreport:\n  prepared_by: A\n")
+    path.write_text(path.read_text() + "atlas:\n  drawings: []\nreport:\n  prepared_by: A\n", newline="\n")
     report_module.report_folder(folder, options=("option1", "option2", "views"), renderer="pillow",
                                 out=io.StringIO(), today=NOW.date())
-    path.write_text(path.read_text().replace("prepared_by: A", "prepared_by: B"))
+    path.write_text(path.read_text().replace("prepared_by: A", "prepared_by: B"), newline="\n")
 
     with pytest.raises(package.PackageError, match="report: or atlas: section"):
         _package(folder)

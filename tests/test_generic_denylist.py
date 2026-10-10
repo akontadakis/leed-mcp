@@ -127,7 +127,7 @@ def test_a_package_html_file_is_in_the_scan_set(tmp_path, monkeypatch):
     # No .html file ships today; one that does is scanned too.
     page = tmp_path / "web" / "page.html"
     page.parent.mkdir()
-    page.write_text("<p>1.5</p>\n")
+    page.write_text("<p>1.5</p>\n", newline="\n")
     monkeypatch.setattr(sys.modules[__name__], "PACKAGE_DIR", tmp_path)
     assert page in _scan_targets()
 
@@ -136,7 +136,7 @@ def test_the_scanner_finds_an_unmarked_long_float(tmp_path):
     # Four decimal places, no source: the exact shape that leaked before.
     # The value itself is invented and appears nowhere else.
     sample = tmp_path / "sample.py"
-    sample.write_text("x = 0.1234\n")  # source: invented for this test only
+    sample.write_text("x = 0.1234\n", newline="\n")  # source: invented for this test only
     findings = find_unmarked_long_floats([sample])
     assert len(findings) == 1
     path, line, value = findings[0]
@@ -147,25 +147,25 @@ def test_the_scanner_finds_an_unmarked_long_float(tmp_path):
 
 def test_a_same_line_source_marker_allows_it(tmp_path):
     sample = tmp_path / "sample.py"
-    sample.write_text("x = 0.1234  # source: made up\n")
+    sample.write_text("x = 0.1234  # source: made up\n", newline="\n")
     assert find_unmarked_long_floats([sample]) == []
 
 
 def test_a_previous_line_source_marker_allows_it(tmp_path):
     sample = tmp_path / "sample.py"
-    sample.write_text("# source: made up\nx = 0.1234\n")
+    sample.write_text("# source: made up\nx = 0.1234\n", newline="\n")
     assert find_unmarked_long_floats([sample]) == []
 
 
 def test_scientific_notation_is_not_matched(tmp_path):
     sample = tmp_path / "sample.py"
-    sample.write_text("x = 1e-12\n")
+    sample.write_text("x = 1e-12\n", newline="\n")
     assert find_unmarked_long_floats([sample]) == []
 
 
 def test_an_integer_is_not_matched(tmp_path):
     sample = tmp_path / "sample.py"
-    sample.write_text("x = 3000\n")
+    sample.write_text("x = 3000\n", newline="\n")
     assert find_unmarked_long_floats([sample]) == []
 
 

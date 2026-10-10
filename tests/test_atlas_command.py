@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import html
 import json
+import os
 import re
 
 import pytest
@@ -65,8 +66,10 @@ def test_atlas_before_any_run_is_a_model_check(tmp_path, write_example, write_we
         reason = re.search(rf"^skipped {option}: (.*)$", printed.out, re.M).group(1)
         assert reason.startswith(f"no {option} results for case 'base_case'")
         # The terminal names the full path; the page, which a package
-        # carries, names it inside the project folder (final review M3).
-        assert html.escape(reason.replace(f"{folder}/", "")) in page
+        # carries, names it inside the project folder with "/" on every
+        # system (final review M3; the terminal keeps Windows' backslashes).
+        inside = re.sub(re.escape(f"{folder}{os.sep}") + r"(\S*)", lambda m: m.group(1).replace(os.sep, "/"), reason)
+        assert html.escape(inside) in page
     assert f"case: {CASE}" in printed.out
     assert "prepared model written to" not in printed.out
     assert "Blender skipped, no model.blend: BLENDER is set to " in printed.out
@@ -89,7 +92,7 @@ def test_the_entry_is_merged_into_the_report_manifest(folder):
     kept = {"results_sha256": "1", "points_sha256": "2", "files": ["option1/a.docx"]}
     (base / REPORT_MANIFEST).write_text(json.dumps({
         "case": CASE, "options": {"option1": kept}, "skipped": {"views": "an invented reason"},
-    }))
+    }), newline="\n")
     result = atlas_folder(folder, blender=False)
     manifest = json.loads((base / REPORT_MANIFEST).read_text())
     assert manifest["options"] == {"option1": kept}
@@ -153,7 +156,7 @@ def test_main_refuses_a_missing_folder(tmp_path, capsys):
 def test_main_refuses_a_malformed_report_manifest(folder, capsys):
     base = folder / "_run" / "reports" / CASE
     base.mkdir(parents=True)
-    (base / REPORT_MANIFEST).write_text(json.dumps({"options": [], "skipped": {}}))
+    (base / REPORT_MANIFEST).write_text(json.dumps({"options": [], "skipped": {}}), newline="\n")
     assert main([str(folder), "--no-blender"]) == 1
     assert "'options' is a list, not an object" in capsys.readouterr().err
 
@@ -169,7 +172,7 @@ def test_a_bad_atlas_entry_is_replaced(folder, capsys):
     kept = {"results_sha256": "1", "points_sha256": "2", "files": ["option1/a.docx"]}
     (base / REPORT_MANIFEST).write_text(json.dumps({
         "case": CASE, "options": {"option1": kept}, "skipped": {}, "atlas": BAD_ATLAS,
-    }))
+    }), newline="\n")
 
     assert main([str(folder), "--no-blender"]) == 0
 
@@ -182,7 +185,7 @@ def test_a_bad_atlas_entry_is_replaced(folder, capsys):
 def test_a_malformed_manifest_is_refused_before_anything_is_written(folder, capsys):
     base = folder / "_run" / "reports" / CASE
     base.mkdir(parents=True)
-    (base / REPORT_MANIFEST).write_text(json.dumps({"options": [], "skipped": {}, "atlas": BAD_ATLAS}))
+    (base / REPORT_MANIFEST).write_text(json.dumps({"options": [], "skipped": {}, "atlas": BAD_ATLAS}), newline="\n")
 
     assert main([str(folder), "--no-blender"]) == 1
 

@@ -586,6 +586,12 @@ def acquire_lock(folder, verb: str, *, err=None, on_stale: Callable[[], None] | 
         try:
             fd = os.open(path, os.O_RDWR | os.O_CREAT | os.O_EXCL | getattr(os, "O_NOFOLLOW", 0) | _BINARY, 0o644)
             created = True
+        except PermissionError:
+            # Windows refuses to create a file over a folder with EACCES,
+            # not EEXIST: a folder there is refused the same plain way.
+            if sys.platform == "win32" and os.path.isdir(path) and not os.path.islink(path):
+                raise _folder_refusal(path) from None
+            raise
         except FileExistsError:
             created = False
             try:

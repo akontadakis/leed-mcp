@@ -88,7 +88,7 @@ def test_a_degenerate_sliver_in_a_millimetre_scene_is_refused(tmp_path):
     scene.write_text(
         "void plastic wall_paint\n0\n0\n5 0.5 0.5 0.5 0 0\n\n"
         f"wall_paint polygon sliver.1\n0\n0\n9  0 0 0   1 0 0   1 {sliver_y} 0\n"
-    )
+    , newline="\n")
     prims = read_scene([scene], "mm")
     report = validate_scene(prims, "mm")
     assert any("degenerate polygon" in e for e in report.errors)

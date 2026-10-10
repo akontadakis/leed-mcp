@@ -189,7 +189,7 @@ def _imports_of(root: Path, file: Path) -> list[_ImportStmt]:
 
 
 def _rel(root: Path, file: Path) -> str:
-    return str(file.relative_to(root.parent)) if root.parent != root else str(file)
+    return file.relative_to(root.parent).as_posix() if root.parent != root else file.as_posix()
 
 
 # --------------------------------------------------------------------------
@@ -470,7 +470,7 @@ def find_webbrowser_violations(root: Path) -> list[str]:
 def _write(base: Path, rel: str, content: str) -> None:
     path = base / rel
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(textwrap.dedent(content))
+    path.write_text(textwrap.dedent(content), newline="\n")
 
 
 def test_planted_upward_import_is_reported(tmp_path):

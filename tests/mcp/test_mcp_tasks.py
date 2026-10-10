@@ -112,7 +112,7 @@ async def test_a_refused_stop_is_acknowledged_and_the_task_says_why(tmp_path, fo
     rig = Rig(tmp_path)
     job_id = await rig.start(folder)
     current = folder / "_run" / "jobs" / "current.json"
-    current.write_text(json.dumps({**json.loads(current.read_text()), **change}))
+    current.write_text(json.dumps({**json.loads(current.read_text()), **change}), newline="\n")
     assert (await rig.task("tasks/cancel", job_id))["resultType"] == "complete"
     assert rig.signaller.sent == []
     task = await rig.task("tasks/get", job_id)
@@ -222,7 +222,7 @@ async def test_a_refused_stop_note_is_dropped_when_the_task_ends(tmp_path, folde
     rig = Rig(tmp_path)
     job_id = await rig.start(folder)
     current = folder / "_run" / "jobs" / "current.json"
-    current.write_text(json.dumps({**json.loads(current.read_text()), "start_time": None}))
+    current.write_text(json.dumps({**json.loads(current.read_text()), "start_time": None}), newline="\n")
     assert (await rig.task("tasks/cancel", job_id))["resultType"] == "complete"
     tasks = rig.server._extensions[0]
     assert job_id in tasks._notes

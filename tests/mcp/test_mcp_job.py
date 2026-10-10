@@ -68,7 +68,7 @@ def _finish_now(process, code=0):
     the job wrote fall between its start and its end."""
     process.finish(code)
     process.end_record.write_text(json.dumps(
-        {"exit_code": code, "ended": datetime.datetime.now().isoformat(timespec="seconds")}))
+        {"exit_code": code, "ended": datetime.datetime.now().isoformat(timespec="seconds")}), newline="\n")
 
 
 async def test_the_finished_snapshot_survives_a_later_job(tmp_path, folder):
@@ -76,7 +76,7 @@ async def test_the_finished_snapshot_survives_a_later_job(tmp_path, folder):
     manifest = folder / "_run" / "manifest.json"
 
     def write(rooms, points):
-        manifest.write_text(json.dumps({"rooms": rooms, "totals": {"grid_point_count": points, "group_count": 1}}))
+        manifest.write_text(json.dumps({"rooms": rooms, "totals": {"grid_point_count": points, "group_count": 1}}), newline="\n")
 
     first = await rig.start(folder)
     write({"Room North": {}}, 40)

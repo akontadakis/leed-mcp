@@ -35,7 +35,7 @@ def test_bands_are_sorted_and_ascending(tmp_path):
         "  ase: {lux: 1000, hours: 250, per_space_narrative_trigger_pct: 10.0}\n"
         "option2: {bands: UNVERIFIED, lux_min: 300, lux_max: 3000}\n"
         "glare_control_required: true\n"
-    )
+    , newline="\n")
     bands = load_rules(path)["option1"]["sda"]["bands"]
     assert [b["min_pct"] for b in bands] == [40.0, 75.0]
 
@@ -47,7 +47,7 @@ def test_missing_file_is_refused(tmp_path):
 
 def test_missing_section_is_refused(tmp_path):
     path = tmp_path / "rules.yaml"
-    path.write_text("version: v\nmax_points: 3\n")
+    path.write_text("version: v\nmax_points: 3\n", newline="\n")
     with pytest.raises(ValueError, match="option1"):
         load_rules(path)
 
@@ -62,7 +62,7 @@ def test_a_band_without_points_is_refused(tmp_path):
         "  ase: {lux: 1000, hours: 250, per_space_narrative_trigger_pct: 10.0}\n"
         "option2: {bands: UNVERIFIED, lux_min: 300, lux_max: 3000}\n"
         "glare_control_required: true\n"
-    )
+    , newline="\n")
     with pytest.raises(ValueError, match="points"):
         load_rules(path)
 
@@ -80,7 +80,7 @@ def test_a_malformed_nested_section_is_a_named_refusal(tmp_path):
         "  ase: {lux: 1000, hours: 250, per_space_narrative_trigger_pct: 10.0}\n"
         "option2: {bands: UNVERIFIED, lux_min: 300, lux_max: 3000}\n"
         "glare_control_required: true\n"
-    )
+    , newline="\n")
     with pytest.raises(ValueError, match=r"option1\.sda") as excinfo:
         load_rules(path)
     assert not isinstance(excinfo.value, (AttributeError, TypeError, KeyError))
@@ -100,7 +100,7 @@ def test_a_band_with_a_non_numeric_min_pct_is_a_named_refusal(tmp_path):
         "  ase: {lux: 1000, hours: 250, per_space_narrative_trigger_pct: 10.0}\n"
         "option2: {bands: UNVERIFIED, lux_min: 300, lux_max: 3000}\n"
         "glare_control_required: true\n"
-    )
+    , newline="\n")
     with pytest.raises(ValueError, match=re.escape("option1.sda.bands[0].min_pct")) as excinfo:
         load_rules(path)
     assert not isinstance(excinfo.value, (AttributeError, TypeError, KeyError))
@@ -210,7 +210,7 @@ def test_each_required_nested_key_is_a_named_refusal(tmp_path, break_it, expecte
     rules = _complete_rules()
     break_it(rules)
     path = tmp_path / "rules.yaml"
-    path.write_text(yaml.safe_dump(rules))
+    path.write_text(yaml.safe_dump(rules), newline="\n")
     with pytest.raises(ValueError, match=re.escape(expected_path)) as excinfo:
         load_rules(path)
     assert not isinstance(excinfo.value, (AttributeError, TypeError, KeyError))
@@ -249,7 +249,7 @@ def _rules_with_additional_point(tmp_path, additional_point: str) -> pathlib.Pat
         "  ase: {lux: 1000, hours: 250, per_space_narrative_trigger_pct: 10.0}\n"
         "option2: {bands: UNVERIFIED, lux_min: 300, lux_max: 3000}\n"
         "glare_control_required: true\n"
-    )
+    , newline="\n")
     return path
 
 
@@ -283,13 +283,13 @@ def _write_template(tmp_path, mutate) -> pathlib.Path:
     raw = yaml.safe_load(SHIPPED_TEMPLATE.read_text())
     mutate(raw)
     path = tmp_path / "credit_rules.yaml"
-    path.write_text(yaml.safe_dump(raw, sort_keys=False))
+    path.write_text(yaml.safe_dump(raw, sort_keys=False), newline="\n")
     return path
 
 
 def test_intent_is_optional(tmp_path):
     path = tmp_path / "rules.yaml"
-    path.write_text(yaml.safe_dump(_complete_rules()))
+    path.write_text(yaml.safe_dump(_complete_rules()), newline="\n")
 
     rules = load_rules(path)
 
@@ -300,7 +300,7 @@ def test_a_non_string_intent_is_refused(tmp_path):
     rules = _complete_rules()
     rules["intent"] = 4.1
     path = tmp_path / "rules.yaml"
-    path.write_text(yaml.safe_dump(rules))
+    path.write_text(yaml.safe_dump(rules), newline="\n")
 
     with pytest.raises(ValueError, match="intent"):
         load_rules(path)
@@ -334,7 +334,7 @@ def test_an_empty_intent_is_refused(tmp_path, value):
     rules = _complete_rules()
     rules["intent"] = value
     path = tmp_path / "rules.yaml"
-    path.write_text(yaml.safe_dump(rules))
+    path.write_text(yaml.safe_dump(rules), newline="\n")
 
     with pytest.raises(ValueError, match="intent"):
         load_rules(path)
@@ -350,7 +350,7 @@ def test_an_empty_views_intent_is_refused(tmp_path, value):
 
 def test_space_rule_sda_pct_is_optional(tmp_path):
     path = tmp_path / "rules.yaml"
-    path.write_text(yaml.safe_dump(_complete_rules()))
+    path.write_text(yaml.safe_dump(_complete_rules()), newline="\n")
 
     rules = load_rules(path)
 
@@ -370,7 +370,7 @@ def test_a_malformed_space_rule_sda_pct_is_refused_by_name(tmp_path, value):
     rules = _complete_rules()
     rules["option1"]["space_rule_sda_pct"] = value
     path = tmp_path / "rules.yaml"
-    path.write_text(yaml.safe_dump(rules))
+    path.write_text(yaml.safe_dump(rules), newline="\n")
 
     with pytest.raises(ValueError, match=re.escape("option1.space_rule_sda_pct")) as excinfo:
         load_rules(path)

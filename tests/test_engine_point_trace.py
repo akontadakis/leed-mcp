@@ -40,9 +40,9 @@ def _files(tmp_path, sky_text="sky one"):
     materials = tmp_path / "materials.rad"
     scene = tmp_path / "scene.rad"
     sky = tmp_path / "03-28_0900.sky"
-    materials.write_text("materials")
-    scene.write_text("scene")
-    sky.write_text(sky_text)
+    materials.write_text("materials", newline="\n")
+    scene.write_text("scene", newline="\n")
+    sky.write_text(sky_text, newline="\n")
     return materials, scene, sky
 
 
@@ -95,7 +95,7 @@ def test_a_changed_sky_is_traced_again(tmp_path):
     _, _, sky = _files(tmp_path)
     runner = FakeRunner()
     _trace(tmp_path, runner, sky)
-    sky.write_text("sky two")
+    sky.write_text("sky two", newline="\n")
     _trace(tmp_path, runner, sky)
     assert len(_traces(runner)) == 2
 

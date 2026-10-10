@@ -119,7 +119,7 @@ def _write_views_results(folder: pathlib.Path, prepared) -> None:
         "excluded_spaces": [], "warnings": [],
         "inputs": input_fingerprints(load_project(folder / "project.yaml"), folder),
     }
-    (case_dir / "views_results.json").write_text(_dump(payload))
+    (case_dir / "views_results.json").write_text(_dump(payload), newline="\n")
     with open(case_dir / "points.csv", "w", newline="", encoding="utf-8") as handle:
         writer = csv.writer(handle)
         writer.writerow(["room", "storey", "x", "y", "z", "type2", "type3", "quality",
@@ -136,7 +136,7 @@ def build_deliver_project(tmp_path, write_example, write_wea, *, options=OPTIONS
 
     folder = build_option2_project(tmp_path, write_example, write_wea, spaces_csv=SPACES_CSV, mutate=mutate)
     for name, text in (extra_files or {}).items():
-        (folder / name).write_text(text, encoding="utf-8")
+        (folder / name).write_text(text, encoding="utf-8", newline="\n")
     _, prepared, _, _, _ = load_chain(folder)
     if "option1" in options:
         run_module.run_folder(folder, CASE, engine=Option1Fake(prepared), out=io.StringIO())
@@ -217,7 +217,7 @@ def build_two_storey_project(tmp_path, write_example, write_wea, *, options=OPTI
 
     folder = build_option2_project(tmp_path, write_example, write_wea, spaces_csv=TWO_STOREY_SPACES_CSV,
                                    mutate=mutate, scene_rad=TWO_STOREY_SCENE_RAD)
-    (folder / "credit_rules.yaml").write_text(TWO_STOREY_CREDIT_RULES)
+    (folder / "credit_rules.yaml").write_text(TWO_STOREY_CREDIT_RULES, newline="\n")
     _, prepared, _, _, _ = load_chain(folder)
     if "option1" in options:
         run_module.run_folder(folder, CASE, engine=Option1Fake(prepared), out=io.StringIO())
@@ -283,7 +283,7 @@ def edit_results(folder: pathlib.Path, option: str, change) -> None:
     path = folder / "_run" / option / CASE / name
     payload = json.loads(path.read_text())
     change(payload)
-    path.write_text(_dump(payload))
+    path.write_text(_dump(payload), newline="\n")
 
 
 #: The roof-glass variant (skylights plan, Tasks 11-14): the same invented
@@ -502,7 +502,7 @@ def build_roof_glass_project(tmp_path, write_example, write_wea, *, options=("op
 
     folder = build_option2_project(tmp_path, write_example, write_wea, spaces_csv=SPACES_CSV,
                                    mutate=mutate, scene_rad=scene_rad)
-    (folder / "materials.csv").write_text(ROOF_MATERIALS_CSV)
+    (folder / "materials.csv").write_text(ROOF_MATERIALS_CSV, newline="\n")
     if "option1" in options:
         _, prepared, _, _, _ = load_chain(folder)
         run_module.run_folder(folder, CASE, engine=Option1Fake(prepared), out=io.StringIO())

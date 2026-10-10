@@ -15,7 +15,7 @@ BASE = (
 
 def _write(tmp_path, tail, *rows):
     path = tmp_path / "spaces.csv"
-    path.write_text(BASE + tail + "\n" + "".join(r + "\n" for r in rows), encoding="utf-8")
+    path.write_text(BASE + tail + "\n" + "".join(r + "\n" for r in rows), encoding="utf-8", newline="\n")
     return path
 
 

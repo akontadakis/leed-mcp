@@ -417,7 +417,7 @@ def write_result_summary(out_dir: pathlib.Path, run: str, result, rules: Mapping
     out_dir = pathlib.Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
     path = out_dir / RESULT_FILE
-    path.write_text(json.dumps(result_summary(run, result, rules), indent=1) + "\n", encoding="utf-8")
+    path.write_text(json.dumps(result_summary(run, result, rules), indent=1) + "\n", encoding="utf-8", newline="\n")
     return path
 
 

@@ -66,7 +66,7 @@ def test_twenty_and_twenty_five_rows_keep_the_summary_links(folder, tmp_path, mo
 
 def test_the_verb_refuses_without_units(folder, tmp_path, capsys):
     path = folder / "project.yaml"
-    path.write_text(path.read_text(encoding="utf-8").replace("calculator:\n  units: SI\n", ""), encoding="utf-8")
+    path.write_text(path.read_text(encoding="utf-8").replace("calculator:\n  units: SI\n", ""), encoding="utf-8", newline="\n")
     code = main([str(folder), "--case", CASE, "--template", str(write_standin(tmp_path / "blank.xlsm"))])
     assert code == 1
     assert "calculator.units" in capsys.readouterr().err
@@ -142,7 +142,7 @@ def test_a_calculator_filled_in_other_units_is_left_out(folder, tmp_path):
     from leed_daylight.deliver.package import CALCULATOR_STALE
     build_calculator(load_case(folder, CASE), write_standin(tmp_path / "blank.xlsm"))
     path = folder / "project.yaml"
-    path.write_text(path.read_text(encoding="utf-8").replace("units: SI", "units: IP"), encoding="utf-8")
+    path.write_text(path.read_text(encoding="utf-8").replace("units: SI", "units: IP"), encoding="utf-8", newline="\n")
     package = _package(folder)
     assert not (package / "calculator").exists()
     assert CALCULATOR_STALE in _readme(package)
@@ -152,7 +152,7 @@ def test_a_calculator_filled_with_another_vlt_is_left_out(folder, tmp_path):
     from leed_daylight.deliver.package import CALCULATOR_STALE
     build_calculator(load_case(folder, CASE), write_standin(tmp_path / "blank.xlsm"))
     path = folder / "materials.csv"
-    path.write_text(path.read_text(encoding="utf-8").replace(",62\n", ",70\n"), encoding="utf-8")
+    path.write_text(path.read_text(encoding="utf-8").replace(",62\n", ",70\n"), encoding="utf-8", newline="\n")
     package = _package(folder)
     assert not (package / "calculator").exists()
     assert CALCULATOR_STALE in _readme(package)
@@ -168,7 +168,7 @@ def test_a_calculator_filled_with_another_vlt_is_left_out(folder, tmp_path):
 def test_a_malformed_calculator_record_is_left_out(folder, tmp_path, edit):
     result = build_calculator(load_case(folder, CASE), write_standin(tmp_path / "blank.xlsm"))
     (result.path.parent.parent / "x").write_bytes(b"x")
-    result.record.write_text(edit(json.loads(result.record.read_text(encoding="utf-8"))), encoding="utf-8")
+    result.record.write_text(edit(json.loads(result.record.read_text(encoding="utf-8"))), encoding="utf-8", newline="\n")
     package = _package(folder)
     assert not (package / "calculator").exists()
 
@@ -180,7 +180,7 @@ def test_a_calculator_filled_before_the_record_format_is_stale(folder, tmp_path)
     record = json.loads(result.record.read_text(encoding="utf-8"))
     assert record["format"] == RECORD_FORMAT
     del record["format"]
-    result.record.write_text(json.dumps(record), encoding="utf-8")
+    result.record.write_text(json.dumps(record), encoding="utf-8", newline="\n")
     package = _package(folder)
     assert not (package / "calculator").exists()
     assert CALCULATOR_STALE in _readme(package)
@@ -196,7 +196,7 @@ def test_the_verb_refuses_vision_glazing_without_a_vlt(folder, tmp_path, capsys)
     text = path.read_text(encoding="utf-8")
     glazing = [line.split(",")[0] for line in text.splitlines() if ",glazing," in line]
     assert glazing
-    path.write_text(text.replace(",62\n", ",\n"), encoding="utf-8")
+    path.write_text(text.replace(",62\n", ",\n"), encoding="utf-8", newline="\n")
     code = main([str(folder), "--case", CASE, "--template", str(write_standin(tmp_path / "blank.xlsm"))])
     assert code == 1
     err = capsys.readouterr().err

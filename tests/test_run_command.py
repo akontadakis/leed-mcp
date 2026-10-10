@@ -121,9 +121,9 @@ def _build_project(tmp_path, write_example) -> pathlib.Path:
     spaces.csv."""
     project_path = write_example(tmp_path)
     project_dir = project_path.parent
-    (project_dir / "scene.rad").write_text(SCENE_RAD)
-    (project_dir / "materials.csv").write_text(MATERIALS_CSV)
-    (project_dir / "spaces.csv").write_text(SPACES_CSV)
+    (project_dir / "scene.rad").write_text(SCENE_RAD, newline="\n")
+    (project_dir / "materials.csv").write_text(MATERIALS_CSV, newline="\n")
+    (project_dir / "spaces.csv").write_text(SPACES_CSV, newline="\n")
     return project_dir
 
 
@@ -361,7 +361,7 @@ def test_unverified_bands_print_not_awarded(tmp_path, write_example):
         "  lux_min: 300\n"
         "  lux_max: 3000\n"
         "glare_control_required: true\n"
-    )
+    , newline="\n")
     engine = _engine_for(project_dir)
     out = io.StringIO()
 
@@ -415,7 +415,7 @@ def test_a_nonexistent_folder_is_refused(tmp_path, capsys):
 
 def test_a_file_given_as_the_folder_is_refused(tmp_path, capsys):
     not_a_dir = tmp_path / "im_a_file.txt"
-    not_a_dir.write_text("not a folder")
+    not_a_dir.write_text("not a folder", newline="\n")
 
     exit_code = run_module.main([str(not_a_dir)])
 
@@ -458,7 +458,7 @@ def test_a_chain_refusal_prints_error_and_exit_1_with_no_traceback(tmp_path, wri
         "ceiling_tile,plastic,ceiling,\n"
         "floor_carpet,plastic,floor,\n"
         # glass_clear's role is missing entirely.
-    )
+    , newline="\n")
 
     exit_code = run_module.main([str(project_dir)])
 

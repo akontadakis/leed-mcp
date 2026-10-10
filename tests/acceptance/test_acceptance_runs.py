@@ -79,7 +79,7 @@ SYNTHETIC_ENTRY = {
 
 
 def _fixture_folder(tmp_path, expected):
-    (tmp_path / "expected.json").write_text(json.dumps(expected), encoding="utf-8")
+    (tmp_path / "expected.json").write_text(json.dumps(expected), encoding="utf-8", newline="\n")
     return tmp_path
 
 

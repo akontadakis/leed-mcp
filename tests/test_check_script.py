@@ -35,7 +35,7 @@ JUNIT = """\
 
 def test_summary_counts(tmp_path):
     path = tmp_path / "junit.xml"
-    path.write_text(JUNIT)
+    path.write_text(JUNIT, newline="\n")
     summary = check.summarise(path)
     assert summary == check.Summary(passed=2, failed=2, skipped=3, acceptance_skipped=1,
                                     confidentiality_skipped=1, acceptance_total=1, confidentiality_total=1)
@@ -74,7 +74,7 @@ def test_not_collected_block(tmp_path):
         '<testcase classname="tests.test_units" name="test_a"/>\n'
         '<testcase classname="tests.test_scoring" name="test_b"><failure message="boom"/></testcase>\n'
         '</testsuite></testsuites>\n'
-    )
+    , newline="\n")
     summary = check.summarise(path)
     assert summary == check.Summary(passed=1, failed=1, skipped=0, acceptance_skipped=0,
                                     confidentiality_skipped=0, acceptance_total=0, confidentiality_total=0)
@@ -97,7 +97,7 @@ def test_some_run_and_some_skipped_keeps_the_not_run_wording(tmp_path):
         '<testcase classname="tests.acceptance.test_fixture_option1" name="test_b">'
         '<skipped message="no fixture"/></testcase>\n'
         '</testsuite></testsuites>\n'
-    )
+    , newline="\n")
     summary = check.summarise(path)
     assert summary.acceptance_total == 2
     assert summary.acceptance_skipped == 1
@@ -120,7 +120,7 @@ NO_PASS_MARK_JUNIT = """\
 
 def test_with_the_fixture_set_a_run_without_a_pass_mark_says_so(tmp_path):
     path = tmp_path / "junit.xml"
-    path.write_text(NO_PASS_MARK_JUNIT)
+    path.write_text(NO_PASS_MARK_JUNIT, newline="\n")
     summary = check.summarise(path)
 
     assert summary.acceptance_no_pass_mark == 2
@@ -133,7 +133,7 @@ def test_with_the_fixture_set_a_run_without_a_pass_mark_says_so(tmp_path):
 
 def test_with_the_fixture_set_another_skip_points_at_the_reasons(tmp_path):
     path = tmp_path / "junit.xml"
-    path.write_text(JUNIT)
+    path.write_text(JUNIT, newline="\n")
     summary = check.summarise(path)
 
     line = check.format_summary(summary, 0, environ={"LEED_ACCEPTANCE_FIXTURE": "/fixture"}).splitlines()[1]
@@ -146,7 +146,7 @@ def test_main_passes_arguments_and_returns_the_exit_code(capsys):
     def fake_pytest(args):
         seen.append(args)
         junit = pathlib.Path(args[args.index("--junitxml") + 1])
-        junit.write_text(JUNIT)
+        junit.write_text(JUNIT, newline="\n")
         return 1
 
     assert check.main(["-x", "tests/test_units.py"], run_pytest=fake_pytest) == 1

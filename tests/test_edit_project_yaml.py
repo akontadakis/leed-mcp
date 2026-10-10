@@ -97,7 +97,7 @@ def test_the_round_trip_keeps_every_fixture_project(name, tmp_path, write_exampl
     raw = yaml.safe_load(path.read_text())
 
     text = render(raw)
-    path.write_text(text, encoding="utf-8")
+    path.write_text(text, encoding="utf-8", newline="\n")
 
     assert load_project(path) == before
     assert yaml.safe_load(text) == raw
@@ -200,7 +200,7 @@ def test_a_reflectance_role_left_out_stays_out(example_project_dir):
     del raw["reflectance"]["ground"]
 
     text = render(raw)
-    (example_project_dir / "project.yaml").write_text(text)
+    (example_project_dir / "project.yaml").write_text(text, newline="\n")
 
     assert yaml.safe_load(text)["reflectance"] == {"policy": "override", "ceiling": 0.75, "wall": 0.56, "floor": 0.34}
     assert dict(load_project(example_project_dir / "project.yaml").reflectance.by_role) == {
@@ -342,7 +342,7 @@ def test_a_group_with_real_values_counts_as_confirmed(example_project_dir):
     assert all(group_confirmed(raw, group) for group in GROUPS)
     applied = apply_prefills(raw, GROUPS)
     assert applied == raw
-    path.write_text(render(applied))
+    path.write_text(render(applied), newline="\n")
     project = load_project(path)
     assert project.grid.spacing_m == 0.5 and project.option2.lux_min == 250
 

@@ -57,7 +57,7 @@ def folder(tmp_path):
 def outside(tmp_path):
     path = tmp_path / "outside"
     path.mkdir()
-    (path / "secret.txt").write_text("a file outside the project, never shown\n")
+    (path / "secret.txt").write_text("a file outside the project, never shown\n", newline="\n")
     return path
 
 
@@ -74,7 +74,7 @@ def _record(folder, **changes) -> pathlib.Path:
     """A job record of this test's own (live) process, with ``changes``."""
     jobs_dir = _jobs_dir(folder)
     jobs_dir.mkdir(parents=True, exist_ok=True)
-    (jobs_dir / "20260101-140205_run.log").write_text("a line of the job\n")
+    (jobs_dir / "20260101-140205_run.log").write_text("a line of the job\n", newline="\n")
     data = {
         "verb": "run", "args": ["--case", "base"], "pid": os.getpid(),
         "start_time": process_start_time(os.getpid()),
@@ -83,7 +83,7 @@ def _record(folder, **changes) -> pathlib.Path:
         "started": "2026-01-01T14:02:05",
         **changes,
     }
-    (jobs_dir / CURRENT).write_text(json.dumps(data))
+    (jobs_dir / CURRENT).write_text(json.dumps(data), newline="\n")
     return jobs_dir / CURRENT
 
 
@@ -176,7 +176,7 @@ def test_a_record_whose_paths_are_not_its_own_job_files_is_no_record(folder, out
 
 def test_a_jobs_folder_that_is_a_link_is_never_read(folder, outside):
     _record(outside / "elsewhere")
-    (outside / "elsewhere" / "_run" / "jobs" / "20260101-140205_run.log").write_text("outside text\n")
+    (outside / "elsewhere" / "_run" / "jobs" / "20260101-140205_run.log").write_text("outside text\n", newline="\n")
     (folder / "_run").mkdir()
     symlink_or_skip(folder / "_run" / "jobs", outside / "elsewhere" / "_run" / "jobs")
     jobs_ = _jobs(folder)
@@ -231,7 +231,7 @@ def test_a_lock_that_is_a_link_is_not_followed(folder, outside):
 def test_a_lock_larger_than_4_kib_is_not_read(folder):
     info = hold_lock(folder)
     data = (folder / LOCK_FILE).read_text()
-    (folder / LOCK_FILE).write_text(data + " " * 5000)
+    (folder / LOCK_FILE).write_text(data + " " * 5000, newline="\n")
     assert lock_state(folder) != ("held", info)
 
 
@@ -245,7 +245,7 @@ def test_a_record_that_is_a_fifo_never_blocks(folder):
 
 def test_a_record_larger_than_4_kib_is_not_read(folder):
     path = _record(folder)
-    path.write_text(path.read_text() + " " * 5000)
+    path.write_text(path.read_text() + " " * 5000, newline="\n")
     assert _jobs(folder).status().state == "none"
 
 
@@ -255,18 +255,18 @@ def _record_of(folder, verb: str) -> None:
     """A job record of ``verb``, of this test's own (live) process."""
     jobs_dir = _jobs_dir(folder)
     jobs_dir.mkdir(parents=True, exist_ok=True)
-    (jobs_dir / f"20260101-140205_{verb}.log").write_text("a line of the job\n")
+    (jobs_dir / f"20260101-140205_{verb}.log").write_text("a line of the job\n", newline="\n")
     (jobs_dir / CURRENT).write_text(json.dumps({
         "verb": verb, "args": [], "pid": os.getpid(), "start_time": process_start_time(os.getpid()),
         "log": f"_run/jobs/20260101-140205_{verb}.log",
         "end_record": f"_run/jobs/20260101-140205_{verb}.end.json",
         "started": "2026-01-01T14:02:05",
-    }))
+    }), newline="\n")
 
 
 def test_the_radiance_tail_is_shown(folder):
     _record_of(folder, "run")
-    (folder / "_run" / "radiance.log").write_text("rtrace: a warning\n")
+    (folder / "_run" / "radiance.log").write_text("rtrace: a warning\n", newline="\n")
     assert _jobs(folder).read_log(0).radiance_tail == "rtrace: a warning"
 
 
@@ -283,7 +283,7 @@ def test_a_radiance_log_that_is_a_link_is_not_read(folder, outside, verb, rel):
 @pytest.mark.parametrize("verb, parent", [("option2", "option2"), ("views", "views")])
 def test_a_radiance_log_under_a_linked_folder_is_not_read(folder, outside, verb, parent):
     _record_of(folder, verb)
-    (outside / "radiance.log").write_text("text of a file outside the project\n")
+    (outside / "radiance.log").write_text("text of a file outside the project\n", newline="\n")
     symlink_or_skip(folder / "_run" / parent, outside)
     assert _jobs(folder).read_log(0).radiance_tail == ""
 

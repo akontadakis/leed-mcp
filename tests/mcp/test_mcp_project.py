@@ -23,7 +23,7 @@ async def test_create_writes_the_template_and_lists_the_fill_me_keys(tmp_path):
 
 async def test_create_never_overwrites_a_project(tmp_path):
     (tmp_path / "p").mkdir()
-    (tmp_path / "p" / "spaces.csv").write_text("x\n")
+    (tmp_path / "p" / "spaces.csv").write_text("x\n", newline="\n")
     result = await call(tool_server(tmp_path), "project", {"action": "create", "folder": str(tmp_path / "p")})
     assert codes(result) == [("PROJECT_EXISTS", "folder")]
     assert not (tmp_path / "p" / "project.yaml").exists()
@@ -74,7 +74,7 @@ async def test_status_reports_results_and_whether_their_inputs_changed(tmp_path,
 async def test_status_after_a_value_is_set_back_to_fill_me_says_project_yaml_changed(tmp_path, write_example, write_wea):
     folder = build_deliver_project(tmp_path, write_example, write_wea, options=("option1",))
     text = (folder / "project.yaml").read_text()
-    (folder / "project.yaml").write_text(text.replace("latitude_N: 42.0", "latitude_N: FILL_ME"))
+    (folder / "project.yaml").write_text(text.replace("latitude_N: 42.0", "latitude_N: FILL_ME"), newline="\n")
     data = (await call(tool_server(tmp_path), "project", {"action": "status", "folder": str(folder)})).structured_content
     assert data["fill_me"] == ["site.latitude_N"]
     assert [r["changed"] for r in data["results"] if r["credit"] == "option1"] == [["project.yaml"]]
@@ -93,7 +93,7 @@ async def test_list_is_cut_at_its_limit(tmp_path, monkeypatch):
     monkeypatch.setattr(project_tool, "LIST_MAX", 2)
     for name in "abc":
         (tmp_path / name).mkdir()
-        (tmp_path / name / "project.yaml").write_text("scene: {}\n")
+        (tmp_path / name / "project.yaml").write_text("scene: {}\n", newline="\n")
     result = await call(tool_server(tmp_path), "project", {"action": "list"})
     assert len(result.structured_content["projects"]) == 2 and result.structured_content["total"] == 3
     assert codes(result) == [("RESULT_TRUNCATED", "projects")]
@@ -134,7 +134,7 @@ def test_folder_in_repository_is_refused_before_anything_is_written():
 @pytest.mark.parametrize("text", ["- a list\n", "scene: [unclosed\n"])
 async def test_status_of_an_unreadable_project_yaml_answers_with_an_advisory(tmp_path, text):
     (tmp_path / "p").mkdir()
-    (tmp_path / "p" / "project.yaml").write_text(text)
+    (tmp_path / "p" / "project.yaml").write_text(text, newline="\n")
     result = await call(tool_server(tmp_path), "project", {"action": "status", "folder": str(tmp_path / "p")})
     assert result.is_error is False and result.structured_content["fill_me"] is None
     assert ("INPUT_INVALID", "fill_me") in codes(result)
@@ -150,7 +150,7 @@ def _laughs(levels: int) -> str:
 @pytest.mark.parametrize("text", [_laughs(6), "a: &a [*a]\n"])
 async def test_status_of_an_expanding_or_recursive_project_yaml_answers_with_an_advisory(tmp_path, text):
     (tmp_path / "p").mkdir()
-    (tmp_path / "p" / "project.yaml").write_text(text)
+    (tmp_path / "p" / "project.yaml").write_text(text, newline="\n")
     result = await call(tool_server(tmp_path), "project", {"action": "status", "folder": str(tmp_path / "p")})
     assert result.is_error is False and result.structured_content["fill_me"] is None
     assert ("INPUT_INVALID", "fill_me") in codes(result)
@@ -161,7 +161,7 @@ async def test_status_never_reads_an_input_named_outside_the_folder(tmp_path, wr
     outside = tmp_path / "outside.wea"
     outside.write_bytes((folder / "weather" / "example.wea").read_bytes())
     text = (folder / "project.yaml").read_text()
-    (folder / "project.yaml").write_text(text.replace("weather/example.wea", str(outside)))
+    (folder / "project.yaml").write_text(text.replace("weather/example.wea", str(outside)), newline="\n")
     result = await call(tool_server(tmp_path), "project", {"action": "status", "folder": str(folder)})
     (state,) = [r for r in result.structured_content["results"] if r["credit"] == "option1"]
     assert state["inputs"] == "unchecked" and state["outside"] == [str(outside.resolve())]
@@ -171,7 +171,7 @@ async def test_status_never_reads_an_input_named_outside_the_folder(tmp_path, wr
 def _link_out(tmp_path, folder, name, text):
     """Replace ``folder/name`` with a link to a file outside every root."""
     outside = tmp_path.parent / f"{tmp_path.name}_outside_{name}"
-    outside.write_text(text)
+    outside.write_text(text, newline="\n")
     (folder / name).unlink(missing_ok=True)
     symlink_or_skip(folder / name, outside)
 
@@ -192,7 +192,7 @@ async def test_a_programming_error_while_reading_project_yaml_is_not_hidden(tmp_
         raise TypeError("a bug")
     monkeypatch.setattr(project_tool, "fill_me_keys", broken)
     (tmp_path / "p").mkdir()
-    (tmp_path / "p" / "project.yaml").write_text("scene: {}\n")
+    (tmp_path / "p" / "project.yaml").write_text("scene: {}\n", newline="\n")
     result = await call(tool_server(tmp_path), "project", {"action": "status", "folder": str(tmp_path / "p")})
     assert codes(result) == [("INTERNAL_ERROR", None)]
 
@@ -220,14 +220,14 @@ async def test_an_input_that_cannot_be_read_counts_as_changed(tmp_path, write_ex
 async def test_files_stops_listing_at_the_cap_and_says_so(tmp_path, monkeypatch):
     monkeypatch.setattr(project_state, "FILES_MAX", 3)
     for n in range(5):
-        (tmp_path / f"f{n}.txt").write_text("x")
+        (tmp_path / f"f{n}.txt").write_text("x", newline="\n")
     result = await call(tool_server(tmp_path), "project", {"action": "files", "folder": str(tmp_path)})
     assert [f["path"] for f in result.structured_content["files"]] == ["f0.txt", "f1.txt", "f2.txt"]
     assert codes(result) == [("RESULT_TRUNCATED", "files")]
 
 
 async def test_files_skips_an_entry_that_vanishes_mid_walk(tmp_path, monkeypatch):
-    (tmp_path / "kept.txt").write_text("x")
+    (tmp_path / "kept.txt").write_text("x", newline="\n")
     real_walk = project_state.os.walk
 
     def walk(*args, **kwargs):

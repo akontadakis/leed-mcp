@@ -176,13 +176,13 @@ def test_the_octree_is_built_once_and_rebuilt_when_the_scene_changes(tmp_path):
     rad, runner = _rad(tmp_path, [])
     scene = tmp_path / "views_scene.rad"
     materials = tmp_path / "views_materials.rad"
-    scene.write_text("# scene one\n")
-    materials.write_text("# materials\n")
+    scene.write_text("# scene one\n", newline="\n")
+    materials.write_text("# materials\n", newline="\n")
 
     first = build_view_octree(rad, scene, materials, tmp_path / "engine")
     build_view_octree(rad, scene, materials, tmp_path / "engine")
     oconv_calls = [a for a in runner.calls if a[0] == "oconv"]
-    scene.write_text("# scene two\n")
+    scene.write_text("# scene two\n", newline="\n")
     build_view_octree(rad, scene, materials, tmp_path / "engine")
 
     assert first == tmp_path / "engine" / "views.oct"
@@ -232,8 +232,8 @@ def test_the_radiance_view_tracer_wraps_both(tmp_path):
     tracer = RadianceViewTracer(rad)
     scene = tmp_path / "s.rad"
     materials = tmp_path / "m.rad"
-    scene.write_text("")
-    materials.write_text("")
+    scene.write_text("", newline="\n")
+    materials.write_text("", newline="\n")
 
     octree = tracer.octree(scene, materials, tmp_path / "engine")
     segments = tracer.trace(

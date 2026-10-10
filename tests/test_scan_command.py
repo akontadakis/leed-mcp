@@ -66,9 +66,9 @@ glass_clear,glass,glazing,
 
 def _folder(tmp_path, write_example, scene=SCENE_RAD, materials=None) -> pathlib.Path:
     folder = write_example(tmp_path).parent
-    (folder / "scene.rad").write_text(scene)
+    (folder / "scene.rad").write_text(scene, newline="\n")
     if materials is not None:
-        (folder / "materials.csv").write_text(materials)
+        (folder / "materials.csv").write_text(materials, newline="\n")
     return folder
 
 
@@ -163,7 +163,7 @@ paint_missing polygon wall_room_north_east
 
 def _splits(folder: pathlib.Path, x: float) -> None:
     """One split line along ``x``, run north past both long walls."""
-    (folder / "splits.csv").write_text(f'level_z,points,note\n0.0,"{x:g} -1; {x:g} 5",invented\n')
+    (folder / "splits.csv").write_text(f'level_z,points,note\n0.0,"{x:g} -1; {x:g} 5",invented\n', newline="\n")
 
 
 def test_scan_prints_the_split_lines_and_the_storeys_after_splits(tmp_path, write_example, capsys):
@@ -193,7 +193,7 @@ def test_scan_reports_a_bad_split_line_as_a_problem(tmp_path, write_example, cap
 
 def test_scan_without_materials_does_not_read_splits_csv(tmp_path, write_example, capsys):
     folder = _folder(tmp_path, write_example)
-    (folder / "splits.csv").write_text("not,a,splits,file\n")
+    (folder / "splits.csv").write_text("not,a,splits,file\n", newline="\n")
 
     assert scan_module.main([str(folder)]) == 0
 

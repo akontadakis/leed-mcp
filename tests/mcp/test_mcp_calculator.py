@@ -18,7 +18,7 @@ def folder(tmp_path, write_example, write_wea):
     for credit in ("option1", "views"):
         path = result_path(folder, credit, "base_case")
         path.parent.mkdir(parents=True)
-        path.write_text("{}")
+        path.write_text("{}", newline="\n")
     return folder
 
 

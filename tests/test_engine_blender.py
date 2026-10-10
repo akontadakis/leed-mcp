@@ -56,9 +56,9 @@ class FakeRunner:
         argv = [str(a) for a in argv]
         self.calls.append((argv, pathlib.Path(log_path), timeout_s))
         if argv[1:] == ["--version"]:
-            pathlib.Path(log_path).write_text(self.version)
+            pathlib.Path(log_path).write_text(self.version, newline="\n")
             return self.version_code
-        pathlib.Path(log_path).write_text(self.output)
+        pathlib.Path(log_path).write_text(self.output, newline="\n")
         if self.timeout:
             raise TimeoutError("ran too long")
         if self.save:
@@ -68,7 +68,7 @@ class FakeRunner:
 
 def _executable(path: pathlib.Path) -> pathlib.Path:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text("", encoding="utf-8")
+    path.write_text("", encoding="utf-8", newline="\n")
     return path
 
 
@@ -280,7 +280,7 @@ def test_the_real_runner_stops_a_process_that_runs_too_long(tmp_path):
 
 def _exe(path):
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text("", encoding="utf-8")
+    path.write_text("", encoding="utf-8", newline="\n")
     return path
 
 

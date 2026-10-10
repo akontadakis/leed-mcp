@@ -12,7 +12,14 @@ master before the atlas work, into ``tests/fixtures/golden_figures/``:
 - ``sha256.json``: the sha256 of every output (every figure, three ways);
 - the bytes of the figures in ``KEPT``: one storey plan per option, the
   model-grid and window-group plans, and one bar chart. Kept small on
-  purpose; the digest list covers the rest.
+  purpose; the digest list covers the rest;
+- ``pixels_sha256.json``: the sha256 of the decoded pixels (mode, size and
+  raw bytes, ``pixel_digest``) of every PNG. Written later than the rest
+  (``--write-pixels``), on macOS, from a tree whose every PNG still
+  matched ``sha256.json`` byte for byte, so it holds master's pixels. It
+  lets a system whose PNG encoder compresses the same pixels into other
+  bytes (Linux, see ``tests/test_golden_figures.py``) still check every
+  figure.
 
 ``tests/test_golden_figures.py`` builds the same figures on the code under
 test and compares them. Nothing in them depends on the folder they are
@@ -24,11 +31,17 @@ Generator mode (run once, on the commit the goldens are taken from; it
 refuses to overwrite an existing golden folder)::
 
     PYTHONPATH=.:tests .venv/bin/python tests/golden_figures.py --write
+
+and, once, for the pixel digests (refuses to overwrite them, and refuses
+unless every PNG still matches its recorded byte digest)::
+
+    PYTHONPATH=.:tests .venv/bin/python tests/golden_figures.py --write-pixels
 """
 from __future__ import annotations
 
 import datetime
 import hashlib
+import io
 import json
 import pathlib
 import sys
@@ -43,6 +56,7 @@ from leed_daylight.deliver.word import option1, option2, views
 
 GOLDEN_DIR = pathlib.Path(__file__).parent / "fixtures" / "golden_figures"
 DIGESTS = "sha256.json"
+PIXEL_DIGESTS = "pixels_sha256.json"
 STOREY = "L0"
 TODAY = datetime.date(2026, 1, 1)
 BUILDERS = {"option1": option1, "option2": option2, "views": views}
@@ -114,6 +128,46 @@ def digests(rendered: dict[str, bytes]) -> dict[str, str]:
     return {name: hashlib.sha256(data).hexdigest() for name, data in sorted(rendered.items())}
 
 
+def decode_png(data: bytes):
+    """The PNG ``data`` decoded by Pillow, loaded."""
+    from PIL import Image
+
+    image = Image.open(io.BytesIO(data))
+    image.load()
+    return image
+
+
+def pixel_digest(data: bytes) -> str:
+    """The sha256 of the PNG ``data``'s decoded pixels: its mode, its size
+    and its raw pixel bytes, nothing of how they were compressed."""
+    image = decode_png(data)
+    head = f"{image.mode} {image.size[0]}x{image.size[1]}\n".encode("ascii")
+    return hashlib.sha256(head + image.tobytes()).hexdigest()
+
+
+def pixel_digests(rendered: dict[str, bytes]) -> dict[str, str]:
+    return {name: pixel_digest(data) for name, data in sorted(rendered.items()) if name.endswith(".png")}
+
+
+def write_pixel_digests(golden_dir=GOLDEN_DIR) -> None:
+    """Generator mode for ``PIXEL_DIGESTS``: refuses if the file exists, or
+    if any figure no longer matches its recorded byte digest (its pixels
+    would then not be master's)."""
+    golden_dir = pathlib.Path(golden_dir)
+    target = golden_dir / PIXEL_DIGESTS
+    if target.exists():
+        raise SystemExit(f"{target} already exists; it is written once, never refreshed")
+    with tempfile.TemporaryDirectory() as tmp:
+        rendered = render_figures(tmp)
+    recorded = json.loads((golden_dir / DIGESTS).read_text(encoding="utf-8"))
+    changed = [name for name, digest in digests(rendered).items() if recorded.get(name) != digest]
+    if changed:
+        raise SystemExit(f"these figures differ from master, so their pixels are not master's: {changed}")
+    target.write_text(json.dumps(pixel_digests(rendered), indent=2, sort_keys=True) + "\n",
+                      encoding="utf-8", newline="\n")
+    print(f"wrote {len(pixel_digests(rendered))} pixel digests to {target}")
+
+
 def write_goldens(golden_dir=GOLDEN_DIR) -> None:
     """Generator mode: refuses, before writing anything, if ``golden_dir`` exists."""
     golden_dir = pathlib.Path(golden_dir)
@@ -128,11 +182,14 @@ def write_goldens(golden_dir=GOLDEN_DIR) -> None:
         path = golden_dir / name
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_bytes(rendered[name])
-    (golden_dir / DIGESTS).write_text(json.dumps(digests(rendered), indent=2, sort_keys=True) + "\n")
+    (golden_dir / DIGESTS).write_text(json.dumps(digests(rendered), indent=2, sort_keys=True) + "\n", newline="\n")
     print(f"wrote {len(kept_names())} files of {len(KEPT)} kept figures and {len(rendered)} digests to {golden_dir}")
 
 
 if __name__ == "__main__":
-    if sys.argv[1:] != ["--write"]:
-        raise SystemExit("usage: PYTHONPATH=.:tests .venv/bin/python tests/golden_figures.py --write")
-    write_goldens()
+    if sys.argv[1:] == ["--write"]:
+        write_goldens()
+    elif sys.argv[1:] == ["--write-pixels"]:
+        write_pixel_digests()
+    else:
+        raise SystemExit("usage: PYTHONPATH=.:tests .venv/bin/python tests/golden_figures.py --write | --write-pixels")

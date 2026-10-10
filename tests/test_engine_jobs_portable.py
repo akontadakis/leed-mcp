@@ -154,7 +154,7 @@ def test_windows_release_leaves_another_commands_lock(tmp_path, monkeypatch):
     def close_then_taken(fd):
         real_close(fd)
         if not lock.read_bytes():  # another command takes it over between unlock and delete
-            lock.write_text(json.dumps(dataclasses.asdict(other)))
+            lock.write_text(json.dumps(dataclasses.asdict(other)), newline="\n")
 
     monkeypatch.setattr(jobs.os, "close", close_then_taken)
     jobs.release_lock(tmp_path, info, platform="win32")

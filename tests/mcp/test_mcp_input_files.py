@@ -21,7 +21,7 @@ def _project(tmp_path):
     folder = tmp_path / "p"
     folder.mkdir()
     (folder / "project.yaml").write_text(
-        'weather:\n  file: "weather/site.wea"\nstandard:\n  credit_rules: "credit_rules.yaml"\n')
+        'weather:\n  file: "weather/site.wea"\nstandard:\n  credit_rules: "credit_rules.yaml"\n', newline="\n")
     return folder
 
 
@@ -128,7 +128,7 @@ def test_a_project_yaml_path_outside_the_folder_refuses_every_write(tmp_path, ke
     text = (folder / "project.yaml").read_text()
     if key == "weather":
         text = text.replace('  file: "weather/site.wea"\n', "").replace("weather:\n", "")
-    (folder / "project.yaml").write_text(text + f"{key}: {value}\n")
+    (folder / "project.yaml").write_text(text + f"{key}: {value}\n", newline="\n")
     with pytest.raises(Refused) as caught:
         _write(folder, "notes.csv", None)
     code, reason = _code(caught.value)
@@ -147,7 +147,7 @@ def test_a_link_inside_the_folder_that_leads_out_counts_as_outside(tmp_path):
 
 def test_an_unreadable_project_yaml_refuses_other_writes(tmp_path):
     folder = _project(tmp_path)
-    (folder / "project.yaml").write_text("weather: [unclosed\n")
+    (folder / "project.yaml").write_text("weather: [unclosed\n", newline="\n")
     with pytest.raises(Refused) as caught:
         _write(folder, "notes.csv", None)
     code, reason = _code(caught.value)
@@ -204,7 +204,7 @@ def test_load_yaml_keeps_ordinary_anchors_and_the_cap_counts_expanded_nodes():
 
 def test_an_expanding_project_yaml_refuses_other_writes_and_its_own(tmp_path):
     folder = _project(tmp_path)
-    (folder / "project.yaml").write_text(_laughs())
+    (folder / "project.yaml").write_text(_laughs(), newline="\n")
     with pytest.raises(Refused) as caught:
         _write(folder, "notes.csv", None)
     code, reason = _code(caught.value)
@@ -268,7 +268,8 @@ def test_an_oversized_project_yaml_is_not_ignored_when_naming_credit_rules(tmp_p
 
 @pytest.mark.parametrize("make", [
     lambda path: FileNotFoundError(2, "No such file or directory", str(path)),
-    lambda path: OSError(2, "No such file or directory", str(path), str(path.parent / "other")),
+    # filename2 is the fifth argument (the fourth is Windows' winerror).
+    lambda path: OSError(2, "No such file or directory", str(path), None, str(path.parent / "other")),
     lambda path: ValueError(f"{os.path.realpath(path)}: bad row"),
     lambda path: ValueError(f"{path}: bad row"),
 ])
@@ -280,6 +281,11 @@ def test_as_file_never_names_the_temporary_folder(tmp_path, make):
             real = os.path.realpath(tmp)
             raise make(path)
     text = str(caught.value)
-    assert tmp not in text and real not in text and str(folder / "notes.csv") in text
+    named = str(folder / "notes.csv")
+    assert tmp not in text and real not in text
+    if isinstance(caught.value, OSError):
+        # An OSError's text names its file by repr: doubled backslashes on Windows.
+        assert caught.value.filename == named and repr(named) in text
+        assert "-> None" not in text
     if isinstance(caught.value, ValueError):
         assert text == f"{folder / 'notes.csv'}: bad row"

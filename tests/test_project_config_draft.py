@@ -64,7 +64,7 @@ def _set(raw: dict, path: str, value) -> None:
 
 def _write(folder, raw: dict):
     path = folder / "project.yaml"
-    path.write_text(yaml.safe_dump(raw, sort_keys=False))
+    path.write_text(yaml.safe_dump(raw, sort_keys=False), newline="\n")
     return path
 
 
@@ -237,7 +237,7 @@ def _every_key_project(tmp_path, write_example):
             d["reflectance"][role] = 0.5
         d["performance"]["linked_zones"] = {"L0": ["zone a", "zone b"]}
         d["grid"]["points_file"] = "points.csv"
-        (tmp_path / "project" / "points.csv").write_text("space,x,y,z\n", encoding="utf-8")
+        (tmp_path / "project" / "points.csv").write_text("space,x,y,z\n", encoding="utf-8", newline="\n")
         d["blinds"]["trigger_area"] = "grid"
         d["views"] = {"eye_height_m": 1.2, "eye_height_source": "Invented: seated eye height",
                       "max_interior_glass": 1, "angular_step_deg": 2.0}
@@ -304,7 +304,7 @@ def test_the_draft_check_writes_nothing(tmp_path):
 
 def test_yaml_that_does_not_parse_is_one_error(tmp_path):
     path = tmp_path / "project.yaml"
-    path.write_text("project: [unclosed\n")
+    path.write_text("project: [unclosed\n", newline="\n")
 
     errors, unfinished = check_project_draft(path)
 
@@ -314,7 +314,7 @@ def test_yaml_that_does_not_parse_is_one_error(tmp_path):
 
 def test_a_top_level_that_is_not_a_mapping_is_one_error(tmp_path):
     path = tmp_path / "project.yaml"
-    path.write_text("- a list\n")
+    path.write_text("- a list\n", newline="\n")
 
     assert check_project_draft(path) == (("project.yaml: project.yaml must be a mapping at the top level",), ())
 
@@ -341,7 +341,7 @@ def test_a_complete_scene_section_is_read(example_project_dir):
 
 def test_the_rest_of_the_file_may_still_be_unfinished(tmp_path):
     folder, raw = _new_project(tmp_path)
-    (folder / "model" / "geometry.rad").write_text("")
+    (folder / "model" / "geometry.rad").write_text("", newline="\n")
     raw["scene"] = {"units": "mm", "files": ["model/geometry.rad"]}
     path = _write(folder, raw)
 
@@ -406,7 +406,7 @@ def test_a_file_without_a_scene_section_is_refused(example_project_dir):
 
 def test_load_project_still_refuses_any_fill_me(tmp_path):
     folder, raw = _new_project(tmp_path)
-    (folder / "model" / "geometry.rad").write_text("")
+    (folder / "model" / "geometry.rad").write_text("", newline="\n")
     raw["scene"] = {"units": "m", "files": ["model/geometry.rad"]}
     path = _write(folder, raw)
     load_scene_settings(path)
