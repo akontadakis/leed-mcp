@@ -18,7 +18,7 @@ fixture/
 .ruff_cache/
 
 # A non-editable install (`uv sync --no-editable`, README) builds the packages here
-build/
+/build/
 
 # Local agent and editor state
 .claude/
