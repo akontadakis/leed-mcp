@@ -1,0 +1,4 @@
+R1: storey 0, area 24.00 m2, centroid (3.00, 2.00), level_z 0.00
+warnings: 0
+template written to <folder>/_run/spaces_template.csv
+copy it to spaces.csv and edit the room names

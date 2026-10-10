@@ -1,0 +1,32 @@
+/* The floor atlas page (page.py). System fonts only; no external asset. */
+:root{--sheet:#ffffff;--paper:#f4f5f7;--ink:#1a1a1a;--ink2:#555555;--rule:#d0d4d8;--accent:#2d5f8a;
+  --slab:#eef0f2;--warn:#8a5a00}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+h1{font-size:22px;margin:0 0 4px}
+h2{font-size:17px;margin:0 0 10px}
+.atlas-head{background:var(--sheet);border-bottom:1px solid var(--rule);padding:16px 20px}
+.meta{color:var(--ink2);margin:0 0 10px}
+.check{margin:8px 0;color:var(--ink2)}
+.skipped,.warnings{margin-top:12px}
+.skipped h2,.warnings h2{font-size:14px;margin:0 0 4px;color:var(--warn)}
+.skipped ul,.warnings ul{margin:0;padding-left:20px}
+table{border-collapse:collapse;background:var(--sheet)}
+th,td{border:1px solid var(--rule);padding:4px 8px;text-align:left;vertical-align:top}
+th{background:var(--slab);font-weight:600}
+td.num{text-align:right;font-variant-numeric:tabular-nums}
+.results{margin-top:8px}
+.tabs{display:flex;flex-wrap:wrap;gap:4px;padding:10px 20px 0;border-bottom:1px solid var(--rule);
+  background:var(--paper);position:sticky;top:0;z-index:5}
+.tabs button{font:inherit;border:1px solid var(--rule);border-bottom:0;background:var(--slab);
+  color:var(--ink2);padding:6px 14px;cursor:pointer;border-radius:3px 3px 0 0}
+.tabs button[aria-selected="true"]{background:var(--sheet);color:var(--ink);font-weight:600}
+main{padding:16px 20px 40px}
+.panel{background:var(--sheet);border:1px solid var(--rule);padding:16px}
+.layer-switch{display:inline-block;margin:0 0 10px}
+.layer-switch select{font:inherit;margin-left:6px}
+.plans{margin:0 0 16px}
+.plan{margin:0}
+.plan svg{display:block;width:100%;height:auto;max-width:1600px}
+.rooms{margin-top:8px}

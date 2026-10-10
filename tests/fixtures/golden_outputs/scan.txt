@@ -1,0 +1,13 @@
+scene file: <folder>/scene.rad
+surfaces: 4
+size: x 6.00 m, y 4.00 m, z 3.00 m (scene.units: m)
+materials:
+  modifier                     type       surfaces    area m2  role
+  floor_carpet                 plastic           1      24.00  floor
+  ceiling_tile                 plastic           1      24.00  ceiling
+  wall_paint                   plastic           1      18.00  wall
+  glass_clear                  glass             1       2.00  glazing
+warnings: 0
+problems: 0
+storey 0: level 0.00 m, 1 room(s), 24.00 m2
+room warnings: 0

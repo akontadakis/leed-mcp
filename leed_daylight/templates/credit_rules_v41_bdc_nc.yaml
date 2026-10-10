@@ -1,0 +1,52 @@
+# leed_daylight/templates/credit_rules_v41_bdc_nc.yaml
+#
+# Public standard values only -- the credit clause is cited beside each one.
+# This is not client data; it is the reason the tool exists.
+version: "LEED v4.1 BD+C New Construction, EQ Credit Daylight"
+source: "USGBC credit language page, LEED BD+C: New Construction v4.1, EQ Credit Daylight"
+intent: "Connect building occupants with the outdoors, reinforce circadian rhythms, and reduce the use of electrical lighting by introducing daylight into the space."
+max_points: 3
+option1:
+  space_rule_sda_pct: [55.0, 75.0]  # Table 1's two per-space sDA bands above the base 40% one; read by the Option 1 report
+  sda:
+    lux: 300                      # "spatial daylight autonomy300/50%"
+    fraction: 0.50                # "spatial daylight autonomy300/50%"
+    bands:                        # Table 1, on the AVERAGE sDA for the regularly occupied floor area
+      - {min_pct: 40.0, points: 1}
+      - {min_pct: 55.0, points: 2}
+      - {min_pct: 75.0, points: 3}
+    additional_point:             # Table 1, last row
+      every_space_min_pct: 55.0
+      only_if_points: 2           # exactly 2 band points; at 3 it is exemplary performance
+      points: 1
+      clause: "Each regularly occupied space achieves sDA300/50% value of at least 55% -- exemplary performance or 1 additional point if 2 points achieved above."
+  ase:
+    lux: 1000                     # "annual sunlight exposure1000,250"
+    hours: 250                    # "annual sunlight exposure1000,250"
+    per_space_narrative_trigger_pct: 10.0
+    project_threshold_pct: null   # v4.1 removed the project ASE threshold; ASE is calculated, not passed
+option2:
+  lux_min: 300
+  lux_max: 3000
+  bands:                          # Table 2
+    - {min_pct: 55.0, points: 1}
+    - {min_pct: 75.0, points: 2}
+    - {min_pct: 90.0, points: 3}
+  blinds: "exclude"               # "Exclude blinds or shades from the model."
+  time_basis: "weather_file_local"  # 9 a.m. and 3 p.m. as the weather file stamps them: its own time zone, no daylight-saving shift
+glare_control_required: true
+views:
+  version: "LEED v4.1 BD+C, EQ Credit Quality Views"
+  source: "LEED v4.1 BD+C guide, EQ Credit Quality Views; LEED v4 BD+C reference guide, Quality Views"
+  intent: "Give building occupants a connection to the natural outdoor environment by providing quality views."
+  quality_definition: "type2_and_type3"
+  threshold_pct: 75.0             # "for 75% of all regularly occupied floor area"
+  points: 1                       # NC, CS, Schools, Retail, Data Centers, Hospitality
+  vlt_min_exclusive: 0.40         # "visible light transmittance (VLT) above 40%"
+  head_height_multiple: 3.0       # "within three times the head height of the glazing"
+  object_distance_m: 7.5          # "objects at least 25 feet (7.5 meters) from the exterior of the glazing"
+  obstruction_exception_m: 0.30   # "columns smaller than 1-foot (0.3 meters) wide"; reported only
+  method:                         # NOT LEED text: ClimateStudio View Analysis defaults
+    distance_statistic: "median"
+    min_outside_distance_m: 2.0
+    panorama_vertical_deg: 60.0

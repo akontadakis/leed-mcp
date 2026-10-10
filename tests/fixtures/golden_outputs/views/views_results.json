@@ -1,0 +1,73 @@
+{
+  "case": "base_case",
+  "excluded_spaces": [],
+  "inputs": {
+    "credit_rules.yaml": "16e398a5f98ce0a4a49150e5c65a73aef2cde40d249de066bc97e380a8bf7a9c",
+    "materials.csv": "a545812d9fc753ee29e70669f3149c3a65b1981ca5c96e6997813ca3fdeb1337",
+    "project.yaml": "80aaada37ae45085bccd54ad671877888ca9949965fea39ae32e8614ebb4364d",
+    "scene.rad": "e0a367df863c86dd9ebdbc12fc6909ee06a455dac75a404ca69b735441dbf89a",
+    "spaces.csv": "daf65918372aeea8827ec93250c540beedf8a332fa8f3b4ed6e9a5105e157000",
+    "weather/example.wea": "d0f7729f06f83db2909756147e4ed88b992d8cbecfd752da755008e9c43d7dcf"
+  },
+  "method_notes": [
+    "Head height: top of the vision glass above the finished floor of the point's storey.",
+    "Eye height: views.eye_height_m, with the source given in views.eye_height_source.",
+    "Objects at 7.5 m: solid-angle-weighted median outside distance over a 360 x 60 degree panorama (ClimateStudio method, not LEED text).",
+    "Objects closer than views.method.min_outside_distance_m beyond the glass are looked through (ClimateStudio default, not LEED text).",
+    "Interior glass: a view may cross at most views.max_interior_glass partitions.",
+    "Roof glass (skylights, roof monitors, sloped roof glass) and diffusing glass are not vision glazing: they block view rays and set no head height."
+  ],
+  "quality_area_m2": 24.0,
+  "quality_area_pct": 100.0,
+  "quality_point_pct": 100.0,
+  "radiance_version": null,
+  "score": {
+    "band": "75.0 % or more",
+    "points": 1,
+    "reason": "result is 100.0 %, which reaches the 75.0 % band"
+  },
+  "settings": {
+    "angular_step_deg": 2.0,
+    "eye_height_m": 1.2,
+    "eye_height_source": "Fictional example: seated eye height",
+    "ground_z_m": 0.0,
+    "max_interior_glass": 1,
+    "moveable_furniture": "exclude",
+    "rays_per_point": 5580,
+    "rules": {
+      "head_height_multiple": 3.0,
+      "method": {
+        "distance_statistic": "median",
+        "min_outside_distance_m": 2.0,
+        "panorama_vertical_deg": 60.0
+      },
+      "object_distance_m": 7.5,
+      "obstruction_exception_m": 0.3,
+      "points": 1,
+      "quality_definition": "type2_and_type3",
+      "threshold_pct": 75.0,
+      "version": "Example views rules v0",
+      "vlt_min_exclusive": 0.4
+    }
+  },
+  "spaces": [
+    {
+      "area_m2": 24.0,
+      "points": 54,
+      "quality_area_m2": 24.0,
+      "quality_pct": 100.0,
+      "room": "Room North",
+      "storey": 0,
+      "type2_pct": 100.0,
+      "type3_pct": 100.0
+    }
+  ],
+  "tool_version": "0.1.0",
+  "total_area_m2": 24.0,
+  "type2_area_pct": 100.0,
+  "type3_area_pct": 100.0,
+  "warnings": [
+    "the 30 % cap on views into interior atria is not assessed; a view through interior glass counts like any other",
+    "no ground surface: ground taken at the lowest floor level, z = 0.00"
+  ]
+}

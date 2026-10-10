@@ -1,0 +1,204 @@
+floor_carpet polygon floor_room_f
+0
+0
+12 0.0 0.0 0.0 6.0 0.0 0.0 6.0 4.0 0.0 0.0 4.0 0.0
+ceiling_tile polygon ceiling_room_f
+0
+0
+12 0.0 4.0 3.0 6.0 4.0 3.0 6.0 0.0 3.0 0.0 0.0 3.0
+wall_paint polygon wall_room_f_south
+0
+0
+12 0.0 0.0 0.0 6.0 0.0 0.0 6.0 0.0 3.0 0.0 0.0 3.0
+wall_paint polygon wall_room_f_east
+0
+0
+12 6.0 0.0 0.0 6.0 4.0 0.0 6.0 4.0 3.0 6.0 0.0 3.0
+wall_paint polygon wall_room_f_north
+0
+0
+12 6.0 4.0 0.0 0.0 4.0 0.0 0.0 4.0 3.0 6.0 4.0 3.0
+wall_paint polygon wall_room_f_west
+0
+0
+12 0.0 4.0 0.0 0.0 0.0 0.0 0.0 0.0 3.0 0.0 4.0 3.0
+floor_carpet polygon floor_room_g
+0
+0
+12 0.0 0.0 3.5 6.0 0.0 3.5 6.0 4.0 3.5 0.0 4.0 3.5
+ceiling_tile polygon ceiling_room_g
+0
+0
+12 0.0 4.0 6.5 6.0 4.0 6.5 6.0 0.0 6.5 0.0 0.0 6.5
+wall_paint polygon wall_room_g_south
+0
+0
+12 0.0 0.0 3.5 6.0 0.0 3.5 6.0 0.0 6.5 0.0 0.0 6.5
+wall_paint polygon wall_room_g_east
+0
+0
+12 6.0 0.0 3.5 6.0 4.0 3.5 6.0 4.0 6.5 6.0 0.0 6.5
+wall_paint polygon wall_room_g_north
+0
+0
+12 6.0 4.0 3.5 0.0 4.0 3.5 0.0 4.0 6.5 6.0 4.0 6.5
+wall_paint polygon wall_room_g_west
+0
+0
+12 0.0 4.0 3.5 0.0 0.0 3.5 0.0 0.0 6.5 0.0 4.0 6.5
+glass_clear polygon lower_south
+0
+0
+12 2.0341089467455857 0.0 1.0341089467455857 3.9658910532544143 0.0 1.0341089467455857 3.9658910532544143 0.0 1.9658910532544143 2.0341089467455857 0.0 1.9658910532544143
+glass_clear polygon upper_south
+0
+0
+12 2.0341089467455857 0.0 4.534108946745586 3.9658910532544143 0.0 4.534108946745586 3.9658910532544143 0.0 5.465891053254414 2.0341089467455857 0.0 5.465891053254414
+glass_clear polygon upper_west
+0
+0
+12 0.0 1.0341089467455857 4.534108946745586 0.0 2.9658910532544143 4.534108946745586 0.0 2.9658910532544143 5.465891053254414 0.0 1.0341089467455857 5.465891053254414
+leed_frame polygon lower_south_frame_0
+0
+0
+12 2.0 0.0 1.0 4.0 0.0 1.0 3.9658910532544143 0.0 1.0341089467455857 2.0341089467455857 0.0 1.0341089467455857
+leed_frame polygon lower_south_frame_1
+0
+0
+12 4.0 0.0 1.0 4.0 0.0 2.0 3.9658910532544143 0.0 1.9658910532544143 3.9658910532544143 0.0 1.0341089467455857
+leed_frame polygon lower_south_frame_2
+0
+0
+12 4.0 0.0 2.0 2.0 0.0 2.0 2.0341089467455857 0.0 1.9658910532544143 3.9658910532544143 0.0 1.9658910532544143
+leed_frame polygon lower_south_frame_3
+0
+0
+12 2.0 0.0 2.0 2.0 0.0 1.0 2.0341089467455857 0.0 1.0341089467455857 2.0341089467455857 0.0 1.9658910532544143
+leed_reveal polygon lower_south_reveal_0
+0
+0
+12 2.0 0.0 1.0 4.0 0.0 1.0 4.0 0.15 1.0 2.0 0.15 1.0
+leed_reveal polygon lower_south_reveal_1
+0
+0
+12 4.0 0.0 1.0 4.0 0.0 2.0 4.0 0.15 2.0 4.0 0.15 1.0
+leed_reveal polygon lower_south_reveal_2
+0
+0
+12 4.0 0.0 2.0 2.0 0.0 2.0 2.0 0.15 2.0 4.0 0.15 2.0
+leed_reveal polygon lower_south_reveal_3
+0
+0
+12 2.0 0.0 2.0 2.0 0.0 1.0 2.0 0.15 1.0 2.0 0.15 2.0
+leed_reveal polygon lower_south_reveal_4
+0
+0
+12 2.0 0.0 1.0 4.0 0.0 1.0 4.0 -0.15 1.0 2.0 -0.15 1.0
+leed_reveal polygon lower_south_reveal_5
+0
+0
+12 4.0 0.0 1.0 4.0 0.0 2.0 4.0 -0.15 2.0 4.0 -0.15 1.0
+leed_reveal polygon lower_south_reveal_6
+0
+0
+12 4.0 0.0 2.0 2.0 0.0 2.0 2.0 -0.15 2.0 4.0 -0.15 2.0
+leed_reveal polygon lower_south_reveal_7
+0
+0
+12 2.0 0.0 2.0 2.0 0.0 1.0 2.0 -0.15 1.0 2.0 -0.15 2.0
+leed_frame polygon upper_south_frame_0
+0
+0
+12 2.0 0.0 4.5 4.0 0.0 4.5 3.9658910532544143 0.0 4.534108946745586 2.0341089467455857 0.0 4.534108946745586
+leed_frame polygon upper_south_frame_1
+0
+0
+12 4.0 0.0 4.5 4.0 0.0 5.5 3.9658910532544143 0.0 5.465891053254414 3.9658910532544143 0.0 4.534108946745586
+leed_frame polygon upper_south_frame_2
+0
+0
+12 4.0 0.0 5.5 2.0 0.0 5.5 2.0341089467455857 0.0 5.465891053254414 3.9658910532544143 0.0 5.465891053254414
+leed_frame polygon upper_south_frame_3
+0
+0
+12 2.0 0.0 5.5 2.0 0.0 4.5 2.0341089467455857 0.0 4.534108946745586 2.0341089467455857 0.0 5.465891053254414
+leed_reveal polygon upper_south_reveal_0
+0
+0
+12 2.0 0.0 4.5 4.0 0.0 4.5 4.0 0.15 4.5 2.0 0.15 4.5
+leed_reveal polygon upper_south_reveal_1
+0
+0
+12 4.0 0.0 4.5 4.0 0.0 5.5 4.0 0.15 5.5 4.0 0.15 4.5
+leed_reveal polygon upper_south_reveal_2
+0
+0
+12 4.0 0.0 5.5 2.0 0.0 5.5 2.0 0.15 5.5 4.0 0.15 5.5
+leed_reveal polygon upper_south_reveal_3
+0
+0
+12 2.0 0.0 5.5 2.0 0.0 4.5 2.0 0.15 4.5 2.0 0.15 5.5
+leed_reveal polygon upper_south_reveal_4
+0
+0
+12 2.0 0.0 4.5 4.0 0.0 4.5 4.0 -0.15 4.5 2.0 -0.15 4.5
+leed_reveal polygon upper_south_reveal_5
+0
+0
+12 4.0 0.0 4.5 4.0 0.0 5.5 4.0 -0.15 5.5 4.0 -0.15 4.5
+leed_reveal polygon upper_south_reveal_6
+0
+0
+12 4.0 0.0 5.5 2.0 0.0 5.5 2.0 -0.15 5.5 4.0 -0.15 5.5
+leed_reveal polygon upper_south_reveal_7
+0
+0
+12 2.0 0.0 5.5 2.0 0.0 4.5 2.0 -0.15 4.5 2.0 -0.15 5.5
+leed_frame polygon upper_west_frame_0
+0
+0
+12 0.0 1.0 4.5 0.0 3.0 4.5 0.0 2.9658910532544143 4.534108946745586 0.0 1.0341089467455857 4.534108946745586
+leed_frame polygon upper_west_frame_1
+0
+0
+12 0.0 3.0 4.5 0.0 3.0 5.5 0.0 2.9658910532544143 5.465891053254414 0.0 2.9658910532544143 4.534108946745586
+leed_frame polygon upper_west_frame_2
+0
+0
+12 0.0 3.0 5.5 0.0 1.0 5.5 0.0 1.0341089467455857 5.465891053254414 0.0 2.9658910532544143 5.465891053254414
+leed_frame polygon upper_west_frame_3
+0
+0
+12 0.0 1.0 5.5 0.0 1.0 4.5 0.0 1.0341089467455857 4.534108946745586 0.0 1.0341089467455857 5.465891053254414
+leed_reveal polygon upper_west_reveal_0
+0
+0
+12 0.0 1.0 4.5 0.0 3.0 4.5 0.15 3.0 4.5 0.15 1.0 4.5
+leed_reveal polygon upper_west_reveal_1
+0
+0
+12 0.0 3.0 4.5 0.0 3.0 5.5 0.15 3.0 5.5 0.15 3.0 4.5
+leed_reveal polygon upper_west_reveal_2
+0
+0
+12 0.0 3.0 5.5 0.0 1.0 5.5 0.15 1.0 5.5 0.15 3.0 5.5
+leed_reveal polygon upper_west_reveal_3
+0
+0
+12 0.0 1.0 5.5 0.0 1.0 4.5 0.15 1.0 4.5 0.15 1.0 5.5
+leed_reveal polygon upper_west_reveal_4
+0
+0
+12 0.0 1.0 4.5 0.0 3.0 4.5 -0.15 3.0 4.5 -0.15 1.0 4.5
+leed_reveal polygon upper_west_reveal_5
+0
+0
+12 0.0 3.0 4.5 0.0 3.0 5.5 -0.15 3.0 5.5 -0.15 3.0 4.5
+leed_reveal polygon upper_west_reveal_6
+0
+0
+12 0.0 3.0 5.5 0.0 1.0 5.5 -0.15 1.0 5.5 -0.15 3.0 5.5
+leed_reveal polygon upper_west_reveal_7
+0
+0
+12 0.0 1.0 5.5 0.0 1.0 4.5 -0.15 1.0 4.5 -0.15 1.0 5.5

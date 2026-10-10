@@ -1,0 +1,15 @@
+# The same bytes on every system: the golden tests compare sha256 sums.
+* text=auto eol=lf
+tests/fixtures/golden_prepare/** -text
+tests/fixtures/golden_outputs/** -text
+tests/fixtures/golden_figures/** -text
+*.xlsm binary
+*.docx binary
+*.png binary
+*.npy binary
+
+# Left out of `git archive`, which builds the public copy of this repository:
+# the internal design notes and plans stay in the private history only.
+# This file itself ships: the line-ending rules above keep the golden tests
+# green on Windows.
+docs/superpowers/ export-ignore

@@ -1,0 +1,32 @@
+void plastic wall_paint
+0
+0
+5 0.5 0.5 0.5 0.0 0.0
+void plastic ceiling_tile
+0
+0
+5 0.8 0.8 0.8 0.0 0.0
+void plastic floor_carpet
+0
+0
+5 0.2 0.2 0.2 0.0 0.0
+void glass glass_clear
+0
+0
+3 0.6841360044122858 0.6841360044122858 0.6841360044122858
+void glass glass_partition
+0
+0
+3 0.8 0.8 0.8
+void plastic leed_frame
+0
+0
+5 0.3 0.3 0.3 0.0 0.0
+void plastic leed_reveal
+0
+0
+5 0.5 0.5 0.5 0.0 0.0
+void trans leed_blind
+0
+0
+7 0.55 0.55 0.55 0.0 0.0 0.09090909090909091 0.0

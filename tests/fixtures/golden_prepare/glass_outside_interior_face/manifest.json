@@ -1,0 +1,61 @@
+{
+  "case": "base_case",
+  "files": {
+    "blinds/room_d_180.rad": "42b40a7c33dab765145a9aebd4561d6688861341af00f3d8d6115bcba0c1c60c",
+    "grids/room_d.pts": "31939ae4ad40052fe7ffc2760d7a3678717d42573456b61fb24758f33f724957",
+    "materials.rad": "db73cea4758543ca55da7c69b2ba48893f7bc016631588903c1173ea8541fc13",
+    "scene.rad": "bc65ab7db10d1efbe9570953800a06c5916bd0620f1faafcddbe41a3b5938dba"
+  },
+  "glazing": {
+    "glass_clear": {
+      "dirt_factor": 0.9,
+      "net_transmittance": 0.627647990897745,
+      "tinted": false,
+      "tn": 0.6841360044122858,
+      "visible_transmittance": 0.69738665655305
+    }
+  },
+  "groups": {
+    "room_d_180": {
+      "azimuth_bin_deg": 180.0,
+      "blind_polygon_count": 1,
+      "opening_count": 1,
+      "openings": [
+        "south_1"
+      ],
+      "room": "room_d",
+      "storey": 0
+    }
+  },
+  "openings": {
+    "south_1": {
+      "achieved_glass_area_m2": 1.8000000005188588,
+      "frame_share": 0.1,
+      "frame_style": "constant_width",
+      "frame_width_m": 0.03410894674558562,
+      "modifier": "glass_clear",
+      "role": "glazing",
+      "target_glass_area_m2": 1.8
+    }
+  },
+  "rooms": {
+    "room_d": {
+      "area_m2": 30.0,
+      "point_count": 120,
+      "work_plane_m": 0.75
+    }
+  },
+  "scene_units": "m",
+  "site": {
+    "north_rotation_deg": 10.0,
+    "north_rotation_source": "Invented for the golden fixtures"
+  },
+  "standard": "LM-83-12",
+  "tool_version": "0.1.0",
+  "totals": {
+    "grid_point_count": 120,
+    "group_count": 1,
+    "regularly_occupied_area_m2": 30.0
+  },
+  "warnings": []
+}

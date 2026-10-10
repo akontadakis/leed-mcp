@@ -1,0 +1,12 @@
+modifier,primitive_type,role,note
+glass_clear,glass,glazing,
+glass_curtain,glass,glazing_curtain_wall,
+glass_partition,glass,glazing_interior,internal glazed partition
+wall_paint,plastic,wall,
+ceiling_tile,plastic,ceiling,
+floor_carpet,plastic,floor,
+louvre_metal,plastic,fixed_shading,external louvre
+site_context,plastic,context,
+site_ground,plastic,ground,
+desk_top,plastic,furniture,
+hidden_helper,plastic,ignore,construction helper geometry

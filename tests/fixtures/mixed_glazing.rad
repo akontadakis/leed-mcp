@@ -1,0 +1,75 @@
+# tests/fixtures/mixed_glazing.rad
+# A fictional building with two rooms side by side on one storey.  Every
+# dimension and material value below is invented and rounded
+# (phase3-global.md #5): never a value read off a real project.
+#
+# office_a: 6 x 4 x 3 m, with one exterior window in its south wall.
+# office_b: 4 x 4 x 3 m, separated from office_a by a 0.2 m gap (a wall's
+# thickness) so the two floor slabs never touch -- touching slabs would
+# union into a single room instead of two.  The wall between them carries
+# one interior partition window.
+
+void plastic wall_paint
+0
+0
+5  0.6 0.6 0.6  0 0
+
+void plastic ceiling_tile
+0
+0
+5  0.8 0.8 0.8  0 0
+
+void plastic floor_carpet
+0
+0
+5  0.3 0.3 0.3  0 0
+
+void glass glass_clear
+0
+0
+3  0.6 0.6 0.6
+
+void glass glass_partition
+0
+0
+3  0.6 0.6 0.6
+
+floor_carpet polygon floor_office_a
+0
+0
+12  0 0 0   6 0 0   6 4 0   0 4 0
+
+floor_carpet polygon floor_office_b
+0
+0
+12  6.2 0 0   10.2 0 0   10.2 4 0   6.2 4 0
+
+ceiling_tile polygon ceiling_office_a
+0
+0
+12  0 0 3   0 4 3   6 4 3   6 0 3
+
+ceiling_tile polygon ceiling_office_b
+0
+0
+12  6.2 0 3   6.2 4 3   10.2 4 3   10.2 0 3
+
+wall_paint polygon wall_office_a_south
+0
+0
+12  0 0 0   6 0 0   6 0 3   0 0 3
+
+wall_paint polygon wall_partition
+0
+0
+12  6.1 0 0   6.1 4 0   6.1 4 3   6.1 0 3
+
+glass_clear polygon window_ext
+0
+0
+12  2 0 1   4 0 1   4 0 2   2 0 2
+
+glass_partition polygon window_int
+0
+0
+12  6.1 1 1   6.1 2 1   6.1 2 2   6.1 1 2

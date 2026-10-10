@@ -1,0 +1,3 @@
+# tests/fixtures/with_xform.rad
+!xform -t 10 0 0 wing.rad
+!xform -rz 90 -t 0 0 3 wing.rad

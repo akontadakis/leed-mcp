@@ -1,0 +1,95 @@
+# project.yaml, written by `leed-daylight init`.
+#
+# Replace every FILL_ME. The tool refuses to run while any value still says
+# FILL_ME. There are no hidden defaults. docs/RUNNING_A_PROJECT.md step 4
+# explains every key. Relative paths are read from this folder.
+# Quote clock times and dates: "08:00-18:00", "03-21".
+# Optional sections `views:` (step 9) and `report:` (step 11) are not here;
+# add them when you need them.
+
+project:
+  name: FILL_ME                  # free text, printed in reports
+  credit: FILL_ME                # free text, printed in reports
+
+site:
+  latitude_N: FILL_ME            # degrees, north positive
+  longitude_E: FILL_ME           # degrees, east positive
+  meridian_radiance: FILL_ME     # time-zone meridian, degrees WEST positive
+  north_rotation_deg: FILL_ME    # true north from the model's +Y axis, counter-clockwise positive
+  north_rotation_source: FILL_ME # one sentence: how you know the angle (printed in every report)
+
+scene:
+  units: FILL_ME                 # m, mm, cm, ft or in
+  files: FILL_ME                 # a list of .rad files, materials first, e.g. ["model/materials.rad", "model/geometry.rad"]
+
+standard:
+  daylight: FILL_ME              # LM-83-12 or LM-83-23
+  credit_rules: "credit_rules.yaml"   # written by init: the LEED v4.1 rules template
+
+weather:
+  file: FILL_ME                  # the .wea file, e.g. "weather/site.wea" (make it with epw2wea)
+
+glazing:
+  dirt_factor: FILL_ME           # LM-83-12 clause 2.2.9, between 0 and 1
+                                 # with sloped or roof glass, one per class instead:
+                                 # {vertical: <f>, sloped: <f>, skylight: <f>}
+                                 # (vertical: tilt 85-90 degrees from flat; sloped: 20-85; skylight: under 20)
+  frame_share:
+    default: FILL_ME             # share of each window's area that is frame, from the manufacturer
+                                 # add a line per glazing role that differs, e.g. glazing_curtain_wall: <share>
+                                 # with sloped or skylight glass, also sloped: <share> and skylight: <share>
+  frame_reflectance: FILL_ME     # 0 to 1
+  frame_style: FILL_ME           # constant_width or uniform_scale
+  reveal_depth_m: FILL_ME        # metres; 0 turns reveals off
+  reveal_reflectance: FILL_ME    # 0 to 1
+  vt_includes_dirt: FILL_ME      # true or false
+  # skylight_well: modelled      # needed with skylights: modelled (drawn in the scene) or a depth in metres, above 0.05
+  # skylight_well_reflectance: <r>   # 0 to 1; only with a depth
+
+reflectance:
+  policy: FILL_ME                # override, fill_gaps or keep_as_modelled
+  ceiling: FILL_ME               # one value per role; delete a role line to leave it as modelled
+  wall: FILL_ME
+  floor: FILL_ME
+  context: FILL_ME
+  ground: FILL_ME
+
+grid:
+  spacing_m: FILL_ME             # LEED: at most 0.60
+  work_plane_m: FILL_ME          # LEED: 0.762 (30 in)
+  min_clearance_m: FILL_ME       # clearance from the walls, metres
+
+analysis:
+  hours: FILL_ME                 # occupied hours, local clock time, quoted, e.g. "08:00-18:00"
+  daylight_saving: FILL_ME       # EU, US or none
+  aggregation: FILL_ME           # floor_area (what LEED uses) or points
+  moveable_furniture: FILL_ME    # include or exclude, as modelled
+
+performance:
+  trace_scope: FILL_ME           # all (storey is faster but not yet proven equal)
+  linked_zones: FILL_ME          # {} unless the guide tells you otherwise
+
+sky:
+  basis: FILL_ME                 # Reinhart
+  MF: FILL_ME                    # 4
+
+radiance:
+  ambient:
+    draft: FILL_ME               # Radiance ambient settings for a quick look, quoted
+    full: FILL_ME                # Radiance ambient settings for the real run, quoted
+  direct: FILL_ME                # Radiance direct settings, quoted
+
+blinds:
+  transmittance_diffuse: FILL_ME     # your blind product, or LM-83-12 clause 2.2.7
+  transmittance_specular: FILL_ME
+  room_side_reflectance: FILL_ME
+
+option2:
+  equinox_dates: FILL_ME         # LEED: ["03-21", "09-21"]
+  clearest_day_window_days: FILL_ME  # LEED: 15
+  times: FILL_ME                 # LEED: ["09:00", "15:00"]
+  sky: FILL_ME                   # weather_file
+  lux_min: FILL_ME               # LEED: 300
+  lux_max: FILL_ME               # LEED: 3000
+  blinds: FILL_ME                # exclude
+  time_basis: FILL_ME            # weather_file_local

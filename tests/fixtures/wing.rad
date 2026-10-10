@@ -1,0 +1,5 @@
+# tests/fixtures/wing.rad
+wall_paint polygon wing_floor.1
+0
+0
+12  0 0 0   2 0 0   2 2 0   0 2 0

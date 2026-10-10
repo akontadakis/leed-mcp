@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="600" viewBox="0 0 1200 600">
+<rect x="0" y="0" width="1200" height="600" fill="#ffffff"/>
+<text x="9.00" y="24.00" font-family="DejaVu Sans, Helvetica, Arial, sans-serif" font-size="24" text-anchor="start" dominant-baseline="central" fill="#000000">sDA by storey, floor-area weighted</text>
+<line x1="84.00" y1="60.00" x2="84.00" y2="546.00" stroke="#000000" stroke-width="1.5"/>
+<line x1="84.00" y1="546.00" x2="1176.00" y2="546.00" stroke="#000000" stroke-width="1.5"/>
+<text x="76.50" y="546.00" font-family="DejaVu Sans, Helvetica, Arial, sans-serif" font-size="18" text-anchor="end" dominant-baseline="central" fill="#000000">0</text>
+<text x="76.50" y="424.50" font-family="DejaVu Sans, Helvetica, Arial, sans-serif" font-size="18" text-anchor="end" dominant-baseline="central" fill="#000000">12</text>
+<text x="76.50" y="303.00" font-family="DejaVu Sans, Helvetica, Arial, sans-serif" font-size="18" text-anchor="end" dominant-baseline="central" fill="#000000">24</text>
+<text x="76.50" y="181.50" font-family="DejaVu Sans, Helvetica, Arial, sans-serif" font-size="18" text-anchor="end" dominant-baseline="central" fill="#000000">37</text>
+<text x="76.50" y="60.00" font-family="DejaVu Sans, Helvetica, Arial, sans-serif" font-size="18" text-anchor="end" dominant-baseline="central" fill="#000000">49</text>
+<text x="76.50" y="45.00" font-family="DejaVu Sans, Helvetica, Arial, sans-serif" font-size="18" text-anchor="end" dominant-baseline="central" fill="#000000">%</text>
+<rect x="247.80" y="104.18" width="764.40" height="441.82" fill="#1e82c8" shape-rendering="crispEdges"/>
+<text x="630.00" y="92.18" font-family="DejaVu Sans, Helvetica, Arial, sans-serif" font-size="18" text-anchor="middle" dominant-baseline="central" fill="#000000">44.4</text>
+<text x="630.00" y="567.00" font-family="DejaVu Sans, Helvetica, Arial, sans-serif" font-size="18" text-anchor="middle" dominant-baseline="central" fill="#000000">L0</text>
+<line x1="84.00" y1="148.36" x2="1176.00" y2="148.36" stroke="#c62828" stroke-width="2.25"/>
+<text x="1176.00" y="136.36" font-family="DejaVu Sans, Helvetica, Arial, sans-serif" font-size="18" text-anchor="end" dominant-baseline="central" fill="#c62828">40</text>
+</svg>

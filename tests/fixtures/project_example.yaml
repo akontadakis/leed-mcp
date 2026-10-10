@@ -1,0 +1,71 @@
+# tests/fixtures/project_example.yaml
+# Fictional example building. Every value below is invented and rounded;
+# none of it comes from any client's model or product data.
+project:
+  name: "Example Tower"
+  credit: "LEED v4.1 BD+C NC, EQ Credit Daylight"
+site:
+  latitude_N: 42.0
+  longitude_E: -80.0
+  meridian_radiance: 75.0
+  north_rotation_deg: 10.0
+  north_rotation_source: "Fictional example: taken from the site plan north arrow"
+scene:
+  units: "m"
+  files:
+    - "scene.rad"
+standard:
+  daylight: "LM-83-12"
+  credit_rules: "credit_rules.yaml"
+weather:
+  file: "weather/example.wea"
+glazing:
+  dirt_factor: 0.90
+  frame_share:
+    default: 0.25
+    glazing_curtain_wall: 0.15
+  frame_reflectance: 0.34
+  frame_style: "constant_width"
+  reveal_depth_m: 0.20
+  reveal_reflectance: 0.60
+  vt_includes_dirt: false
+reflectance:
+  policy: "override"
+  ceiling: 0.75
+  wall: 0.56
+  floor: 0.34
+  context: 0.25
+  ground: 0.15
+grid:
+  spacing_m: 0.60
+  work_plane_m: 0.762
+  min_clearance_m: 0.305
+analysis:
+  hours: "08:00-18:00"
+  daylight_saving: "US"
+  aggregation: "floor_area"
+  moveable_furniture: "exclude"
+performance:
+  trace_scope: "all"
+  linked_zones: {}
+sky:
+  basis: "Reinhart"
+  MF: 4
+radiance:
+  ambient:
+    draft: "-ab 2 -ad 512 -lw 1e-3"
+    full: "-ab 6 -ad 4096 -lw 1e-5"
+  direct: "-dc 1 -dt 0 -dj 0"
+blinds:
+  transmittance_diffuse: 0.045
+  transmittance_specular: 0.0
+  room_side_reflectance: 0.56
+option2:
+  equinox_dates: ["03-21", "09-21"]
+  clearest_day_window_days: 15
+  times: ["09:00", "15:00"]
+  sky: "weather_file"
+  lux_min: 300
+  lux_max: 3000
+  blinds: "exclude"
+  time_basis: "weather_file_local"

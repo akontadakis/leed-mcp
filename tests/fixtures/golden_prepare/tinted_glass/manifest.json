@@ -1,0 +1,93 @@
+{
+  "case": "base_case",
+  "files": {
+    "blinds/room_a_090.rad": "a3077826f7f6dbbfbaba6181b176efccb13438b2e6e2dfdab5e4a3366d7b8cc4",
+    "blinds/room_a_180.rad": "caf3907076b27ef0dca570d90bccacb8d4a16387e87dd2f71c290a8b70fc421e",
+    "grids/room_a.pts": "f8b341a6946b7dbe75ea5fd34bb67785345ca6cb74fec31e5a7865b2af2a3c14",
+    "materials.rad": "dc8cdc030814d06e99bb1ec6dc31846d35a2c5f81e0519f68ed0bbf7dc8fb458",
+    "scene.rad": "7bfa3e4aa2f6eda3fa66d998622d355d1a5a66bc8b345aba24ec577e0db2fedb"
+  },
+  "glazing": {
+    "glass_tint": {
+      "dirt_factor": 0.9,
+      "net_transmittance": 0.6030454996849045,
+      "tinted": true,
+      "tn": 0.6573621400218486,
+      "visible_transmittance": 0.6700505552054494
+    }
+  },
+  "groups": {
+    "room_a_090": {
+      "azimuth_bin_deg": 90.0,
+      "blind_polygon_count": 1,
+      "opening_count": 1,
+      "openings": [
+        "east_1"
+      ],
+      "room": "room_a",
+      "storey": 0
+    },
+    "room_a_180": {
+      "azimuth_bin_deg": 180.0,
+      "blind_polygon_count": 2,
+      "opening_count": 2,
+      "openings": [
+        "south_1",
+        "south_2"
+      ],
+      "room": "room_a",
+      "storey": 0
+    }
+  },
+  "openings": {
+    "east_1": {
+      "achieved_glass_area_m2": 0.8999999992099575,
+      "frame_share": 0.1,
+      "frame_style": "constant_width",
+      "frame_width_m": 0.025658351182937626,
+      "modifier": "glass_tint",
+      "role": "glazing",
+      "target_glass_area_m2": 0.9
+    },
+    "south_1": {
+      "achieved_glass_area_m2": 0.8999999992099575,
+      "frame_share": 0.1,
+      "frame_style": "constant_width",
+      "frame_width_m": 0.025658351182937626,
+      "modifier": "glass_tint",
+      "role": "glazing",
+      "target_glass_area_m2": 0.9
+    },
+    "south_2": {
+      "achieved_glass_area_m2": 0.8999999992099575,
+      "frame_share": 0.1,
+      "frame_style": "constant_width",
+      "frame_width_m": 0.025658351182937626,
+      "modifier": "glass_tint",
+      "role": "glazing",
+      "target_glass_area_m2": 0.9
+    }
+  },
+  "rooms": {
+    "room_a": {
+      "area_m2": 24.0,
+      "point_count": 96,
+      "work_plane_m": 0.75
+    }
+  },
+  "scene_units": "m",
+  "site": {
+    "north_rotation_deg": 10.0,
+    "north_rotation_source": "Invented for the golden fixtures"
+  },
+  "standard": "LM-83-12",
+  "tool_version": "0.1.0",
+  "totals": {
+    "grid_point_count": 96,
+    "group_count": 2,
+    "regularly_occupied_area_m2": 24.0
+  },
+  "warnings": [
+    "glass_tint: tinted glazing (unequal r/g/b transmissivity); the recovered visible transmittance is the photopic-weighted average"
+  ]
+}

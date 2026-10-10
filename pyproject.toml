@@ -1,0 +1,56 @@
+[project]
+name = "leed-mcp"
+version = "0.1.0"
+description = "LEED v4.1 BD+C daylight and views credits from a Radiance scene, as a local MCP server"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Antonis Kontadakis" }]
+keywords = ["mcp", "model-context-protocol", "claude-code", "leed", "daylighting", "radiance", "sda", "ase", "lm-83", "quality-views", "building-simulation", "green-building"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Operating System :: MacOS",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering",
+]
+requires-python = ">=3.11"
+dependencies = [
+    "mcp[cli]>=2.0,<3",
+    "pydantic>=2",
+    "numpy>=1.24",
+    "PyYAML>=6.0",
+    "shapely>=2.0",
+]
+
+[project.scripts]
+# The pipeline's one command (CLI spec 3.1), kept for jobs and by-hand use.
+leed-daylight = "leed_daylight.cli:main"
+# The MCP server over stdio (leed-mcp spec 5.1).
+leed-mcp = "leed_mcp.server:main"
+
+[project.optional-dependencies]
+# Reports and figures (reports spec R4): the calculation installs without them.
+report = ["python-docx>=1.1", "matplotlib>=3.8", "Pillow>=10.1", "cairosvg>=2.7"]
+dev = ["pytest>=8", "anyio>=4", "jsonschema>=4", "leed-mcp[report]"]
+
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+# Only the two packages: never tests/ or docs/ (flat layout).
+include = ["leed_daylight*", "leed_mcp*"]
+
+[tool.setuptools.package-data]
+# setuptools ships only *.py unless told otherwise; these are read at run time.
+leed_daylight = ["templates/*.yaml", "deliver/atlas/web/*.js", "deliver/atlas/web/*.css"]
+leed_mcp = ["resources/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["acceptance: needs LEED_ACCEPTANCE_FIXTURE"]

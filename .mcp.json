@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "leed-mcp": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "leed-mcp[report] @ git+https://github.com/akontadakis/leed-mcp",
+        "leed-mcp"
+      ]
+    }
+  }
+}

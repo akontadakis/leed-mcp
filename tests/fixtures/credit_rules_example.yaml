@@ -1,0 +1,23 @@
+# tests/fixtures/credit_rules_example.yaml
+# Illustrative only.  Real LEED thresholds are filled in from the credit text.
+version: "Example rules v0"
+intent: "Connect building occupants with the outdoors, reinforce circadian rhythms, and reduce the use of electrical lighting by introducing daylight into the space."
+max_points: 3
+option1:
+  space_rule_sda_pct: [55.0, 75.0]
+  sda:
+    lux: 300
+    fraction: 0.50
+    bands:
+      - {min_pct: 40.0, points: 1}
+      - {min_pct: 55.0, points: 2}
+      - {min_pct: 75.0, points: 3}
+  ase:
+    lux: 1000
+    hours: 250
+    per_space_narrative_trigger_pct: 10.0
+option2:
+  bands: UNVERIFIED
+  lux_min: 300
+  lux_max: 3000
+glare_control_required: true

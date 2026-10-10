@@ -1,0 +1,1041 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LEED Daylight Guide</title>
+<meta name="description" content="A plain-language, step-by-step guide to calculating LEED v4.1 Daylight and Quality Views with leed-mcp.">
+<style>
+:root {
+  --sky: #ffffff;
+  --paper: #ffffff;
+  --ink: #202124;
+  --ink-soft: #5f6368;
+  --rule: #dadce0;
+  --sun: #fbbc05;
+  --sun-tint: #fef7e0;
+  --blue: #1967d2;
+  --blue-tint: #e8f0fe;
+  --leaf: #188038;
+  --leaf-tint: #e6f4ea;
+  --fix: #8430a8;
+  --fix-tint: #f3e8fd;
+  --code-bg: #f8f9fa;
+  --shadow: none;
+  --google-blue: #4285f4;
+  --google-red: #ea4335;
+  --google-yellow: #fbbc05;
+  --google-green: #34a853;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+  --sky: #202124;
+  --paper: #202124;
+  --ink: #e8eaed;
+  --ink-soft: #bdc1c6;
+  --rule: #5f6368;
+  --sun: #fdd663;
+  --sun-tint: #3b321c;
+  --blue: #8ab4f8;
+  --blue-tint: #25354c;
+  --leaf: #81c995;
+  --leaf-tint: #24392c;
+  --fix: #d7aefb;
+  --fix-tint: #362842;
+  --code-bg: #292a2d;
+  --shadow: none;
+  }
+}
+:root[data-theme="dark"] {
+  --sky: #202124;
+  --paper: #202124;
+  --ink: #e8eaed;
+  --ink-soft: #bdc1c6;
+  --rule: #5f6368;
+  --sun: #fdd663;
+  --sun-tint: #3b321c;
+  --blue: #8ab4f8;
+  --blue-tint: #25354c;
+  --leaf: #81c995;
+  --leaf-tint: #24392c;
+  --fix: #d7aefb;
+  --fix-tint: #362842;
+  --code-bg: #292a2d;
+  --shadow: none;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0;
+  background: var(--sky);
+  color: var(--ink);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+}
+a { color: var(--blue); }
+a:focus-visible, button:focus-visible, summary:focus-visible {
+  outline: 3px solid var(--sun);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+h1, h2, h3 {
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.15;
+  margin: 0;
+}
+code {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.9em;
+  background: var(--code-bg);
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+  overflow-wrap: anywhere;
+}
+
+/* Hero */
+.hero {
+  position: relative;
+  overflow: hidden;
+  padding: 3rem 16px 0;
+}
+.hero-inner { max-width: 1120px; margin: 0 auto; }
+.hero h1 {
+  font-size: clamp(2.4rem, 7vw, 4.6rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  max-width: 13ch;
+}
+.hero p.lead {
+  max-width: 52ch;
+  font-size: 1.2rem;
+  color: var(--ink-soft);
+  margin: 1rem 0 0;
+}
+
+/* Page layout */
+.layout {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 16px 4rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2rem;
+}
+@media (min-width: 980px) {
+  .layout { grid-template-columns: 220px minmax(0, 1fr); gap: 3rem; }
+}
+.toc { display: none; }
+@media (min-width: 980px) {
+  .toc {
+    display: block;
+    position: sticky;
+    top: 1.5rem;
+    align-self: start;
+    font-size: 0.95rem;
+    padding-top: 2.5rem;
+  }
+  .toc ol { list-style: none; margin: 0; padding: 0; border-left: 2px solid var(--rule); }
+  .toc li a {
+    display: block;
+    padding: .3rem 0 .3rem 1rem;
+    margin-left: -2px;
+    border-left: 2px solid transparent;
+    color: var(--ink-soft);
+    text-decoration: none;
+  }
+  .toc li a:hover { color: var(--ink); }
+  .toc li a.active { color: var(--ink); border-left-color: var(--sun); font-weight: 700; }
+}
+main { min-width: 0; }
+main > section { padding-top: 2.5rem; }
+main h2 { font-size: clamp(1.7rem, 3.4vw, 2.3rem); font-weight: 700; margin-bottom: .75rem; }
+main h3 { font-size: 1.2rem; font-weight: 700; margin: 1.6rem 0 .4rem; }
+.prose { max-width: 68ch; }
+.prose p { margin: .6rem 0; }
+
+/* Steps */
+.step {
+  display: grid;
+  grid-template-columns: 3.2rem minmax(0, 1fr);
+  gap: 0 1rem;
+  padding: 1.75rem 0;
+  border-top: 1px solid var(--rule);
+}
+.step-num {
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 800;
+  font-size: 1.5rem;
+  width: 3.2rem;
+  height: 3.2rem;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--paper);
+  border: 2px solid var(--phase, var(--blue));
+  color: var(--ink);
+}
+.step h3 { margin: .55rem 0 .5rem; font-size: 1.35rem; }
+.step-body { min-width: 0; max-width: 68ch; }
+.step-body ol, .step-body ul { padding-left: 1.25rem; margin: .5rem 0; }
+.step-body li { margin: .3rem 0; }
+.phase-setup { --phase: var(--ink-soft); }
+.phase-project { --phase: var(--blue); }
+.phase-daylight { --phase: var(--sun); }
+.phase-views { --phase: var(--leaf); }
+.phase-deliver { --phase: var(--blue); }
+
+.say {
+  margin: .9rem 0;
+  padding: .75rem 1rem;
+  background: var(--blue-tint);
+  border-radius: 10px 10px 10px 2px;
+  max-width: 60ch;
+}
+.say b { font-family: Arial, Helvetica, sans-serif; }
+.note {
+  margin: .9rem 0;
+  padding: .75rem 1rem;
+  background: var(--sun-tint);
+  border-left: 4px solid var(--sun);
+  border-radius: 0 8px 8px 0;
+}
+
+/* Commands */
+.cmd {
+  position: relative;
+  margin: .75rem 0;
+  background: var(--code-bg);
+  border-radius: 8px;
+  border: 1px solid var(--rule);
+}
+.cmd pre {
+  margin: 0;
+  padding: .9rem 5.2rem .9rem 1rem;
+  overflow-x: auto;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: .88rem;
+  line-height: 1.5;
+}
+.cmd pre code { background: none; padding: 0; }
+.copy {
+  position: absolute;
+  top: .5rem;
+  right: .5rem;
+  font: 700 .85rem Arial, Helvetica, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: .3rem .7rem;
+  cursor: pointer;
+}
+.copy:hover { border-color: var(--ink-soft); }
+
+/* Tables */
+.table-wrap { overflow-x: auto; margin: .75rem 0; }
+table { border-collapse: collapse; width: 100%; font-size: .97rem; background: var(--paper); border-radius: 8px; overflow: hidden; box-shadow: var(--shadow); }
+th, td { text-align: left; vertical-align: top; padding: .55rem .75rem; border-bottom: 1px solid var(--rule); }
+th { font-family: Arial, Helvetica, sans-serif; font-weight: 700; background: var(--blue-tint); }
+tr:last-child td { border-bottom: 0; }
+
+/* Flowchart */
+.flow-legend { display: flex; flex-wrap: wrap; gap: .5rem 1.25rem; margin: .75rem 0 1rem; font-size: .95rem; padding: 0; list-style: none; }
+.flow-legend li { display: flex; align-items: center; gap: .45rem; }
+.swatch { width: 18px; height: 14px; border-radius: 3px; border: 2px solid; display: inline-block; }
+.flow-frame {
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+  padding: 1rem;
+  overflow-x: auto;
+}
+.flow { display: block; width: 100%; min-width: 680px; height: auto; }
+.flow text { font-family: Arial, Helvetica, sans-serif; fill: var(--ink); }
+.flow .t { font-size: 15px; font-weight: 700; text-anchor: middle; }
+.flow .s { font-size: 12.5px; fill: var(--ink-soft); text-anchor: middle; }
+.flow .lbl { font-size: 13px; font-weight: 700; fill: var(--ink-soft); }
+.flow .lane { font: 800 15px Arial, Helvetica, sans-serif; fill: var(--ink-soft); }
+.flow .wire { fill: none; stroke: var(--ink-soft); stroke-width: 1.6; }
+.flow .wire.loop { stroke: var(--fix); stroke-dasharray: 6 5; }
+.flow .box { stroke-width: 2; }
+.flow .setup { fill: var(--paper); stroke: var(--ink-soft); }
+.flow .project { fill: var(--blue-tint); stroke: var(--blue); }
+.flow .daylight { fill: var(--sun-tint); stroke: var(--sun); }
+.flow .views { fill: var(--leaf-tint); stroke: var(--leaf); }
+.flow .deliver { fill: var(--blue-tint); stroke: var(--blue); }
+.flow .decide { fill: var(--paper); stroke: var(--ink); }
+.flow .fixbox { fill: var(--fix-tint); stroke: var(--fix); stroke-dasharray: 6 4; }
+.flow .optional { stroke-dasharray: 6 4; }
+.flow .term { fill: var(--ink); stroke: var(--ink); }
+.flow .term-t { fill: var(--sky); font-size: 15px; font-weight: 700; text-anchor: middle; }
+.flow .badge { fill: var(--paper); stroke: var(--ink); stroke-width: 1.5; }
+.flow .badge-t { font-size: 12px; font-weight: 700; text-anchor: middle; }
+.flow a:hover .box, .flow a:focus .box { stroke-width: 3.5; }
+.flow a { cursor: pointer; }
+
+.rules { list-style: none; padding: 0; margin: 1rem 0; display: grid; gap: .75rem; }
+.rules li { background: var(--paper); border: 1px solid var(--rule); border-radius: 10px; padding: .85rem 1rem; }
+.rules b { font-family: Arial, Helvetica, sans-serif; }
+
+footer { max-width: 1120px; margin: 0 auto; padding: 2rem 16px 3rem; color: var(--ink-soft); font-size: .92rem; border-top: 1px solid var(--rule); }
+
+/* Minimal typographic alternative.
+   Preserve the source content, section order, column grid, and flowchart geometry.
+   DESIGN_VARIANCE: 3; MOTION_INTENSITY: 1; VISUAL_DENSITY: 4.
+   Purple stays reserved for fixes because the original text explicitly calls it purple.
+   Google brand hues mark accents; darker blue/green variants keep text readable.
+*/
+html { scroll-behavior: auto; }
+body { font-size: 1rem; line-height: 1.65; -webkit-font-smoothing: antialiased; }
+::selection { background: var(--blue-tint); color: var(--ink); }
+a { text-underline-offset: .18em; }
+a:focus-visible, button:focus-visible, summary:focus-visible {
+  outline: 2px solid var(--blue); outline-offset: 4px;
+}
+.hero-inner::before {
+  content: ""; display: block; width: 80px; height: 4px; margin-bottom: 1.75rem;
+  background: linear-gradient(to right, var(--google-blue) 0 25%, var(--google-red) 25% 50%, var(--google-yellow) 50% 75%, var(--google-green) 75% 100%);
+}
+.hero h1 { font-size: clamp(2.4rem, 6vw, 4.25rem); font-weight: 400; letter-spacing: -.045em; line-height: 1.1; }
+.hero p.lead { font-size: 1.125rem; line-height: 1.65; margin-top: 1.5rem; }
+h2 { letter-spacing: -.025em; }
+main h2 { font-weight: 400; }
+main h3 { font-weight: 500; letter-spacing: -.015em; }
+.step h3 { font-weight: 500; }
+.step-index { max-width: 1120px; margin: 2.5rem auto 0; padding-bottom: 1.5rem; border-bottom: 1px solid var(--rule); }
+.step-index-links { display: grid; grid-template-columns: repeat(14, minmax(0, 1fr)); gap: .25rem; }
+.step-index-links a {
+  display: grid; place-items: center; min-height: 44px; color: var(--ink-soft);
+  font-size: .9375rem; font-variant-numeric: tabular-nums; text-decoration: none;
+  border-top: 2px solid var(--google-blue); border-radius: 0 0 4px 4px;
+}
+.step-index-links a:nth-child(-n+4) { border-top-color: var(--google-red); }
+.step-index-links a:nth-child(11) { border-top-color: var(--google-yellow); }
+.step-index-links a:nth-child(12) { border-top-color: var(--google-green); }
+.step-index-links a:hover { color: var(--blue); background: var(--blue-tint); }
+.step-index-phases { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: .5rem; color: var(--ink-soft); font-size: .8125rem; }
+.step-index-phases span:nth-child(2) { text-align: center; }
+.step-index-phases span:last-child { text-align: right; }
+.toc ol { border-left-width: 1px; }
+.toc li a { border-left-width: 2px; font-size: .875rem; padding-top: .45rem; padding-bottom: .45rem; }
+.toc li a.active { color: var(--blue); border-left-color: var(--google-blue); font-weight: 500; background: var(--blue-tint); }
+.step-num { background: none; border: 0; border-radius: 0; border-top: 2px solid var(--phase); font-size: 1.5rem; font-weight: 400; font-variant-numeric: tabular-nums; }
+.phase-setup { --phase: var(--google-red); }
+.phase-project, .phase-deliver { --phase: var(--google-blue); }
+.phase-daylight { --phase: var(--google-yellow); }
+.phase-views { --phase: var(--google-green); }
+.say { border-radius: 4px; background: var(--code-bg); border-left: 2px solid var(--google-blue); }
+.say b, .rules b { font-weight: 600; }
+.note { border-left-width: 2px; border-radius: 0 4px 4px 0; }
+.cmd { border-radius: 4px; }
+.copy { font-weight: 500; color: var(--blue); border-radius: 4px; }
+.copy:hover { background: var(--blue-tint); border-color: var(--blue); }
+.copy:active { background: var(--rule); }
+table { border-radius: 0; box-shadow: none; }
+th { font-weight: 600; background: var(--code-bg); }
+.flow-frame { border-radius: 4px; }
+.flow .box { stroke-width: 1.4; }
+.flow .wire { stroke-width: 1.25; }
+.flow .lane { font-weight: 600; }
+.flow .term { fill: var(--blue-tint); stroke: var(--blue); }
+.flow .term-t { fill: var(--ink); }
+.flow .t, .flow .lbl, .flow .badge-t { font-weight: 600; }
+.flow a:hover .box, .flow a:focus .box { stroke-width: 2.5; }
+.rules li { border: 0; border-left: 2px solid var(--rule); border-radius: 0; }
+.rules li:nth-child(1) { border-left-color: var(--google-blue); }
+.rules li:nth-child(2) { border-left-color: var(--google-red); }
+.rules li:nth-child(3) { border-left-color: var(--google-green); }
+footer { font-size: .8125rem; }
+:target { scroll-margin-top: 1.5rem; }
+@media (max-width: 599px) {
+  .hero { padding-top: 2rem; }
+  .hero p.lead { font-size: 1rem; }
+  .step-index-links { gap: 0; }
+  .step-index-links a { font-size: .75rem; }
+  .step-index-phases { gap: .75rem; font-size: .75rem; }
+  .step { grid-template-columns: 2.4rem minmax(0, 1fr); gap: 0 .75rem; }
+  .step-num { width: 2.4rem; height: 2.8rem; }
+}
+@media print {
+  :root { color-scheme: light; }
+  body { background: white; color: #202124; }
+  .copy { display: none; }
+  .flow { min-width: 0; }
+  .flow-frame { overflow: visible; }
+}
+
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <h1>Daylight and views, one step at a time</h1>
+    <p class="lead">You talk to Claude in plain words. Claude drives leed-mcp. leed-mcp asks Radiance to do the light maths. This guide walks you from an empty folder to your LEED v4.1 Daylight and Quality Views results.</p>
+  </div>
+  <div class="step-index">
+    <div class="step-index-links">
+      <a href="#step-1" aria-label="Step 1: Install uv and Python" title="Step 1: Install uv and Python">1</a>
+      <a href="#step-2" aria-label="Step 2: Install Radiance" title="Step 2: Install Radiance">2</a>
+      <a href="#step-3" aria-label="Step 3: Install leed-mcp" title="Step 3: Install leed-mcp">3</a>
+      <a href="#step-4" aria-label="Step 4: Connect to Claude" title="Step 4: Connect to Claude">4</a>
+      <a href="#step-5" aria-label="Step 5: Make the project folder" title="Step 5: Make the project folder">5</a>
+      <a href="#step-6" aria-label="Step 6: Copy your files" title="Step 6: Copy your files">6</a>
+      <a href="#step-7" aria-label="Step 7: Check the scene" title="Step 7: Check the scene">7</a>
+      <a href="#step-8" aria-label="Step 8: Material roles" title="Step 8: Material roles">8</a>
+      <a href="#step-9" aria-label="Step 9: Rooms and settings" title="Step 9: Rooms and settings">9</a>
+      <a href="#step-10" aria-label="Step 10: Dry run" title="Step 10: Dry run">10</a>
+      <a href="#step-11" aria-label="Step 11: Daylight" title="Step 11: Daylight">11</a>
+      <a href="#step-12" aria-label="Step 12: Quality Views" title="Step 12: Quality Views">12</a>
+      <a href="#step-13" aria-label="Step 13: Results" title="Step 13: Results">13</a>
+      <a href="#step-14" aria-label="Step 14: Deliverables" title="Step 14: Deliverables">14</a>
+    </div>
+    <div class="step-index-phases">
+      <span>Set up once</span>
+      <span>Teach it your building</span>
+      <span>Calculate and deliver</span>
+    </div>
+  </div>
+</header>
+
+<div class="layout">
+  <nav class="toc" aria-label="Sections">
+    <ol>
+      <li><a href="#flowchart">The whole process</a></li>
+      <li><a href="#need">What you need</a></li>
+      <li><a href="#install">Install, steps 1 to 3</a></li>
+      <li><a href="#step-4">Connect, step 4</a></li>
+      <li><a href="#project">Project, steps 5 to 9</a></li>
+      <li><a href="#step-10">Dry run, step 10</a></li>
+      <li><a href="#step-11">Daylight, step 11</a></li>
+      <li><a href="#step-12">Views, step 12</a></li>
+      <li><a href="#step-13">Results, steps 13 and 14</a></li>
+      <li><a href="#trouble">When it goes wrong</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <section id="flowchart" aria-labelledby="flow-h">
+      <h2 id="flow-h">The whole process on one page</h2>
+      <div class="prose">
+        <p>Follow the arrows from top to bottom. A diamond is a question. A purple dashed box is a fix: do it, then follow the dashed arrow back. Click any box to jump to its step.</p>
+      </div>
+      <ul class="flow-legend" aria-label="Colour key">
+        <li><span class="swatch" style="border-color:var(--ink-soft);background:var(--paper)"></span>Set up the computer</li>
+        <li><span class="swatch" style="border-color:var(--blue);background:var(--blue-tint)"></span>Project and delivery</li>
+        <li><span class="swatch" style="border-color:var(--sun);background:var(--sun-tint)"></span>Daylight runs</li>
+        <li><span class="swatch" style="border-color:var(--leaf);background:var(--leaf-tint)"></span>Quality Views run</li>
+        <li><span class="swatch" style="border-color:var(--fix);background:var(--fix-tint);border-style:dashed"></span>Fix and go back</li>
+      </ul>
+      <div class="flow-frame">
+        <svg class="flow" viewBox="0 0 900 2380" role="img" aria-label="Flowchart of the leed-mcp process, with every check, fix loop and branch">
+          <defs>
+            <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--ink-soft)"/></marker>
+            <marker id="ah-fix" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--fix)"/></marker>
+          </defs>
+
+          <!-- Lane titles -->
+          <text class="lane" x="20" y="110">Once per computer</text>
+          <text class="lane" x="20" y="690">Once per project</text>
+          <text class="lane" x="20" y="1556">Calculate</text>
+          <text class="lane" x="20" y="1700">Check and deliver</text>
+
+          <!-- Main wires -->
+          <g class="wire" marker-end="url(#ah)">
+            <path d="M450 86V124"/>
+            <path d="M450 176V214"/>
+            <path d="M450 266V296"/>
+            <path d="M450 384V414"/>
+            <path d="M450 466V504"/>
+            <path d="M450 556V586"/>
+            <path d="M450 674V704"/>
+            <path d="M450 756V794"/>
+            <path d="M450 846V876"/>
+            <path d="M450 964V994"/>
+            <path d="M450 1046V1076"/>
+            <path d="M450 1164V1194"/>
+            <path d="M450 1246V1284"/>
+            <path d="M450 1336V1374"/>
+            <path d="M450 1426V1456"/>
+            <path d="M450 1544V1572H190V1578"/>
+            <path d="M450 1572V1578"/>
+            <path d="M450 1572H710V1578"/>
+            <path d="M450 1690V1704"/>
+            <path d="M450 1756V1786"/>
+            <path d="M450 1874V1896"/>
+            <path d="M450 1984V2024"/>
+            <path d="M450 2076V2114"/>
+            <path d="M450 2166V2204"/>
+            <path d="M450 2256V2294"/>
+            <path d="M890 1966V2050H600"/>
+          </g>
+          <g class="wire">
+            <path d="M190 1642V1690H710V1642"/>
+            <path d="M450 1642V1690"/>
+          </g>
+          <!-- Side branches (forward) -->
+          <g class="wire" marker-end="url(#ah)">
+            <path d="M580 340H650"/>
+            <path d="M580 630H650"/>
+            <path d="M580 920H650"/>
+            <path d="M760 946V1020H600"/>
+            <path d="M320 1120H250"/>
+            <path d="M580 1940H650"/>
+          </g>
+          <!-- Fix loops (back) -->
+          <g class="wire loop" marker-end="url(#ah-fix)">
+            <path d="M760 314V240H600"/>
+            <path d="M760 604V530H600"/>
+            <path d="M140 1094V820H300"/>
+            <path d="M320 1500H70V1220H300"/>
+            <path d="M580 1830H880V1610H820"/>
+          </g>
+          <path class="wire" d="M870 1940H890V1966" />
+
+          <!-- Branch labels -->
+          <text class="lbl" x="596" y="330">no</text>
+          <text class="lbl" x="462" y="406">yes</text>
+          <text class="lbl" x="596" y="620">no</text>
+          <text class="lbl" x="462" y="696">yes</text>
+          <text class="lbl" x="596" y="910">yes</text>
+          <text class="lbl" x="462" y="986">no</text>
+          <text class="lbl" x="262" y="1110">yes</text>
+          <text class="lbl" x="462" y="1186">no</text>
+          <text class="lbl" x="200" y="1490">no: fix the inputs</text>
+          <text class="lbl" x="462" y="1566">yes</text>
+          <text class="lbl" x="660" y="1820">yes: run it again</text>
+          <text class="lbl" x="462" y="1890">no</text>
+          <text class="lbl" x="596" y="1930">yes</text>
+          <text class="lbl" x="462" y="2016">no</text>
+
+          <!-- Start -->
+          <rect class="term" x="300" y="34" width="300" height="52" rx="26"/>
+          <text class="term-t" x="450" y="65">Start: a computer and a 3D model</text>
+
+          <!-- Setup -->
+          <a href="#step-1"><rect class="box setup" x="300" y="124" width="300" height="52" rx="10"/>
+            <circle class="badge" cx="322" cy="150" r="13"/><text class="badge-t" x="322" y="154">1</text>
+            <text class="t" x="462" y="146">Install uv and Python</text><text class="s" x="462" y="165">uv python install 3.12</text></a>
+          <a href="#step-2"><rect class="box setup" x="300" y="214" width="300" height="52" rx="10"/>
+            <circle class="badge" cx="322" cy="240" r="13"/><text class="badge-t" x="322" y="244">2</text>
+            <text class="t" x="462" y="236">Install Radiance</text><text class="s" x="462" y="255">the light maths program</text></a>
+          <polygon class="decide box" points="450,296 580,340 450,384 320,340"/>
+          <text class="t" x="450" y="337">Does rtrace -version</text><text class="t" x="450" y="355">print a version?</text>
+          <rect class="fixbox box" x="650" y="314" width="230" height="52" rx="10"/>
+          <text class="t" x="765" y="337">Find the Radiance</text><text class="s" x="765" y="355">bin folder, try again</text>
+          <a href="#step-3"><rect class="box setup" x="300" y="414" width="300" height="52" rx="10"/>
+            <circle class="badge" cx="322" cy="440" r="13"/><text class="badge-t" x="322" y="444">3</text>
+            <text class="t" x="462" y="436">Install leed-mcp</text><text class="s" x="462" y="455">uv sync --extra report …</text></a>
+          <a href="#step-4"><rect class="box setup" x="300" y="504" width="300" height="52" rx="10"/>
+            <circle class="badge" cx="322" cy="530" r="13"/><text class="badge-t" x="322" y="534">4</text>
+            <text class="t" x="462" y="526">Connect to Claude</text><text class="s" x="462" y="545">projects folder and PATH</text></a>
+          <polygon class="decide box" points="450,586 580,630 450,674 320,630"/>
+          <text class="t" x="450" y="627">Can Claude list</text><text class="t" x="450" y="645">your projects?</text>
+          <rect class="fixbox box" x="650" y="604" width="230" height="52" rx="10"/>
+          <text class="t" x="765" y="627">Fix LEED_MCP_ROOTS</text><text class="s" x="765" y="645">and PATH, restart Claude</text>
+
+          <!-- Project -->
+          <a href="#step-5"><rect class="box project" x="300" y="704" width="300" height="52" rx="10"/>
+            <circle class="badge" cx="322" cy="730" r="13"/><text class="badge-t" x="322" y="734">5</text>
+            <text class="t" x="462" y="726">Make the project folder</text><text class="s" x="462" y="745">the new_project prompt</text></a>
+          <a href="#step-6"><rect class="box project" x="300" y="794" width="300" height="52" rx="10"/>
+            <circle class="badge" cx="322" cy="820" r="13"/><text class="badge-t" x="322" y="824">6</text>
+            <text class="t" x="462" y="816">Copy model and weather</text><text class="s" x="462" y="835">into model/ and weather/</text></a>
+          <polygon class="decide box" points="450,876 580,920 450,964 320,920"/>
+          <text class="t" x="450" y="917">Is the weather</text><text class="t" x="450" y="935">an .epw file?</text>
+          <a href="#step-6"><rect class="box project" x="650" y="894" width="230" height="52" rx="10"/>
+            <text class="t" x="765" y="917">Convert it to .wea</text><text class="s" x="765" y="935">Claude does it for you</text></a>
+          <a href="#step-7"><rect class="box project" x="300" y="994" width="300" height="52" rx="10"/>
+            <circle class="badge" cx="322" cy="1020" r="13"/><text class="badge-t" x="322" y="1024">7</text>
+            <text class="t" x="462" y="1016">Scan the scene</text><text class="s" x="462" y="1035">units and file order first</text></a>
+          <polygon class="decide box" points="450,1076 580,1120 450,1164 320,1120"/>
+          <text class="t" x="450" y="1117">Any scene</text><text class="t" x="450" y="1135">problems?</text>
+          <rect class="fixbox box" x="30" y="1094" width="220" height="52" rx="10"/>
+          <text class="t" x="140" y="1117">Fix the 3D model</text><text class="s" x="140" y="1135">export and copy again</text>
+          <a href="#step-8"><rect class="box project" x="300" y="1194" width="300" height="52" rx="10"/>
+            <circle class="badge" cx="322" cy="1220" r="13"/><text class="badge-t" x="322" y="1224">8</text>
+            <text class="t" x="462" y="1216">Give each material a role</text><text class="s" x="462" y="1235">plus glass VLT and view tags</text></a>
+          <a href="#step-9"><rect class="box project" x="300" y="1284" width="300" height="52" rx="10"/>
+            <circle class="badge" cx="322" cy="1310" r="13"/><text class="badge-t" x="322" y="1314">9</text>
+            <text class="t" x="462" y="1306">Name rooms, fill FILL_ME</text><text class="s" x="462" y="1325">spaces.csv and project.yaml</text></a>
+          <a href="#step-10"><rect class="box project" x="300" y="1374" width="300" height="52" rx="10"/>
+            <circle class="badge" cx="324" cy="1400" r="13"/><text class="badge-t" x="324" y="1404">10</text>
+            <text class="t" x="462" y="1396">Prepare: the dry run</text><text class="s" x="462" y="1415">seconds, no Radiance</text></a>
+          <polygon class="decide box" points="450,1456 580,1500 450,1544 320,1500"/>
+          <text class="t" x="450" y="1497">Rooms and points</text><text class="t" x="450" y="1515">look right?</text>
+
+          <!-- Runs -->
+          <a href="#step-11"><rect class="box daylight" x="80" y="1578" width="220" height="64" rx="10"/>
+            <text class="t" x="190" y="1604">Daylight Option 1</text><text class="s" x="190" y="1624">annual sDA and ASE</text></a>
+          <a href="#step-11"><rect class="box daylight" x="340" y="1578" width="220" height="64" rx="10"/>
+            <text class="t" x="450" y="1604">Daylight Option 2</text><text class="s" x="450" y="1624">two clear-sky moments</text></a>
+          <a href="#step-12"><rect class="box views" x="600" y="1578" width="220" height="64" rx="10"/>
+            <text class="t" x="710" y="1604">Quality Views</text><text class="s" x="710" y="1624">a look out from each point</text></a>
+
+          <!-- Results and delivery -->
+          <a href="#step-13"><rect class="box deliver" x="300" y="1704" width="300" height="52" rx="10"/>
+            <circle class="badge" cx="324" cy="1730" r="13"/><text class="badge-t" x="324" y="1734">13</text>
+            <text class="t" x="462" y="1726">Read the results</text><text class="s" x="462" y="1745">score, rooms, compare</text></a>
+          <polygon class="decide box" points="450,1786 580,1830 450,1874 320,1830"/>
+          <text class="t" x="450" y="1827">Did you change an</text><text class="t" x="450" y="1845">input after the run?</text>
+          <polygon class="decide box" points="450,1896 580,1940 450,1984 320,1940"/>
+          <text class="t" x="450" y="1937">Any space with</text><text class="t" x="450" y="1955">ASE above 10 %?</text>
+          <a href="#step-14"><rect class="box deliver" x="650" y="1914" width="220" height="52" rx="10"/>
+            <text class="t" x="760" y="1937">Write the glare</text><text class="s" x="760" y="1955">narrative with Claude</text></a>
+          <a href="#step-14"><rect class="box deliver" x="300" y="2024" width="300" height="52" rx="10"/>
+            <circle class="badge" cx="324" cy="2050" r="13"/><text class="badge-t" x="324" y="2054">14</text>
+            <text class="t" x="462" y="2046">Write the reports</text><text class="s" x="462" y="2065">Word, plans, charts</text></a>
+          <a href="#step-14"><rect class="box deliver optional" x="300" y="2114" width="300" height="52" rx="10"/>
+            <text class="t" x="450" y="2136">Optional: atlas, calculator</text><text class="s" x="450" y="2155">floor atlas and USGBC V02 file</text></a>
+          <a href="#step-14"><rect class="box deliver" x="300" y="2204" width="300" height="52" rx="10"/>
+            <text class="t" x="450" y="2226">Package the submission</text><text class="s" x="450" y="2245">a checksummed folder</text></a>
+          <rect class="term" x="300" y="2294" width="300" height="52" rx="26"/>
+          <text class="term-t" x="450" y="2325">Done: ready for LEED review</text>
+        </svg>
+      </div>
+    </section>
+
+    <section id="need" aria-labelledby="need-h">
+      <h2 id="need-h">What you need before you start</h2>
+      <div class="prose">
+        <p>leed-mcp never guesses a number. Every value comes from you. So collect these items first.</p>
+      </div>
+      <h3>On your computer</h3>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Item</th><th>Why you need it</th><th>Required?</th></tr></thead>
+        <tbody>
+          <tr><td>A computer</td><td>macOS, Windows 10 or newer, or Linux. The tests run on all three; full simulations are tested on macOS.</td><td>Yes</td></tr>
+          <tr><td>uv</td><td>A tool that installs Python and leed-mcp for you.</td><td>Yes</td></tr>
+          <tr><td>Python 3.11 or newer</td><td>The language leed-mcp is written in. uv installs it.</td><td>Yes</td></tr>
+          <tr><td>Radiance</td><td>The program that calculates the light.</td><td>Yes, for every run except prepare</td></tr>
+          <tr><td>Claude Desktop or Claude Code</td><td>The chat app you talk to.</td><td>Yes</td></tr>
+          <tr><td>Blender 4.2 or newer</td><td>Makes a 3D file for the floor atlas.</td><td>No</td></tr>
+          <tr><td>Blank USGBC V02 calculator (.xlsm)</td><td>leed-mcp fills it in for you. USGBC publishes it. It is not included.</td><td>No</td></tr>
+        </tbody>
+      </table></div>
+      <h3>From the architect or design team</h3>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Item</th><th>What it is</th><th>Where it goes</th></tr></thead>
+        <tbody>
+          <tr><td>Radiance scene files (.rad)</td><td>The 3D building model, made of flat polygons only.</td><td><code>model/</code></td></tr>
+          <tr><td>Weather file (.epw or .wea)</td><td>One year of sun and sky data for the site.</td><td><code>weather/</code></td></tr>
+          <tr><td>Site location</td><td>Latitude, longitude, time-zone meridian and the angle of true north.</td><td>You type it in the chat</td></tr>
+          <tr><td>Glazing data sheets</td><td>The visible light transmittance (VLT) of each glass. That is how much light passes through.</td><td>You type it in the chat</td></tr>
+          <tr><td>Frame, reveal and blind data</td><td>Frame share, reveal depth, reflectances and blind transmittance.</td><td>You type it in the chat</td></tr>
+          <tr><td>Room list</td><td>The name and type of each room, and which rooms are regularly occupied.</td><td>You type it in the chat</td></tr>
+          <tr><td>Eye height</td><td>The height of a person's eyes. Only for Quality Views.</td><td>You type it in the chat</td></tr>
+        </tbody>
+      </table></div>
+      <div class="note"><b>The model rules, in short.</b> Use polygons only. Every room needs a floor polygon. Every window needs a glass polygon in the wall opening. Do not draw frames, reveals or blinds. leed-mcp adds them for you.</div>
+    </section>
+
+    <section id="install" aria-labelledby="install-h">
+      <h2 id="install-h">Install the programs</h2>
+      <div class="prose"><p>You do this once per computer. Open the Terminal app (macOS, Linux) or PowerShell (Windows) for each step. The commands below are for macOS; where Windows or Linux differs, the step says so.</p></div>
+
+      <article class="step phase-setup" id="step-1">
+        <div class="step-num" aria-hidden="true">1</div>
+        <div class="step-body">
+          <h3>Install uv and Python</h3>
+          <ol>
+            <li>Install uv from <a href="https://docs.astral.sh/uv/">docs.astral.sh/uv</a>.</li>
+            <li>Install Python with uv:</li>
+          </ol>
+          <div class="cmd"><pre><code>uv python install 3.12</code></pre></div>
+        </div>
+      </article>
+
+      <article class="step phase-setup" id="step-2">
+        <div class="step-num" aria-hidden="true">2</div>
+        <div class="step-body">
+          <h3>Install Radiance</h3>
+          <ol>
+            <li>Download Radiance from <a href="https://www.radiance-online.org">radiance-online.org</a> and install it.</li>
+            <li>Note the folder that holds its programs. On a Mac this is often <code>/usr/local/radiance/bin</code>; on Windows it is <code>C:\Radiance\bin</code>. On Linux, Radiance comes from its releases page or your package manager.</li>
+            <li>Check it. This command must print a version number:</li>
+          </ol>
+          <div class="cmd"><pre><code>/usr/local/radiance/bin/rtrace -version</code></pre></div>
+        </div>
+      </article>
+
+      <article class="step phase-setup" id="step-3">
+        <div class="step-num" aria-hidden="true">3</div>
+        <div class="step-body">
+          <h3>Install leed-mcp</h3>
+          <ol>
+            <li>Get the code and go into its folder:</li>
+          </ol>
+          <div class="cmd"><pre><code>git clone https://github.com/akontadakis/leed-mcp.git
+cd leed-mcp</code></pre></div>
+          <ol start="2">
+            <li>Install the server and the report libraries:</li>
+          </ol>
+          <div class="cmd"><pre><code>uv sync --extra report --no-editable --reinstall-package leed-mcp</code></pre></div>
+          <ol start="3">
+            <li>Run that same command again after every update of the code. The server runs the installed copy, not the files in the folder.</li>
+            <li>Check the install from outside the folder. Replace <code>&lt;repository&gt;</code> with the real folder path:</li>
+          </ol>
+          <div class="cmd"><pre><code>cd / &amp;&amp; "&lt;repository&gt;/.venv/bin/python" -I -c "import leed_mcp; print(leed_mcp.__file__)"</code></pre></div>
+          <p>It must print a path inside <code>&lt;repository&gt;/.venv/lib/</code> (on Windows, inside <code>.venv\Lib\</code>; run <code>.venv\Scripts\python.exe -I -c "import leed_mcp; print(leed_mcp.__file__)"</code> from another folder).</p>
+          <div class="note">If you see <code>ModuleNotFoundError</code>, run the install command again. Keep the <code>--no-editable</code> part. iCloud hides some files on Desktop and Documents, and this flag avoids the problem.</div>
+        </div>
+      </article>
+    </section>
+
+    <section aria-labelledby="connect-h">
+      <h2 id="connect-h">Connect leed-mcp to Claude</h2>
+      <article class="step phase-setup" id="step-4">
+        <div class="step-num" aria-hidden="true">4</div>
+        <div class="step-body">
+          <h3>Tell Claude where leed-mcp lives</h3>
+          <p><b>First, make a projects folder.</b> Create one folder for all your LEED projects, for example <code>/Users/you/LEED projects</code>. leed-mcp reads and writes only inside this folder. This setting is called <code>LEED_MCP_ROOTS</code>.</p>
+          <ul>
+            <li>It must not be inside the leed-mcp code folder.</li>
+            <li>It must not hold the leed-mcp code folder. If the code is on your Desktop, do not pick the Desktop itself.</li>
+          </ul>
+          <p>Replace these invented paths with yours:</p>
+          <div class="table-wrap"><table>
+            <thead><tr><th>Example path</th><th>Replace with</th></tr></thead>
+            <tbody>
+              <tr><td><code>/Users/you/leed-mcp</code></td><td>The leed-mcp code folder</td></tr>
+              <tr><td><code>/Users/you/LEED projects</code></td><td>Your projects folder</td></tr>
+              <tr><td><code>/usr/local/radiance/bin</code></td><td>The Radiance programs folder</td></tr>
+            </tbody>
+          </table></div>
+          <p><b>Option A: Claude Code.</b> Run this one command:</p>
+          <div class="cmd"><pre><code>claude mcp add leed-mcp --scope user -e "LEED_MCP_ROOTS=/Users/you/LEED projects" -e "PATH=/usr/local/radiance/bin:/usr/bin:/bin" -- /Users/you/leed-mcp/.venv/bin/leed-mcp</code></pre></div>
+          <p>Then run <code>claude mcp list</code>. It must show <code>leed-mcp</code> as connected.</p>
+          <p><b>Option B: Claude Desktop.</b> Open <code>~/Library/Application Support/Claude/claude_desktop_config.json</code> (Windows: <code>%APPDATA%\Claude\claude_desktop_config.json</code>; Linux: <code>~/.config/Claude/claude_desktop_config.json</code>) and add this block. Then quit Claude Desktop fully and open it again.</p>
+          <div class="cmd"><pre><code>{
+  "mcpServers": {
+    "leed-mcp": {
+      "command": "/Users/you/leed-mcp/.venv/bin/leed-mcp",
+      "env": {
+        "LEED_MCP_ROOTS": "/Users/you/LEED projects",
+        "PATH": "/usr/local/radiance/bin:/usr/bin:/bin"
+      }
+    }
+  }
+}</code></pre></div>
+<p><b>On Windows,</b> the command is <code>C:\\Users\\you\\leed-mcp\\.venv\\Scripts\\leed-mcp.exe</code> in the JSON block (each <code>\</code> doubled), <code>PATH</code> is <code>C:\\Radiance\\bin</code> and <code>LEED_MCP_ROOTS</code> is a Windows path such as <code>C:\\Users\\you\\LEED projects</code>. Several roots are separated by <code>;</code> on Windows and <code>:</code> on macOS and Linux. Radiance runs with one process on Windows. Close the calculator and the reports in Excel and Word before you ask for them again: Windows does not let the server replace a file that is open.</p>
+          <p><b>Optional settings.</b> Add them to the same <code>env</code> block when you need them.</p>
+          <div class="table-wrap"><table>
+            <thead><tr><th>Setting</th><th>What it does</th></tr></thead>
+            <tbody>
+              <tr><td><code>LEED_MCP_CALCULATOR</code></td><td>Path to your blank USGBC V02 calculator. Needed only to fill in the calculator.</td></tr>
+              <tr><td><code>BLENDER</code></td><td>Path to the Blender program. Needed only for the 3D atlas file.</td></tr>
+              <tr><td><code>RAYPATH</code></td><td>Path to the Radiance library. Usually not needed.</td></tr>
+            </tbody>
+          </table></div>
+          <div class="say"><b>You say:</b> "List the leed-mcp projects."<br>Claude calls <code>project(action="list")</code>. If you get <code>ROOTS_NOT_CONFIGURED</code>, the projects folder setting is missing or wrong.</div>
+        </div>
+      </article>
+    </section>
+
+    <section id="project" aria-labelledby="project-h">
+      <h2 id="project-h">Start a project and teach it your building</h2>
+      <div class="prose"><p>From here on you only chat. Claude calls the tools and asks you one question at a time. It writes only what you confirm.</p></div>
+
+      <article class="step phase-project" id="step-5">
+        <div class="step-num" aria-hidden="true">5</div>
+        <div class="step-body">
+          <h3>Make the project folder</h3>
+          <p>Use the ready-made prompt <code>new_project</code>. In Claude Code, type <code>/</code> and pick it.</p>
+          <div class="say"><b>You say:</b> "Use the new_project prompt for /Users/you/LEED projects/office_a."</div>
+          <p>Claude calls <code>project(action="create")</code>. You now have this folder:</p>
+          <div class="cmd"><pre><code>office_a/
+├── project.yaml        all the settings, every value FILL_ME for now
+├── credit_rules.yaml   the LEED thresholds (do not edit)
+├── model/              your .rad files go here
+├── weather/            your weather file goes here
+└── _run/               leed-mcp writes everything here later</code></pre></div>
+          <p><code>FILL_ME</code> means "blank, you must fill this in". A run will not start while any <code>FILL_ME</code> is left.</p>
+        </div>
+      </article>
+
+      <article class="step phase-project" id="step-6">
+        <div class="step-num" aria-hidden="true">6</div>
+        <div class="step-body">
+          <h3>Copy your files in</h3>
+          <ol>
+            <li>With your file manager (Finder on a Mac, File Explorer on Windows), copy every <code>.rad</code> scene file into <code>model/</code>.</li>
+            <li>Copy the weather file into <code>weather/</code>.</li>
+            <li>Tell Claude "Done". Claude calls <code>project(action="files")</code> and lists what it sees.</li>
+            <li>If the weather file is <code>.epw</code>, Claude converts it to <code>.wea</code> with <code>inputs(action="import_weather")</code>.</li>
+          </ol>
+          <p>Every file must sit inside the project folder. A file outside it is refused with <code>SCENE_INCLUDE_OUTSIDE</code>.</p>
+          <div class="say"><b>Lost? Say:</b> "What does the project still need?"<br>Claude calls <code>project(action="status")</code>. It lists missing files, <code>FILL_ME</code> keys left, missing Radiance programs and results that are out of date.</div>
+        </div>
+      </article>
+
+      <article class="step phase-project" id="step-7">
+        <div class="step-num" aria-hidden="true">7</div>
+        <div class="step-body">
+          <h3>Check the scene</h3>
+          <ol>
+            <li>Tell Claude the model units (<code>m</code>, <code>mm</code>, <code>cm</code>, <code>ft</code> or <code>in</code>) and the order of the <code>.rad</code> files. Materials file first.</li>
+            <li>Claude writes them to <code>project.yaml</code> and calls <code>scene(action="scan")</code>.</li>
+            <li>Claude lists every problem, for example a sphere, a missing floor or a surface without a name. Each one is a <code>SCENE_PROBLEM</code>.</li>
+            <li>Fix each problem in your 3D model, export again, copy the files in again and scan again. Repeat until there are no problems.</li>
+          </ol>
+        </div>
+      </article>
+
+      <article class="step phase-project" id="step-8">
+        <div class="step-num" aria-hidden="true">8</div>
+        <div class="step-body">
+          <h3>Give every material a role</h3>
+          <p>This fills the <code>materials.csv</code> file. Claude calls <code>scene(action="materials_template")</code>. It lists every material, largest first, with a guess. You give one role per material.</p>
+          <div class="table-wrap"><table>
+            <thead><tr><th>Role</th><th>Use it for</th></tr></thead>
+            <tbody>
+              <tr><td><code>glazing</code></td><td>Normal exterior window glass</td></tr>
+              <tr><td><code>glazing_curtain_wall</code></td><td>Curtain wall glass</td></tr>
+              <tr><td><code>glazing_diffusing</code></td><td>Milky glass that scatters light</td></tr>
+              <tr><td><code>glazing_interior</code></td><td>Glass partitions inside the building</td></tr>
+              <tr><td><code>wall</code>, <code>ceiling</code>, <code>floor</code></td><td>The room surfaces</td></tr>
+              <tr><td><code>fixed_shading</code></td><td>Fins, overhangs, louvres</td></tr>
+              <tr><td><code>context</code></td><td>Nearby buildings and trees</td></tr>
+              <tr><td><code>ground</code></td><td>The ground outside</td></tr>
+              <tr><td><code>furniture</code></td><td>Desks, cabinets</td></tr>
+              <tr><td><code>ignore</code></td><td>Things the simulation must skip</td></tr>
+            </tbody>
+          </table></div>
+          <ul>
+            <li>Give the <code>vlt</code> of each exterior glass in percent, from its data sheet. The calculator needs it when Quality Views runs.</li>
+            <li>For Quality Views, add a <code>view</code> tag: <code>clear</code> for see-through glass, <code>blocks</code> for things that block the view, and <code>nature</code>, <code>landmark</code> or <code>art</code> for good things to look at.</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="step phase-project" id="step-9">
+        <div class="step-num" aria-hidden="true">9</div>
+        <div class="step-body">
+          <h3>Name the rooms and fill every FILL_ME</h3>
+          <p><b>The rooms.</b> Claude calls <code>scene(action="rooms")</code>. It finds rooms as <code>R1</code>, <code>R2</code> and so on. One room is one connected patch of floor. For each room, tell Claude:</p>
+          <ul>
+            <li>the name and the space type;</li>
+            <li>whether it is regularly occupied;</li>
+            <li>whether it has view-preserving shades;</li>
+            <li>which cases include it. A case is one design option, such as "base". <code>include_base</code> picks rooms for Daylight. <code>views_base</code> picks rooms for Quality Views.</li>
+          </ul>
+          <p>If one detected room is really two spaces, ask Claude to split it. If several rooms are one space, ask Claude to merge them.</p>
+          <p><b>The settings.</b> Claude reads <code>project.yaml</code> and asks you section by section. It offers 13 standard LEED values as suggestions. A suggestion is written only after you say yes. Each change is logged with your sentence about where it came from.</p>
+          <div class="table-wrap"><table>
+            <thead><tr><th>Section</th><th>What you give</th></tr></thead>
+            <tbody>
+              <tr><td><code>project</code></td><td>Project name and credit text for the reports</td></tr>
+              <tr><td><code>site</code></td><td>Latitude, longitude, time-zone meridian, true north angle and its source</td></tr>
+              <tr><td><code>standard</code></td><td><code>LM-83-12</code> or <code>LM-83-23</code></td></tr>
+              <tr><td><code>weather</code></td><td>The <code>.wea</code> file</td></tr>
+              <tr><td><code>glazing</code></td><td>Dirt factor, frame share, frame reflectance, reveal depth and reflectance</td></tr>
+              <tr><td><code>reflectance</code></td><td>Keep the model's values, override them or fill gaps</td></tr>
+              <tr><td><code>grid</code></td><td>Point spacing (LEED: 0.60 m at most) and work plane height (LEED: 0.762 m)</td></tr>
+              <tr><td><code>analysis</code></td><td>Occupied hours and daylight saving. For LEED points the hours must be <code>"08:00-18:00"</code> and the aggregation the floor-area average; anything else is computed but earns no points</td></tr>
+              <tr><td><code>blinds</code></td><td>Blind transmittance and reflectance</td></tr>
+              <tr><td><code>option2</code></td><td>The Option 2 settings. Claude suggests the LEED values; other times or another lux band are computed but earn no points.</td></tr>
+              <tr><td><code>views</code></td><td>Eye height and its source. Only for Quality Views.</td></tr>
+              <tr><td><code>calculator</code></td><td><code>IP</code> or <code>SI</code> units. Only for the USGBC calculator.</td></tr>
+            </tbody>
+          </table></div>
+          <div class="note"><b>Two traps.</b> The meridian is degrees west positive, so Central Europe is <code>-15.0</code>. True north is measured from the model's +Y axis, counter-clockwise positive.</div>
+        </div>
+      </article>
+    </section>
+
+    <section aria-labelledby="prepare-h">
+      <h2 id="prepare-h">The dry run</h2>
+      <article class="step phase-project" id="step-10">
+        <div class="step-num" aria-hidden="true">10</div>
+        <div class="step-body">
+          <h3>Prepare the model</h3>
+          <p>Prepare is a rehearsal. It takes seconds and needs no Radiance. Always do it before a long run.</p>
+          <ol>
+            <li>Say "Check before run." Claude uses the <code>check_before_run</code> prompt and lists anything still missing.</li>
+            <li>Say "Prepare the model." Claude calls <code>run(action="prepare")</code>.</li>
+            <li>leed-mcp adds window frames, reveals, blinds and the sensor grid. The sensor grid is a set of measuring points on each floor.</li>
+            <li>Claude waits with <code>job(action="wait")</code> and reports the rooms, grid points, window groups and any warnings.</li>
+            <li>Check the numbers. Too few points or a missing room means an input is wrong. Fix it now, not after a five-hour run.</li>
+          </ol>
+        </div>
+      </article>
+    </section>
+
+    <section aria-labelledby="daylight-h">
+      <h2 id="daylight-h">Calculate Daylight</h2>
+      <article class="step phase-daylight" id="step-11">
+        <div class="step-num" aria-hidden="true">11</div>
+        <div class="step-body">
+          <h3>Run Option 1, Option 2 or both</h3>
+          <div class="table-wrap"><table>
+            <thead><tr><th></th><th>Option 1: annual</th><th>Option 2: two moments</th></tr></thead>
+            <tbody>
+              <tr><td>What it measures</td><td>Light over every occupied hour of the year</td><td>Light at 09:00 and 15:00 on the clearest day near each equinox</td></tr>
+              <tr><td>Result</td><td>sDA300/50% and ASE1000,250</td><td>Share of floor area between 300 and 3,000 lux</td></tr>
+              <tr><td>Points</td><td>Average sDA of 40 %, 55 % or 75 % gives 1, 2 or 3 points</td><td>55 %, 75 % or 90 % gives 1, 2 or 3 points</td></tr>
+              <tr><td>Blinds</td><td>Operating for sDA, open for ASE</td><td>Left out</td></tr>
+              <tr><td>Run time</td><td>Minutes to hours</td><td>Shorter</td></tr>
+            </tbody>
+          </table></div>
+          <p><b>What the words mean.</b></p>
+          <ul>
+            <li><b>sDA300/50%</b> is spatial daylight autonomy. It is the share of floor area that gets at least 300 lux for at least half the occupied hours.</li>
+            <li><b>ASE1000,250</b> is annual sunlight exposure. It is the share of floor area that gets 1,000 lux or more of direct sun for more than 250 hours. Too much sun causes glare.</li>
+            <li><b>Lux</b> is a unit of brightness on a surface.</li>
+          </ul>
+          <p><b>Option 1.</b></p>
+          <div class="say"><b>You say:</b> "Run Option 1 for case base with 8 processes."<br>Claude calls <code>run(action="option1", case="base", processes=8)</code>.</div>
+          <ul>
+            <li>Processes is the number of CPU cores to use. More is faster, up to the number your computer has.</li>
+            <li>A large building can take hours. Claude keeps calling <code>job(action="wait")</code>. You can leave it running.</li>
+            <li>To stop, ask Claude to cancel the job. To continue later, run the same command again. It resumes where it stopped.</li>
+          </ul>
+          <p><b>Option 2.</b> Make sure the <code>option2</code> section is filled. Claude suggests the LEED values: equinox dates <code>03-21</code> and <code>09-21</code>, times <code>09:00</code> and <code>15:00</code>, 300 to 3,000 lux and blinds excluded. Other times or another lux band still run, but the result is not awarded any points. The weather file's time zone must match <code>site.meridian_radiance</code>.</p>
+          <div class="say"><b>You say:</b> "Run Option 2 for case base."<br>Claude calls <code>run(action="option2", case="base")</code>.</div>
+          <div class="note">Only one job runs at a time on your computer. Start the next run when the last one ends.</div>
+        </div>
+      </article>
+    </section>
+
+    <section aria-labelledby="views-h">
+      <h2 id="views-h">Calculate Quality Views</h2>
+      <article class="step phase-views" id="step-12">
+        <div class="step-num" aria-hidden="true">12</div>
+        <div class="step-body">
+          <h3>Can a person here see something good outside?</h3>
+          <p>The credit gives 1 point when at least 75 % of the regularly occupied floor area has a quality view. leed-mcp looks out from every grid point at eye height and checks two things:</p>
+          <ul>
+            <li><b>Type 3, clear line of sight.</b> The person can see vision glazing with nothing permanent in the way, within three times the head height of the window.</li>
+            <li><b>Type 2, view content.</b> The person sees nature, a landmark or art, or objects at least 7.5 m (25 ft) beyond the glass.</li>
+          </ul>
+          <p><b>Before you run.</b></p>
+          <ol>
+            <li>Give Claude the eye height and where that number comes from. There is no default.</li>
+            <li>Check the <code>view</code> tags from step 8. Without tags, leed-mcp cannot tell a tree from a wall.</li>
+            <li>Tick the rooms in the <code>views_base</code> column. Only regularly occupied rooms may be ticked. Use <code>views_reason</code> to say why a room is left out.</li>
+          </ol>
+          <div class="say"><b>You say:</b> "Run Quality Views for case base."<br>Claude calls <code>run(action="views", case="base")</code>.</div>
+          <div class="note"><b>Check these two by hand.</b> Views into interior atria may count for at most 30 % of the required area; every run warns you about it. leed-mcp also does not detect frits, patterns or tints on the glass. It trusts your <code>clear</code> tag.</div>
+        </div>
+      </article>
+    </section>
+
+    <section aria-labelledby="results-h">
+      <h2 id="results-h">Read the results and deliver</h2>
+      <article class="step phase-deliver" id="step-13">
+        <div class="step-num" aria-hidden="true">13</div>
+        <div class="step-body">
+          <h3>Read the results</h3>
+          <div class="say"><b>You say:</b> "Explain the results of case base."<br>Claude uses the <code>explain_results</code> prompt.</div>
+          <div class="table-wrap"><table>
+            <thead><tr><th>Ask Claude for</th><th>Tool call</th><th>What you get</th></tr></thead>
+            <tbody>
+              <tr><td>The score</td><td><code>results(action="summary")</code></td><td>Points, project metrics and warnings</td></tr>
+              <tr><td>Each room</td><td><code>results(action="spaces")</code></td><td>One row per space</td></tr>
+              <tr><td>Each point</td><td><code>results(action="points")</code></td><td>The sensor values</td></tr>
+              <tr><td>Two designs side by side</td><td><code>results(action="compare")</code></td><td>Both cases next to each other</td></tr>
+            </tbody>
+          </table></div>
+          <p>The credit is <code>option1</code>, <code>option2</code> or <code>views</code>. If the summary says <code>INPUTS_CHANGED_SINCE_RUN</code>, you changed an input after the run. Run that credit again before you trust the numbers.</p>
+        </div>
+      </article>
+
+      <article class="step phase-deliver" id="step-14">
+        <div class="step-num" aria-hidden="true">14</div>
+        <div class="step-body">
+          <h3>Make the deliverables, in this order</h3>
+          <ol>
+            <li><b>Reports.</b> Say "Write the reports for case base." Claude calls <code>deliver(action="report")</code>. Word reports, plans and charts go to <code>_run/reports/base/</code>. This step also builds the floor atlas.</li>
+            <li><b>Glare narrative.</b> Any space with ASE above 10 % needs a description of its glare control. The report step writes a draft, <code>glare_narrative.md</code>, with <code>[ADD]</code> and <code>[CONFIRM]</code> marks. Tell Claude your real glare measures, for example "Office 3 has interior roller blinds".</li>
+            <li><b>Reports again.</b> Ask Claude to write the reports again so they include your glare text.</li>
+            <li><b>Floor atlas.</b> Optional. The report step already builds it; ask for the atlas on its own to rebuild it. One HTML page with plans and a 3D view, in <code>_run/atlas/</code>. Add "with Blender" for a Blender file.</li>
+            <li><b>USGBC calculator.</b> Optional. It needs <code>LEED_MCP_CALCULATOR</code>, <code>calculator.units</code> and a <code>vlt</code> for each vision glass. The file goes to <code>_run/calculator/base/</code>. Open it in Excel so it recalculates, then compare it with the Summary values Claude gives.</li>
+            <li><b>Submission folder.</b> Say "Package case base." Claude writes a checksummed <code>submission/</code> folder. A checksum is a fingerprint that proves no file changed.</li>
+          </ol>
+          <div class="note">The results support your LEED submission. They do not replace a qualified daylight consultant or the LEED review.</div>
+        </div>
+      </article>
+    </section>
+
+    <section id="trouble" aria-labelledby="trouble-h">
+      <h2 id="trouble-h">When something goes wrong</h2>
+      <div class="prose"><p>A refusal is not a crash. leed-mcp stops on purpose and gives a code. Find the code below and do what it says.</p></div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Code</th><th>What it means</th><th>What to do</th></tr></thead>
+        <tbody>
+          <tr><td><code>ROOTS_NOT_CONFIGURED</code></td><td>Claude does not know your projects folder.</td><td>Set <code>LEED_MCP_ROOTS</code> in step 4, then restart Claude.</td></tr>
+          <tr><td><code>PATH_OUTSIDE_ROOTS</code></td><td>The folder is outside your projects folder.</td><td>Use a folder inside it.</td></tr>
+          <tr><td><code>PROJECT_EXISTS</code></td><td>The folder already holds a project.</td><td>Pick a new or empty folder.</td></tr>
+          <tr><td><code>SCENE_PROBLEM</code></td><td>The model breaks a rule.</td><td>Fix the named surface in your model and scan again.</td></tr>
+          <tr><td><code>SCENE_INCLUDE_OUTSIDE</code></td><td>A scene file is outside the project folder.</td><td>Move it into <code>model/</code>.</td></tr>
+          <tr><td><code>FILE_MISSING</code></td><td>An input file does not exist yet.</td><td>Do steps 8 and 9 first.</td></tr>
+          <tr><td><code>FILL_ME_LEFT</code></td><td>Some settings are still blank.</td><td>Give Claude the listed values.</td></tr>
+          <tr><td><code>CASE_UNKNOWN</code></td><td>The case name is not in <code>spaces.csv</code>.</td><td>Use a case that exists, such as <code>base</code>.</td></tr>
+          <tr><td><code>RADIANCE_NOT_FOUND</code></td><td>Claude cannot find Radiance.</td><td>Add the Radiance <code>bin</code> folder to <code>PATH</code> in step 4, then restart Claude.</td></tr>
+          <tr><td><code>RADIANCE_FAILED</code></td><td>A Radiance program failed.</td><td>Read the message. Ask Claude for <code>job(action="logs")</code>.</td></tr>
+          <tr><td><code>JOB_RUNNING</code>, <code>LOCK_HELD</code></td><td>Another job is running.</td><td>Wait for it to end.</td></tr>
+          <tr><td><code>INPUT_CHANGED_ON_DISK</code></td><td>You edited a file by hand.</td><td>Ask Claude to read the file again, then write.</td></tr>
+          <tr><td><code>HAND_COMMENTS_WOULD_BE_LOST</code></td><td>Your own comments in <code>project.yaml</code> would be lost.</td><td>Say yes only if you do not need them.</td></tr>
+          <tr><td><code>RESULTS_MISSING</code></td><td>That credit has not run yet.</td><td>Run it first.</td></tr>
+          <tr><td><code>REPORT_LIBS_MISSING</code></td><td>The report libraries are not installed.</td><td>Run the install command in step 3 again.</td></tr>
+          <tr><td><code>CALCULATOR_NOT_CONFIGURED</code></td><td>No blank calculator is set.</td><td>Set <code>LEED_MCP_CALCULATOR</code> in step 4.</td></tr>
+          <tr><td><code>CALCULATOR_UNSUPPORTED</code></td><td>The file is not a blank V02 calculator.</td><td>Use a fresh copy from USGBC.</td></tr>
+          <tr><td><code>INTERNAL_ERROR</code></td><td>A bug in leed-mcp.</td><td>Report it with the server log.</td></tr>
+        </tbody>
+      </table></div>
+      <h3>Three golden rules</h3>
+      <ul class="rules">
+        <li><b>Changed an input?</b> Run the credits again.</li>
+        <li><b>Feel lost?</b> Ask "What does the project still need?"</li>
+        <li><b>Claude asks for a value?</b> Give the real number and say where it comes from. Never let Claude guess.</li>
+      </ul>
+      <p class="prose">The full reference is the guide resource <code>leed://docs/running-a-project</code>, in the file <code>leed_mcp/resources/running_a_project.md</code>.</p>
+    </section>
+  </main>
+</div>
+
+<footer>
+  LEED® and USGBC® are registered trademarks of the U.S. Green Building Council. leed-mcp is not affiliated with, sponsored by or endorsed by USGBC or GBCI.
+</footer>
+
+<script>
+(function () {
+  /* Copy buttons on every command. */
+  document.querySelectorAll(".cmd").forEach(function (box) {
+    var code = box.querySelector("code");
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "copy"; b.textContent = "Copy";
+    b.addEventListener("click", function () {
+      var done = function () { b.textContent = "Copied"; setTimeout(function () { b.textContent = "Copy"; }, 1500); };
+      try {
+        navigator.clipboard.writeText(code.textContent).then(done, function () { b.textContent = "Select and copy"; });
+      } catch (e) { b.textContent = "Select and copy"; }
+    });
+    box.appendChild(b);
+  });
+
+  /* Highlight the current section in the side list. */
+  var links = Array.prototype.slice.call(document.querySelectorAll(".toc a"));
+  if ("IntersectionObserver" in window && links.length) {
+    var map = {};
+    links.forEach(function (l) {
+      var el = document.querySelector(l.getAttribute("href"));
+      if (el) map[el.id] = l;
+    });
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting && map[en.target.id]) {
+          links.forEach(function (l) { l.classList.remove("active"); });
+          map[en.target.id].classList.add("active");
+        }
+      });
+    }, { rootMargin: "-20% 0px -70% 0px" });
+    Object.keys(map).forEach(function (id) { io.observe(document.getElementById(id)); });
+  }
+})();
+</script>
+</body>
+</html>

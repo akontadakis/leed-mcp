@@ -1,0 +1,57 @@
+{
+  "ase_area_pct": 0.0,
+  "ase_point_pct": 0.0,
+  "blinds_closed_hours": {
+    "Room_North_180": 0
+  },
+  "case": "base_case",
+  "groups": [
+    {
+      "azimuth_bin_deg": 180.0,
+      "blind": true,
+      "group_id": "Room_North_180",
+      "kind": "window",
+      "room": "Room North",
+      "tilt_deg": 90.0
+    }
+  ],
+  "headline": "floor_area",
+  "inputs": {
+    "credit_rules.yaml": "ce9a6112b52fff4bba19673f7a0bd8bf07ee8ae51d558abdeb1a128cddc3643f",
+    "materials.csv": "a545812d9fc753ee29e70669f3149c3a65b1981ca5c96e6997813ca3fdeb1337",
+    "project.yaml": "80aaada37ae45085bccd54ad671877888ca9949965fea39ae32e8614ebb4364d",
+    "scene.rad": "e0a367df863c86dd9ebdbc12fc6909ee06a455dac75a404ca69b735441dbf89a",
+    "spaces.csv": "daf65918372aeea8827ec93250c540beedf8a332fa8f3b4ed6e9a5105e157000",
+    "weather/example.wea": "d0f7729f06f83db2909756147e4ed88b992d8cbecfd752da755008e9c43d7dcf"
+  },
+  "narrative_spaces": [],
+  "occupied_hours": 3650,
+  "radiance_version": null,
+  "score": {
+    "additional_point_awarded": false,
+    "band": "40.0 % or more",
+    "points": 1,
+    "reason": "result is 44.4 %, which reaches the 40.0 % band; the rules file defines no additional-point rule for option 1"
+  },
+  "sda_area_pct": 44.44444444444444,
+  "sda_point_pct": 44.44444444444444,
+  "settings": {
+    "daylight_saving_year": 2025
+  },
+  "spaces": [
+    {
+      "area_m2": 24.0,
+      "ase_band": "under 3 %: clearly acceptable",
+      "ase_pct": 0.0,
+      "needs_glare_narrative": false,
+      "points": 54,
+      "residual_sky_pct": 0.0,
+      "room": "Room North",
+      "sda_pct": 44.44444444444444
+    }
+  ],
+  "tool_version": "0.1.0",
+  "warnings": [
+    "the blind trigger area is the room area from the scene, not the grid area"
+  ]
+}

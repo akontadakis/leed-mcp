@@ -1,0 +1,43 @@
+/* The 3D view of the floor atlas (viewer.js). No external asset, no web font.
+   Colours of the page come from its custom properties, with plain fallbacks;
+   the legend ramp comes from the payload. */
+.v3d-slot{position:relative;background:var(--sheet,#ffffff);border:1px solid var(--rule,#d0d4d8);
+  height:min(72vh,760px);min-height:320px}
+.v3d-slot canvas{display:block;width:100%;height:100%;cursor:grab;touch-action:none}
+.v3d-slot canvas:active{cursor:grabbing}
+.v3d-none{padding:16px;margin:0;color:var(--ink2,#555555)}
+.v3d-ui{position:absolute;left:10px;top:10px;display:flex;flex-wrap:wrap;gap:6px;
+  max-width:calc(100% - 280px);z-index:2}
+.v3d-ui .grp{display:flex;flex-wrap:wrap;background:var(--sheet,#ffffff);border:1px solid var(--rule,#d0d4d8);
+  border-radius:2px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.v3d-ui button,.v3d-ui select{font:inherit;font-size:11px;color:var(--ink2,#555555);background:none;
+  border:0;border-right:1px solid var(--rule,#d0d4d8);padding:4px 9px;cursor:pointer;white-space:nowrap}
+.v3d-ui button:last-child{border-right:0}
+.v3d-ui button:hover{background:var(--slab,#eef0f2);color:var(--ink,#1a1a1a)}
+.v3d-ui button[aria-pressed="true"]{background:var(--accent,#2d5f8a);color:#ffffff}
+.v3d-read{position:absolute;right:10px;top:10px;width:236px;background:var(--sheet,#ffffff);
+  border:1px solid var(--rule,#d0d4d8);padding:8px 10px;font-size:12px;line-height:1.45;z-index:2;
+  box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.v3d-read b{display:block;font-size:14px;color:var(--ink,#1a1a1a);overflow-wrap:anywhere}
+.v3d-read .k{display:block;color:var(--ink2,#555555)}
+.v3d-read table{width:100%;border-collapse:collapse;margin-top:4px}
+.v3d-read td{padding:1px 0;border:0;font-size:11.5px;vertical-align:top}
+.v3d-read td:last-child{text-align:right;font-family:ui-monospace,Menlo,Consolas,monospace}
+.v3d-scale{position:absolute;left:10px;bottom:10px;background:var(--sheet,#ffffff);
+  border:1px solid var(--rule,#d0d4d8);padding:5px 9px 7px;z-index:2;font-size:10.5px;
+  color:var(--ink2,#555555);width:220px}
+.v3d-scale .t{color:var(--ink,#1a1a1a);font-weight:600;margin-bottom:3px}
+.v3d-scale .bar{position:relative;height:9px;margin:3px 0 2px}
+.v3d-scale .bar .mark{position:absolute;top:-3px;width:2px;height:15px;margin-left:-1px;background:#000000}
+.v3d-scale .tk{position:relative;height:13px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:9.5px}
+.v3d-scale .tk span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+.v3d-scale .k{margin-top:2px}
+.v3d-scale .item{display:flex;align-items:center;gap:6px;margin-top:2px}
+.v3d-scale .sw{display:inline-block;width:11px;height:11px;border:1px solid rgba(0,0,0,.2)}
+.v3d-hint{position:absolute;right:10px;bottom:10px;z-index:2;font-size:10.5px;color:var(--ink2,#555555);
+  background:var(--sheet,#ffffff);border:1px solid var(--rule,#d0d4d8);padding:3px 7px}
+.v3d-badge{position:absolute;left:50%;transform:translateX(-50%);top:10px;z-index:1;
+  background:var(--accent,#2d5f8a);color:#ffffff;padding:4px 12px 5px;border-radius:2px;
+  font-size:12px;box-shadow:0 1px 3px rgba(0,0,0,.2);max-width:40%;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;pointer-events:none;display:none}
+@media (min-width:900px){.v3d-badge{display:block;top:auto;bottom:10px}}

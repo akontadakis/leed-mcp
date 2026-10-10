@@ -1,0 +1,30 @@
+{
+  "name": "leed-mcp",
+  "description": "LEED v4.1 BD+C EQ Daylight and Quality Views as a local MCP server: annual sDA300/50% and ASE1000,250 to IES LM-83-12 with operable blinds, Option 2 equinox illuminance from the weather file, Quality Views ray tracing, points scoring, Word reports, a floor atlas, the USGBC V02 calculator and a checksummed submission folder, all from your own Radiance scene.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Antonis Kontadakis",
+    "url": "https://github.com/akontadakis"
+  },
+  "homepage": "https://github.com/akontadakis/leed-mcp",
+  "repository": "https://github.com/akontadakis/leed-mcp",
+  "license": "MIT",
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "claude-code",
+    "anthropic",
+    "agent-skills",
+    "leed",
+    "daylighting",
+    "radiance",
+    "sda",
+    "ase",
+    "lm-83",
+    "quality-views",
+    "building-physics",
+    "building-simulation",
+    "green-building",
+    "python"
+  ]
+}

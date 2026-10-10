@@ -1,0 +1,16 @@
+{
+  "name": "leed-mcp",
+  "metadata": {
+    "description": "LEED v4.1 BD+C daylight and quality views as a local MCP server: sDA/ASE (LM-83), Option 2 illuminance, Quality Views, reports and the submission folder, from a Radiance scene."
+  },
+  "owner": {
+    "name": "Antonis Kontadakis",
+    "url": "https://github.com/akontadakis"
+  },
+  "plugins": [
+    {
+      "name": "leed-mcp",
+      "source": "./"
+    }
+  ]
+}

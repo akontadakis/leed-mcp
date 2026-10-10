@@ -1,0 +1,293 @@
+{
+  "area_pct": 44.44444444444444,
+  "case": "base_case",
+  "days": [
+    {
+      "chosen": {
+        "date": "03-28",
+        "direct_normal_wh_m2": 7000.0,
+        "offset_days": 7,
+        "perez_epsilon": 4.479110369631145
+      },
+      "equinox": "03-21",
+      "hourly_diffuse_horizontal_w_m2": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        100.0,
+        100.0,
+        100.0,
+        100.0,
+        100.0,
+        100.0,
+        100.0,
+        100.0,
+        100.0,
+        100.0,
+        100.0,
+        100.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hourly_direct_normal_w_m2": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        700.0,
+        700.0,
+        700.0,
+        700.0,
+        700.0,
+        700.0,
+        700.0,
+        700.0,
+        700.0,
+        700.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "perez_best": {
+        "date": "03-28",
+        "direct_normal_wh_m2": 7000.0,
+        "offset_days": 7,
+        "perez_epsilon": 4.479110369631145
+      },
+      "top": [
+        {
+          "date": "03-28",
+          "direct_normal_wh_m2": 7000.0,
+          "offset_days": 7,
+          "perez_epsilon": 4.479110369631145
+        },
+        {
+          "date": "03-21",
+          "direct_normal_wh_m2": 0.0,
+          "offset_days": 0,
+          "perez_epsilon": 1.0
+        },
+        {
+          "date": "03-20",
+          "direct_normal_wh_m2": 0.0,
+          "offset_days": -1,
+          "perez_epsilon": 1.0
+        },
+        {
+          "date": "03-22",
+          "direct_normal_wh_m2": 0.0,
+          "offset_days": 1,
+          "perez_epsilon": 1.0
+        },
+        {
+          "date": "03-19",
+          "direct_normal_wh_m2": 0.0,
+          "offset_days": -2,
+          "perez_epsilon": 1.0
+        }
+      ]
+    },
+    {
+      "chosen": {
+        "date": "09-14",
+        "direct_normal_wh_m2": 7000.0,
+        "offset_days": -7,
+        "perez_epsilon": 4.499017038110711
+      },
+      "equinox": "09-21",
+      "hourly_diffuse_horizontal_w_m2": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        100.0,
+        100.0,
+        100.0,
+        100.0,
+        100.0,
+        100.0,
+        100.0,
+        100.0,
+        100.0,
+        100.0,
+        100.0,
+        100.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hourly_direct_normal_w_m2": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        700.0,
+        700.0,
+        700.0,
+        700.0,
+        700.0,
+        700.0,
+        700.0,
+        700.0,
+        700.0,
+        700.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "perez_best": {
+        "date": "09-14",
+        "direct_normal_wh_m2": 7000.0,
+        "offset_days": -7,
+        "perez_epsilon": 4.499017038110711
+      },
+      "top": [
+        {
+          "date": "09-14",
+          "direct_normal_wh_m2": 7000.0,
+          "offset_days": -7,
+          "perez_epsilon": 4.499017038110711
+        },
+        {
+          "date": "09-21",
+          "direct_normal_wh_m2": 0.0,
+          "offset_days": 0,
+          "perez_epsilon": 1.0
+        },
+        {
+          "date": "09-20",
+          "direct_normal_wh_m2": 0.0,
+          "offset_days": -1,
+          "perez_epsilon": 1.0
+        },
+        {
+          "date": "09-22",
+          "direct_normal_wh_m2": 0.0,
+          "offset_days": 1,
+          "perez_epsilon": 1.0
+        },
+        {
+          "date": "09-19",
+          "direct_normal_wh_m2": 0.0,
+          "offset_days": -2,
+          "perez_epsilon": 1.0
+        }
+      ]
+    }
+  ],
+  "inputs": {
+    "credit_rules.yaml": "ce9a6112b52fff4bba19673f7a0bd8bf07ee8ae51d558abdeb1a128cddc3643f",
+    "materials.csv": "a545812d9fc753ee29e70669f3149c3a65b1981ca5c96e6997813ca3fdeb1337",
+    "project.yaml": "80aaada37ae45085bccd54ad671877888ca9949965fea39ae32e8614ebb4364d",
+    "scene.rad": "e0a367df863c86dd9ebdbc12fc6909ee06a455dac75a404ca69b735441dbf89a",
+    "spaces.csv": "daf65918372aeea8827ec93250c540beedf8a332fa8f3b4ed6e9a5105e157000",
+    "weather/example.wea": "d0f7729f06f83db2909756147e4ed88b992d8cbecfd752da755008e9c43d7dcf"
+  },
+  "point_pct": 44.44444444444444,
+  "radiance_version": null,
+  "score": {
+    "band": null,
+    "points": 0,
+    "reason": "result is 44.4 %, below the lowest band"
+  },
+  "settings": {
+    "blinds": "exclude",
+    "clearest_day_window_days": 15,
+    "equinox_dates": [
+      "03-21",
+      "09-21"
+    ],
+    "lux_max": 3000.0,
+    "lux_min": 300.0,
+    "radiance_ambient": "-ab 6 -ad 4096 -lw 1e-5",
+    "radiance_direct": "-dc 1 -dt 0 -dj 0",
+    "sky": "weather_file",
+    "time_basis": "weather_file_local",
+    "times": [
+      "09:00",
+      "15:00"
+    ]
+  },
+  "skies": [
+    {
+      "day": 28,
+      "diffuse_horizontal_w_m2": 100.0,
+      "direct_normal_w_m2": 700.0,
+      "hour": 9,
+      "label": "03-28_0900",
+      "month": 3,
+      "sun_altitude_deg": 29.49549219451978,
+      "sun_azimuth_deg": -63.63363133793086
+    },
+    {
+      "day": 28,
+      "diffuse_horizontal_w_m2": 100.0,
+      "direct_normal_w_m2": 700.0,
+      "hour": 15,
+      "label": "03-28_1500",
+      "month": 3,
+      "sun_altitude_deg": 37.42841768594426,
+      "sun_azimuth_deg": 51.856548327297226
+    },
+    {
+      "day": 14,
+      "diffuse_horizontal_w_m2": 100.0,
+      "direct_normal_w_m2": 700.0,
+      "hour": 9,
+      "label": "09-14_0900",
+      "month": 9,
+      "sun_altitude_deg": 31.200229095859402,
+      "sun_azimuth_deg": -61.74238008541371
+    },
+    {
+      "day": 14,
+      "diffuse_horizontal_w_m2": 100.0,
+      "direct_normal_w_m2": 700.0,
+      "hour": 15,
+      "label": "09-14_1500",
+      "month": 9,
+      "sun_altitude_deg": 36.19073684916439,
+      "sun_azimuth_deg": 54.36648255641638
+    }
+  ],
+  "spaces": [
+    {
+      "area_m2": 24.0,
+      "n_high": 0,
+      "n_low": 30,
+      "pass_pct": 44.44444444444444,
+      "passing": 24,
+      "points": 54,
+      "room": "Room North",
+      "upper_limit_applied": true
+    }
+  ],
+  "tool_version": "0.1.0",
+  "warnings": []
+}

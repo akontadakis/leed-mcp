@@ -1,0 +1,5 @@
+case: base_case
+rooms: 1, grid points: 54, regularly occupied area: 24.00 m2, window groups: 1
+  Room North: 24.00 m2, 54 points, window groups: Room_North_180
+warnings: 0
+prepared model written to <folder>/_run

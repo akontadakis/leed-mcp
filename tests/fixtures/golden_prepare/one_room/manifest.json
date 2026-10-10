@@ -1,0 +1,91 @@
+{
+  "case": "base_case",
+  "files": {
+    "blinds/room_a_090.rad": "a3077826f7f6dbbfbaba6181b176efccb13438b2e6e2dfdab5e4a3366d7b8cc4",
+    "blinds/room_a_180.rad": "caf3907076b27ef0dca570d90bccacb8d4a16387e87dd2f71c290a8b70fc421e",
+    "grids/room_a.pts": "f8b341a6946b7dbe75ea5fd34bb67785345ca6cb74fec31e5a7865b2af2a3c14",
+    "materials.rad": "db73cea4758543ca55da7c69b2ba48893f7bc016631588903c1173ea8541fc13",
+    "scene.rad": "7f79e207a2e5e23a5d17d2c5cb3ebe80a9626f9c1a6cae8d9ee27e140466ce20"
+  },
+  "glazing": {
+    "glass_clear": {
+      "dirt_factor": 0.9,
+      "net_transmittance": 0.627647990897745,
+      "tinted": false,
+      "tn": 0.6841360044122858,
+      "visible_transmittance": 0.69738665655305
+    }
+  },
+  "groups": {
+    "room_a_090": {
+      "azimuth_bin_deg": 90.0,
+      "blind_polygon_count": 1,
+      "opening_count": 1,
+      "openings": [
+        "east_1"
+      ],
+      "room": "room_a",
+      "storey": 0
+    },
+    "room_a_180": {
+      "azimuth_bin_deg": 180.0,
+      "blind_polygon_count": 2,
+      "opening_count": 2,
+      "openings": [
+        "south_1",
+        "south_2"
+      ],
+      "room": "room_a",
+      "storey": 0
+    }
+  },
+  "openings": {
+    "east_1": {
+      "achieved_glass_area_m2": 0.8999999992099575,
+      "frame_share": 0.1,
+      "frame_style": "constant_width",
+      "frame_width_m": 0.025658351182937626,
+      "modifier": "glass_clear",
+      "role": "glazing",
+      "target_glass_area_m2": 0.9
+    },
+    "south_1": {
+      "achieved_glass_area_m2": 0.8999999992099575,
+      "frame_share": 0.1,
+      "frame_style": "constant_width",
+      "frame_width_m": 0.025658351182937626,
+      "modifier": "glass_clear",
+      "role": "glazing",
+      "target_glass_area_m2": 0.9
+    },
+    "south_2": {
+      "achieved_glass_area_m2": 0.8999999992099575,
+      "frame_share": 0.1,
+      "frame_style": "constant_width",
+      "frame_width_m": 0.025658351182937626,
+      "modifier": "glass_clear",
+      "role": "glazing",
+      "target_glass_area_m2": 0.9
+    }
+  },
+  "rooms": {
+    "room_a": {
+      "area_m2": 24.0,
+      "point_count": 96,
+      "work_plane_m": 0.75
+    }
+  },
+  "scene_units": "m",
+  "site": {
+    "north_rotation_deg": 10.0,
+    "north_rotation_source": "Invented for the golden fixtures"
+  },
+  "standard": "LM-83-12",
+  "tool_version": "0.1.0",
+  "totals": {
+    "grid_point_count": 96,
+    "group_count": 2,
+    "regularly_occupied_area_m2": 24.0
+  },
+  "warnings": []
+}
